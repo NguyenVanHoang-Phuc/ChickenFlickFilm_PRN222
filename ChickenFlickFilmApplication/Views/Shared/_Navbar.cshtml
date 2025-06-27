@@ -1,0 +1,114 @@
+﻿<style>
+    .header {
+        background: linear-gradient(135deg, #c41e3a, #8b0000);
+        padding: 15px 0;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        color: white;
+        text-decoration: none;
+    }
+
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: #ffcc00;
+        border-radius: 50%;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
+
+    .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 30px;
+    }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+            .nav-menu a:hover {
+                color: #ffcc00;
+            }
+
+    .auth-buttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .btn {
+        padding: 8px 20px;
+        border: none;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .btn-login {
+        background: transparent;
+        color: white;
+        border: 1px solid white;
+    }
+
+        .btn-login:hover {
+            background: white;
+            color: #c41e3a;
+        }
+
+    .btn-register {
+        background: #ffcc00;
+        color: #333;
+    }
+
+        .btn-register:hover {
+            background: #e6b800;
+        }
+
+    @@media (max-width: 768px) {
+        .nav-menu {
+            display: none;
+        }
+    }
+</style>
+
+<header class="header">
+    <div class="nav-container">
+        <a href="/" class="logo">
+            <div class="logo-icon">🐔</div>
+            <span>CHICKEN FLICK FILM</span>
+        </a>
+
+        <nav>
+            <ul class="nav-menu">
+                <li><a href="/">Mua vé Phim</a></li>
+                <li><a href="/showtimes">Thông báo</a></li>
+            </ul>
+        </nav>
+
+        <div class="auth-buttons">
+            <a href="@Url.Action("Login", "Auth")" class="btn btn-login">Đăng nhập</a>
+            <a href="@Url.Action("Signup", "Auth")" class="btn btn-register">Đăng kí</a>
+        </div>
+    </div>
+</header>
