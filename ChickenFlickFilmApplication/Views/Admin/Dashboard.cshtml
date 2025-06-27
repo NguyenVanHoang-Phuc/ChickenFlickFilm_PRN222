@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="page-header">
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">Tổng quan hệ thống quản lý rạp chiếu phim</p>
+</div>
+
+<!-- Stats Grid -->
+<div class="grid grid-cols-3 mb-3">
+    <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <div class="stat-value">1,234</div>
+                <div class="stat-label">Tổng Users</div>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+        <div class="stat-change positive">+12% so với tháng trước</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <div class="stat-value">89</div>
+                <div class="stat-label">Tổng Movies</div>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-film"></i>
+            </div>
+        </div>
+        <div class="stat-change positive">+5% so với tháng trước</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <div class="stat-value">156</div>
+                <div class="stat-label">Showtimes hôm nay</div>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+        </div>
+        <div class="stat-change positive">+8% so với tháng trước</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <div class="stat-value">12</div>
+                <div class="stat-label">Theaters</div>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-building"></i>
+            </div>
+        </div>
+        <div class="stat-change neutral">0% so với tháng trước</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <div class="stat-value">48</div>
+                <div class="stat-label">Auditoriums</div>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-couch"></i>
+            </div>
+        </div>
+        <div class="stat-change positive">+2% so với tháng trước</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <div class="stat-value">2.5M VND</div>
+                <div class="stat-label">Doanh thu tháng</div>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+        </div>
+        <div class="stat-change positive">+15% so với tháng trước</div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="admin-card">
+    <h2 class="mb-3" style="color: var(--primary-dark); font-size: 1.25rem; font-weight: 600;">Hoạt động gần đây</h2>
+    <div class="space-y-3">
+        <div class="d-flex align-items-center p-3" style="background-color: var(--white); border-radius: 0.5rem;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--accent-red); margin-right: 1rem;"></div>
+            <span style="flex: 1; color: var(--text-dark);">Phim "Avatar 3" đã được thêm vào hệ thống</span>
+            <span style="font-size: 0.875rem; color: var(--text-light);">2 giờ trước</span>
+        </div>
+        <div class="d-flex align-items-center p-3" style="background-color: var(--white); border-radius: 0.5rem;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--accent-red); margin-right: 1rem;"></div>
+            <span style="flex: 1; color: var(--text-dark);">User mới đăng ký: nguyenvana@email.com</span>
+            <span style="font-size: 0.875rem; color: var(--text-light);">4 giờ trước</span>
+        </div>
+        <div class="d-flex align-items-center p-3" style="background-color: var(--white); border-radius: 0.5rem;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--accent-red); margin-right: 1rem;"></div>
+            <span style="flex: 1; color: var(--text-dark);">Showtime mới được tạo cho phim "Dune 2"</span>
+            <span style="font-size: 0.875rem; color: var(--text-light);">6 giờ trước</span>
+        </div>
+    </div>
+</div>
