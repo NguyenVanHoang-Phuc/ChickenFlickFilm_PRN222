@@ -1,0 +1,264 @@
+﻿@{
+    ViewData["Title"] = "Đăng ký - Six Chickens Films";
+}
+
+@model RegisterViewModel
+
+<div class="container-fluid p-0">
+    <div class="row no-gutters min-vh-100">
+        <!-- Left Side - Branding -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center" style="background-color: #B22222;">
+            <div class="text-center text-white">
+                <div class="mb-4">
+                    <!-- Turkey/Chicken mascot with TV -->
+                    <div class="mascot-container mb-4">
+                        <svg width="200" height="200" viewBox="0 0 200 200" class="mascot">
+                            <!-- Turkey body -->
+                            <ellipse cx="100" cy="120" rx="40" ry="35" fill="#8B4513" stroke="#654321" stroke-width="2" />
+
+                            <!-- Turkey head -->
+                            <circle cx="100" cy="80" r="25" fill="#D2691E" stroke="#A0522D" stroke-width="2" />
+
+                            <!-- Turkey tail feathers -->
+                            <path d="M60 100 Q50 80 45 100 Q40 120 50 130 Q60 125 60 100" fill="#FF4500" stroke="#DC143C" stroke-width="2" />
+                            <path d="M65 95 Q55 75 50 95 Q45 115 55 125 Q65 120 65 95" fill="#FF6347" stroke="#DC143C" stroke-width="2" />
+                            <path d="M140 100 Q150 80 155 100 Q160 120 150 130 Q140 125 140 100" fill="#FF4500" stroke="#DC143C" stroke-width="2" />
+                            <path d="M135 95 Q145 75 150 95 Q155 115 145 125 Q135 120 135 95" fill="#FF6347" stroke="#DC143C" stroke-width="2" />
+
+                            <!-- TV screen -->
+                            <rect x="85" y="90" width="30" height="20" fill="#000" stroke="#333" stroke-width="2" rx="2" />
+                            <rect x="87" y="92" width="26" height="16" fill="#FF0000" rx="1" />
+
+                            <!-- TV antenna -->
+                            <line x1="95" y1="90" x2="90" y2="75" stroke="#666" stroke-width="2" />
+                            <line x1="105" y1="90" x2="110" y2="75" stroke="#666" stroke-width="2" />
+
+                            <!-- Eyes -->
+                            <circle cx="92" cy="75" r="4" fill="white" />
+                            <circle cx="108" cy="75" r="4" fill="white" />
+                            <circle cx="92" cy="75" r="2" fill="black" />
+                            <circle cx="108" cy="75" r="2" fill="black" />
+
+                            <!-- Beak -->
+                            <path d="M100 82 L95 88 L105 88 Z" fill="#FFA500" />
+
+                            <!-- Wattle -->
+                            <ellipse cx="100" cy="90" rx="3" ry="6" fill="#DC143C" />
+
+                            <!-- Feet -->
+                            <path d="M85 155 L80 165 M85 155 L85 165 M85 155 L90 165" stroke="#FFA500" stroke-width="3" fill="none" />
+                            <path d="M115 155 L110 165 M115 155 L115 165 M115 155 L120 165" stroke="#FFA500" stroke-width="3" fill="none" />
+                        </svg>
+                    </div>
+                </div>
+                <h1 class="display-4 font-weight-bold mb-0">SIX CHICKENS FILMS</h1>
+            </div>
+        </div>
+
+        <!-- Right Side - Registration Form -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center bg-light">
+            <div class="w-100 px-4" style="max-width: 400px;">
+                <h2 class="text-center mb-4 text-dark">Đăng ký</h2>
+
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group mb-3">
+                        <label for="FullName" class="form-label text-dark">
+                            <span class="text-danger">*</span>Họ và tên
+                        </label>
+                        @Html.TextBoxFor(m => m.FullName, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Nhập Họ và tên",
+                                required = "required"
+                            })
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="EmailOrPhone" class="form-label text-dark">
+                            <span class="text-danger">*</span>Email/Số Điện Thoại
+                        </label>
+                        @Html.TextBoxFor(m => m.EmailOrPhone, new
+                            {
+                                @class = "form-control",
+                                placeholder = "Nhập Email/Số điện thoại của bạn",
+                                required = "required"
+                            })
+                        @Html.ValidationMessageFor(m => m.EmailOrPhone, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="DateOfBirth" class="form-label text-dark">
+                            <span class="text-danger">*</span>Ngày sinh
+                        </label>
+                        @Html.TextBoxFor(m => m.DateOfBirth, new
+                            {
+                                @class = "form-control",
+                                type = "date",
+                                placeholder = "Ngày/tháng/năm sinh",
+                                required = "required"
+                            })
+                        @Html.ValidationMessageFor(m => m.DateOfBirth, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="Gender" class="form-label text-dark">
+                            <span class="text-danger">*</span>Giới tính
+                        </label>
+                        @Html.DropDownListFor(m => m.Gender, new SelectList(new[] {
+                    new { Value = "", Text = "Giới tính" },
+                    new { Value = "male", Text = "Nam" },
+                    new { Value = "female", Text = "Nữ" },
+                    new { Value = "other", Text = "Khác" }
+                    }, "Value", "Text"), new
+                                {
+                                    @class = "form-control",
+                                    required = "required"
+                                })
+                        @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label for="Password" class="form-label text-dark">
+                            <span class="text-danger">*</span>Mật khẩu
+                        </label>
+                        <div class="input-group">
+                            @Html.PasswordFor(m => m.Password, new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Nhập Mật khẩu",
+                                    required = "required",
+                                    id = "password"
+                                })
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="fas fa-eye" id="eyeIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label for="ConfirmPassword" class="form-label text-dark">
+                            <span class="text-danger">*</span>Xác nhận mật khẩu
+                        </label>
+                        <div class="input-group">
+                            @Html.PasswordFor(m => m.ConfirmPassword, new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Nhập lại Mật khẩu",
+                                    required = "required",
+                                    id = "confirmPassword"
+                                })
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                    <i class="fas fa-eye" id="eyeIconConfirm"></i>
+                                </button>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger small" })
+                    </div>
+
+                    <button type="submit" class="btn btn-block mb-4" style="background-color: #B22222; color: white; border: none; padding: 12px; border-radius: 5px;">
+                        Đăng Ký
+                    </button>
+                }
+
+                <hr class="my-4">
+                <div class="text-center">
+                    <span class="text-muted">Bạn đã có tài khoản? </span>
+                    @Html.ActionLink("Đăng nhập", "Login", "Account", null, new { @class = "text-decoration-none", @style = "color: #B22222;" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .mascot-container {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @@keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    .min-vh-100 {
+        min-height: 100vh;
+    }
+
+    .form-control:focus {
+        border-color: #B22222;
+        box-shadow: 0 0 0 0.2rem rgba(178, 34, 34, 0.25);
+    }
+
+    .btn:hover {
+        background-color: #8B0000 !important;
+    }
+
+    .input-group-append .btn {
+        background-color: transparent;
+        border-left: none;
+    }
+
+    .input-group-append .btn:hover {
+        background-color: #f8f9fa !important;
+        color: #6c757d;
+    }
+</style>
+
+<script>
+    // Password visibility toggle
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const password = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        if (password.type === 'password') {
+            password.type = 'text';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            password.type = 'password';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    });
+
+    document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
+        const confirmPassword = document.getElementById('confirmPassword');
+        const eyeIconConfirm = document.getElementById('eyeIconConfirm');
+
+        if (confirmPassword.type === 'password') {
+            confirmPassword.type = 'text';
+            eyeIconConfirm.classList.remove('fa-eye');
+            eyeIconConfirm.classList.add('fa-eye-slash');
+        } else {
+            confirmPassword.type = 'password';
+            eyeIconConfirm.classList.remove('fa-eye-slash');
+            eyeIconConfirm.classList.add('fa-eye');
+        }
+    });
+
+    // Form validation
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>
