@@ -120,6 +120,44 @@
                 </div>
             </div>
         </div>
+
+        <div id="payment-confirm" class="popup-information-book-ticket">
+            <div class="information-book-ticket">
+                <h1 class="title-indformation-book-ticket-popup">THÔNG TIN ĐẶT VÉ</h1>
+                <div class="h-50">
+                    <div class="detail-book-ticket-popup">
+                        <div class="text-detail-book-ticket-popup">Phim</div>
+                        <div class="infor-detail-book-ticket-popup">
+                            <h3 class="header-infor-detail-book-ticket-popup">Bộ tứ báo thủ</h3>
+                            <p class="description-infor-detail-book-ticket-popup">2d phụ đề</p>
+                        </div>
+                    </div>
+                    <div class="detail-book-ticket-popup">
+                        <div class="text-detail-book-ticket-popup">Rạp</div>
+                        <div class="infor-detail-book-ticket-popup">
+                            <h3 class="header-infor-detail-book-ticket-popup">Chicken Đà Nẵng</h3>
+                            <p class="description-infor-detail-book-ticket-popup">Suất: 17h30</p>
+                        </div>
+                    </div>
+                    <div class="detail-book-ticket-popup">
+                        <div class="text-detail-book-ticket-popup">Chi tiet</div>
+                        <div class="infor-detail-book-ticket-popup">
+                            <p id="description-infor-detail-book-ticket-popup" class="description-infor-detail-book-ticket-popup">Rạp 4, ghế G4, G5</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="total-confirm-pay-ticket">
+                    <div class="total-ticket">
+                        <div class="text-detail-book-ticket-popup">Tổng</div>
+                        <div id="price-detail-book-ticket" class="price-detail-book-ticket">220.000VND</div>
+                    </div>
+                    <hr />
+                    <form asp-controller="Auditorium" method="post" asp-action="OnPay">
+                        <button id="payment-btn-confirm" class="payment-btn-confirm">Thanh toán</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -158,7 +196,7 @@
             if ('EFGHI'.includes(rowChar)) return 'seat vip';
             return 'seat couple';
           }
-          function calculateTotal() {
+          /**/function calculateTotal() {
             return selectedSeats.reduce((total, seatId) => {
               const row = seatId.charAt(0);
               return total + getSeatPrice(row);
@@ -171,8 +209,12 @@
             if (unavailableSeats.includes(seatId) || soldSeats.includes(seatId)) {
               return;
             }
+            if ( !selectedSeats.includes(seatId) ) {
+                selectedSeats.push(seatId);
+            } else {
+				selectedSeats = selectedSeats.filter(seat => seat !== seatId);
+            }
             // Only allow selecting one seat at a time
-            selectedSeats = [seatId];
             // Update UI
             updateSeatGrid();
             updateSelectedSeatsDisplay();
@@ -193,6 +235,22 @@
           function showPaymentSuccess() {
             const modal = document.getElementById('payment-success-modal');
             modal.style.display = 'flex';
+          }
+          function showPaymentConfirm() {
+              const popup = document.getElementById('payment-confirm');
+              let result = '';
+			  if (selectedSeats.length === 0) {
+				  result = 'Vui lòng chọn ghế trước khi thanh toán.';
+			  } else {
+                  result = 'Rạp 4 \n Ghế:';
+				  for ( let i = 0; i < selectedSeats.length; i++) {
+					  result += selectedSeats[i] + ', ';
+                  }
+			  }
+			  document.getElementById('description-infor-detail-book-ticket-popup').innerText = result.trim();
+              const totalPrice = calculateTotal();
+              document.getElementById('price-detail-book-ticket').innerText = `${formatNumber(totalPrice)}vnđ`;
+              popup.style.display = 'block';
           }
           // UI Update functions
           function initializeSeatGridHeader() {
@@ -268,7 +326,7 @@
           // Update progress bar based on current step
           function updateProgressBar() {
             const progressLine = document.querySelector('.progress-line');
-            const percentage = ((currentStep - 1) / 3) * 100;
+            const percentage = ((currentStep - 1) / 3) * 100 + 4;
             progressLine.style.width = `${percentage}%`;
             // Update step states
             const steps = document.querySelectorAll('.step');
@@ -292,6 +350,25 @@
           });
           // Add payment button event listener
           document.querySelector('.payment-btn').addEventListener('click', async function() {
+            this.disabled = true;
+            this.textContent = 'Đang xử lý...';
+            try {
+              const success = await processPayment();
+              if (success) {
+				  showPaymentConfirm(); 
+                // showPaymentSuccess();
+                currentStep = 3; // Move to confirmation step
+                updateProgressBar();
+              }
+            } catch (error) {
+              alert('Có lỗi xảy ra. Vui lòng thử lại.');
+            } finally {
+              this.disabled = false;
+              this.textContent = 'Thanh toán';
+            }
+          });
+
+          document.querySelector('.payment-btn-confirm').addEventListener('click', async function() {
             this.disabled = true;
             this.textContent = 'Đang xử lý...';
             try {
