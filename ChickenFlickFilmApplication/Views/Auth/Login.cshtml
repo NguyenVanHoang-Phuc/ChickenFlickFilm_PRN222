@@ -1,0 +1,434 @@
+﻿@{
+    ViewData["Title"] = "Đăng Nhập - CHICKEN FLICK FILM";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .login-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, #c41e3a, #8b0000);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+        }
+
+        .brand-logo {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .chicken-icon {
+            width: 100%;
+            height: 100%;
+            background: #ff6b35;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .chicken-body {
+            width: 120px;
+            height: 120px;
+            background: #ff8c42;
+            border-radius: 50% 50% 40% 40%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chicken-head {
+            width: 60px;
+            height: 60px;
+            background: #ff8c42;
+            border-radius: 50%;
+            position: absolute;
+            top: -20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chicken-beak {
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid #ffa500;
+            position: absolute;
+            bottom: 15px;
+        }
+
+        .chicken-eyes {
+            position: absolute;
+            top: 8px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 15px;
+        }
+
+        .eye {
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+        }
+
+        .chicken-wings {
+            position: absolute;
+            width: 140px;
+            height: 80px;
+            top: 30px;
+        }
+
+        .wing {
+            width: 30px;
+            height: 40px;
+            background: #e55a2b;
+            border-radius: 50% 20% 50% 20%;
+            position: absolute;
+            top: 20px;
+        }
+
+            .wing.left {
+                left: -15px;
+                transform: rotate(-20deg);
+            }
+
+            .wing.right {
+                right: -15px;
+                transform: rotate(20deg);
+            }
+
+        .tv-screen {
+            width: 40px;
+            height: 30px;
+            background: #333;
+            border-radius: 3px;
+            position: absolute;
+            bottom: 20px;
+            border: 2px solid #666;
+        }
+
+            .tv-screen::after {
+                content: '';
+                width: 30px;
+                height: 20px;
+                background: linear-gradient(45deg, #4ecdc4, #44a08d);
+                border-radius: 2px;
+                position: absolute;
+                top: 2px;
+                left: 2px;
+            }
+
+        .brand-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 0.1em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .login-section {
+            flex: 1;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .login-form-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .required {
+            color: #c41e3a;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: white;
+        }
+
+            .form-input:focus {
+                outline: none;
+                border-color: #c41e3a;
+                box-shadow: 0 0 0 0.2rem rgba(196, 30, 58, 0.25);
+            }
+
+            .form-input::placeholder {
+                color: #999;
+            }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #c41e3a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-bottom: 20px;
+        }
+
+            .login-btn:hover {
+                background: #a01729;
+                transform: translateY(-1px);
+            }
+
+        .forgot-password {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+            .forgot-password a {
+                color: #666;
+                text-decoration: none;
+                margin: 0 10px;
+            }
+
+                .forgot-password a:hover {
+                    color: #c41e3a;
+                    text-decoration: underline;
+                }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            color: #666;
+        }
+
+            .divider::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: #ddd;
+            }
+
+            .divider span {
+                background: #f8f9fa;
+                padding: 0 20px;
+            }
+
+        .register-link {
+            text-align: center;
+            color: #666;
+        }
+
+            .register-link a {
+                color: #c41e3a;
+                text-decoration: none;
+                font-weight: 600;
+            }
+
+                .register-link a:hover {
+                    text-decoration: underline;
+                }
+
+        @@media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .brand-section {
+                flex: none;
+                height: 200px;
+                padding: 20px;
+            }
+
+            .brand-logo {
+                width: 100px;
+                height: 100px;
+                margin-bottom: 15px;
+            }
+
+            .chicken-body {
+                width: 60px;
+                height: 60px;
+            }
+
+            .chicken-head {
+                width: 30px;
+                height: 30px;
+                top: -10px;
+            }
+
+            .brand-title {
+                font-size: 1.5rem;
+            }
+
+            .login-section {
+                padding: 20px;
+            }
+
+            .login-title {
+                font-size: 1.5rem;
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <!-- Brand Section -->
+        <div class="brand-section">
+            <div class="brand-logo">
+                <div class="chicken-icon">
+                    <div class="chicken-wings">
+                        <div class="wing left"></div>
+                        <div class="wing right"></div>
+                    </div>
+                    <div class="chicken-body">
+                        <div class="chicken-head">
+                            <div class="chicken-eyes">
+                                <div class="eye"></div>
+                                <div class="eye"></div>
+                            </div>
+                            <div class="chicken-beak"></div>
+                        </div>
+                        <div class="tv-screen"></div>
+                    </div>
+                </div>
+            </div>
+            <h1 class="brand-title">SIX CHICKENS FILMS</h1>
+        </div>
+
+        <!-- Login Section -->
+        <div class="login-section">
+            <div class="login-form-container">
+                <h2 class="login-title">Đăng Nhập</h2>
+
+                <form method="post" asp-action="Login">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="required">*</span>Email
+                        </label>
+                        <input type="email" name="Email" class="form-input" placeholder="Nhập Email của bạn" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="required">*</span>Mật khẩu
+                        </label>
+                        <input type="password" name="Password" class="form-input" placeholder="Nhập Mật khẩu" required />
+                    </div>
+
+                    <button type="submit" class="login-btn">Đăng Nhập</button>
+                </form>
+
+                <div class="forgot-password">
+                    <a href="#">Ghi nhớ mật khẩu</a>
+                    <a href="@Url.Action("ForgotPassword", "Auth")">Quên mật khẩu?</a>
+                </div>
+
+                <div class="divider">
+                    <span>HOẶC</span>
+                </div>
+
+                <div class="register-link">
+                    Bạn chưa có tài khoản? <a href="@Url.Action("Signup", "Auth")">Đăng kí</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @*   <script>
+    $(document).ready(function() {
+    // Add form validation
+    $('form').on('submit', function(e) {
+    var email = $('input[name="Email"]').val();
+    var password = $('input[name="Password"]').val();
+
+    if (!email || !password) {
+    e.preventDefault();
+    alert('Vui lòng điền đầy đủ thông tin!');
+    return false;
+    }
+
+    // Email validation
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+    e.preventDefault();
+    alert('Email không hợp lệ!');
+    return false;
+    }
+    });
+
+    // Add input focus effects
+    $('.form-input').on('focus', function() {
+    $(this).closest('.form-group').addClass('focused');
+    }).on('blur', function() {
+    $(this).closest('.form-group').removeClass('focused');
+    });
+    });
+    </script> *@
+</body>
+</html>
