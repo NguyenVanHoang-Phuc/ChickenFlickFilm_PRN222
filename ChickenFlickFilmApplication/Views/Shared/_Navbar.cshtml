@@ -57,33 +57,37 @@
 
     .btn {
         padding: 8px 20px;
-        border: none;
         border-radius: 5px;
         text-decoration: none;
-        font-weight: 500;
+        font-weight: bold !important; /* Ensure bold text */
+        color: white !important; /* Force white text */
         transition: all 0.3s;
         cursor: pointer;
+        border: none;
     }
 
     .btn-login {
         background: transparent;
-        color: white;
         border: 1px solid white;
     }
 
         .btn-login:hover {
             background: white;
-            color: #c41e3a;
+            color: black !important;
         }
 
     .btn-register {
         background: #ffcc00;
-        color: #333;
+        color: white !important;
+        border: 1px solid #ffcc00;
     }
 
         .btn-register:hover {
-            background: #e6b800;
+            background: white;
+            color: black !important;
         }
+
+
 
     @@media (max-width: 768px) {
         .nav-menu {
@@ -95,8 +99,7 @@
 <header class="header">
     <div class="nav-container">
         <a href="/" class="logo">
-            <div class="logo-icon">🐔</div>
-            <span>CHICKEN FLICK FILM</span>
+            <img src="~/images/logo.png" alt="CHICKEN FLICK FILM" style="height: 50px;">
         </a>
 
         <nav>
