@@ -1,4 +1,6 @@
-﻿@{
+﻿@model IEnumerable<BusinessObjects.Models.User> 
+
+@{
     ViewData["Title"] = "Quản lý Users";
     Layout = "_LayoutAdmin";
 }
@@ -25,7 +27,6 @@
             <option value="">Tất cả vai trò</option>
             <option value="Admin">Admin</option>
             <option value="FilmManager">Film Manager</option>
-            <option value="Affiliates">Affiliates</option>
             <option value="Customer">Customer</option>
         </select>
     </div>
@@ -47,72 +48,31 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>1</td>
-                <td style="font-weight: 500;">Nguyễn Văn A</td>
-                <td>nguyenvana@email.com</td>
-                <td><span class="badge badge-secondary">Customer</span></td>
-                <td>Nam</td>
-                <td>0123456789</td>
-                <td>2024-01-15</td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="action-btn view" title="Xem">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="action-btn edit" title="Sửa">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete" title="Xóa">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td style="font-weight: 500;">Trần Thị B</td>
-                <td>tranthib@email.com</td>
-                <td><span class="badge badge-info">FilmManager</span></td>
-                <td>Nữ</td>
-                <td>0987654321</td>
-                <td>2024-01-10</td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="action-btn view" title="Xem">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="action-btn edit" title="Sửa">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete" title="Xóa">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td style="font-weight: 500;">Lê Văn C</td>
-                <td>levanc@email.com</td>
-                <td><span class="badge badge-warning">Admin</span></td>
-                <td>Nam</td>
-                <td>0369852147</td>
-                <td>2024-01-05</td>
-                <td>
-                    <div class="action-buttons">
-                        <button class="action-btn view" title="Xem">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="action-btn edit" title="Sửa">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete" title="Xóa">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>
+            @foreach (var user in Model)  
+            {
+                <tr>
+                    <td>@user.UserId</td>
+                    <td style="font-weight: 500;">@user.FullName</td>
+                    <td>@user.Email</td>
+                    <td><span class="badge @(user.Role == "Admin" ? "badge-warning" : user.Role == "FilmManager" ? "badge-info" : "badge-secondary")">@user.Role</span></td>
+                    <td>@(user.Gender ? "Nam" : "Nữ")</td>
+                    <td>@user.PhoneNumber</td>
+                    <td>@user.CreatedAt?.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn view" title="Xem">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn edit" title="Sửa">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete" title="Xóa">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
         </tbody>
     </table>
 </div>
