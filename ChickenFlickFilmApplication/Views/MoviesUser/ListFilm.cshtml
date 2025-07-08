@@ -1,0 +1,241 @@
+﻿<section class="movies-section container">
+    <div class="section-header w-100">
+        <h5 class="mb-0 border-start border-5 border-primary ps-2" style="border-left-color: #D84040 !important;">
+            PHIM
+        </h5>
+        <ul class="nav nav-tabs" id="movieTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="now-tab" data-bs-toggle="tab" data-bs-target="#now" type="button"
+                        role="tab" aria-controls="now" aria-selected="true">
+                    Đang chiếu
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="soon-tab" data-bs-toggle="tab" data-bs-target="#soon" type="button" role="tab"
+                        aria-controls="soon" aria-selected="false">
+                    Sắp chiếu
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="imax-tab" data-bs-toggle="tab" data-bs-target="#imax" type="button" role="tab"
+                        aria-controls="imax" aria-selected="false">
+                    Phim IMAX
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-content mt-4">
+        <div class="tab-pane fade show active" id="now" role="tabpanel" aria-labelledby="now-tab">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+                <div class="col">
+                    <a asp-controller="MoviesUser" asp-action="DetailFilm" class="d-block h-100 text-decoration-none"
+                       style="cursor:pointer;">
+                        <div class="card movie-card h-100">
+                            <div class="poster-container position-relative overflow-hidden rounded-2">
+                                <img src="~/image/khunglong.jpg" class="img-fluid w-100" style="height:350px; object-fit:cover;"
+                                     alt="Thế Giới Khủng Long: Tái Sinh" />
+                                <div class="overlay position-absolute top-0 start-0 w-100 h-100
+                    d-flex flex-column justify-content-center align-items-center">
+                                    <button class="btn btn-tickett mb-2" onclick="event.stopPropagation();
+                     window.location.href='/Booking?movieId=123';">
+                                        Mua vé
+                                    </button>
+                                    <button class="btn btn-outline-light" onclick="event.stopPropagation();
+                     window.location.href='/Trailer?movieId=123';">
+                                        ▶ Trailer
+                                    </button>
+                                </div>
+                                <span class="badge-rating">8.9</span>
+                                <span class="badge-age">T13</span>
+                            </div>
+                            <div class="card-body text-center">
+                                <h6 class="card-title mb-0">Thế Giới Khủng Long: Tái Sinh</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col">
+                    <a href="/FilmManager/html/DetailFilm.html" class="d-block h-100 text-decoration-none"
+                       style="cursor:pointer;">
+                        <div class="card movie-card h-100">
+                            <div class="poster-container position-relative overflow-hidden rounded-2">
+                                <img src="~/image/khunglong.jpg" class="img-fluid w-100" style="height:350px; object-fit:cover;"
+                                     alt="Thế Giới Khủng Long: Tái Sinh" />
+                                <div class="overlay position-absolute top-0 start-0 w-100 h-100
+                    d-flex flex-column justify-content-center align-items-center">
+                                    <button class="btn btn-tickett mb-2" onclick="event.stopPropagation();
+                     window.location.href='/Booking?movieId=123';">
+                                        Mua vé
+                                    </button>
+                                    <button class="btn btn-outline-light" onclick="event.stopPropagation();
+                     window.location.href='/Trailer?movieId=123';">
+                                        ▶ Trailer
+                                    </button>
+                                </div>
+                                <span class="badge-rating">8.9</span>
+                                <span class="badge-age">T13</span>
+                            </div>
+                            <div class="card-body text-center">
+                                <h6 class="card-title mb-0">Thế Giới Khủng Long: Tái Sinh</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="/FilmManager/html/DetailFilm.html" class="d-block h-100 text-decoration-none"
+                       style="cursor:pointer;">
+                        <div class="card movie-card h-100">
+                            <div class="poster-container position-relative overflow-hidden rounded-2">
+                                <img src="~/image/khunglong.jpg" class="img-fluid w-100" style="height:350px; object-fit:cover;"
+                                     alt="Thế Giới Khủng Long: Tái Sinh" />
+                                <div class="overlay position-absolute top-0 start-0 w-100 h-100
+                    d-flex flex-column justify-content-center align-items-center">
+                                    <button class="btn btn-tickett mb-2" onclick="event.stopPropagation();
+                     window.location.href='/Booking?movieId=123';">
+                                        Mua vé
+                                    </button>
+                                    <button class="btn btn-outline-light" onclick="event.stopPropagation();
+                     window.location.href='/Trailer?movieId=123';">
+                                        ▶ Trailer
+                                    </button>
+                                </div>
+                                <span class="badge-rating">8.9</span>
+                                <span class="badge-age">T13</span>
+                            </div>
+                            <div class="card-body text-center">
+                                <h6 class="card-title mb-0">Thế Giới Khủng Long: Tái Sinh</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="/FilmManager/html/DetailFilm.html" class="d-block h-100 text-decoration-none"
+                       style="cursor:pointer;">
+                        <div class="card movie-card h-100">
+                            <div class="poster-container position-relative overflow-hidden rounded-2">
+                                <img src="~/image/khunglong.jpg" class="img-fluid w-100" style="height:350px; object-fit:cover;"
+                                     alt="Thế Giới Khủng Long: Tái Sinh" />
+                                <div class="overlay position-absolute top-0 start-0 w-100 h-100
+                    d-flex flex-column justify-content-center align-items-center">
+                                    <button class="btn btn-tickett mb-2" onclick="event.stopPropagation();
+                     window.location.href='/Booking?movieId=123';">
+                                        Mua vé
+                                    </button>
+                                    <button class="btn btn-outline-light" onclick="event.stopPropagation();
+                     window.location.href='/Trailer?movieId=123';">
+                                        ▶ Trailer
+                                    </button>
+                                </div>
+                                <span class="badge-rating">8.9</span>
+                                <span class="badge-age">T13</span>
+                            </div>
+                            <div class="card-body text-center">
+                                <h6 class="card-title mb-0">Thế Giới Khủng Long: Tái Sinh</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col">
+                    <a href="/FilmManager/html/DetailFilm.html" class="d-block h-100 text-decoration-none"
+                       style="cursor:pointer;">
+                        <div class="card movie-card h-100">
+                            <div class="poster-container position-relative overflow-hidden rounded-2">
+                                <img src="/image/khunglong.jpg" class="img-fluid w-100" style="height:350px; object-fit:cover;"
+                                     alt="Thế Giới Khủng Long: Tái Sinh" />
+                                <div class="overlay position-absolute top-0 start-0 w-100 h-100
+                    d-flex flex-column justify-content-center align-items-center">
+                                    <button class="btn btn-tickett mb-2" onclick="event.stopPropagation();
+                     window.location.href='/Booking?movieId=123';">
+                                        Mua vé
+                                    </button>
+                                    <button class="btn btn-outline-light" onclick="event.stopPropagation();
+                     window.location.href='/Trailer?movieId=123';">
+                                        ▶ Trailer
+                                    </button>
+                                </div>
+                                <span class="badge-rating">8.9</span>
+                                <span class="badge-age">T13</span>
+                            </div>
+                            <div class="card-body text-center">
+                                <h6 class="card-title mb-0">Thế Giới Khủng Long: Tái Sinh</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="soon" role="tabpanel" aria-labelledby="soon-tab">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+                <div class="col">
+                    <a href="/FilmManager/html/DetailFilm.html" class="d-block h-100 text-decoration-none"
+                       style="cursor:pointer;">
+                        <div class="card movie-card h-100">
+                            <div class="poster-container position-relative overflow-hidden rounded-2">
+                                <img src="/image/khunglong.jpg" class="img-fluid w-100" style="height:350px; object-fit:cover;"
+                                     alt="Thế Giới Khủng Long: Tái Sinh" />
+                                <div class="overlay position-absolute top-0 start-0 w-100 h-100
+                    d-flex flex-column justify-content-center align-items-center">
+                                    <button class="btn btn-tickett mb-2" onclick="event.stopPropagation();
+                     window.location.href='/Booking?movieId=123';">
+                                        Mua vé
+                                    </button>
+                                    <button class="btn btn-outline-light" onclick="event.stopPropagation();
+                     window.location.href='/Trailer?movieId=123';">
+                                        ▶ Trailer
+                                    </button>
+                                </div>
+                                <span class="badge-rating">8.9</span>
+                                <span class="badge-age">T13</span>
+                            </div>
+                            <div class="card-body text-center">
+                                <h6 class="card-title mb-0">Thế Giới Khủng Long: Tái Sinh</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="imax" role="tabpanel" aria-labelledby="imax-tab">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
+                <div class="col">
+                    <a href="/FilmManager/html/DetailFilm.html" class="d-block h-100 text-decoration-none"
+                       style="cursor:pointer;">
+                        <div class="card movie-card h-100">
+                            <div class="poster-container position-relative overflow-hidden rounded-2">
+                                <img src="/image/khunglong.jpg" class="img-fluid w-100" style="height:350px; object-fit:cover;"
+                                     alt="Thế Giới Khủng Long: Tái Sinh" />
+                                <div class="overlay position-absolute top-0 start-0 w-100 h-100
+                    d-flex flex-column justify-content-center align-items-center">
+                                    <button class="btn btn-tickett mb-2" onclick="event.stopPropagation();
+                     window.location.href='/Booking?movieId=123';">
+                                        Mua vé
+                                    </button>
+                                    <button class="btn btn-outline-light" onclick="event.stopPropagation();
+                     window.location.href='/Trailer?movieId=123';">
+                                        ▶ Trailer
+                                    </button>
+                                </div>
+                                <span class="badge-rating">8.9</span>
+                                <span class="badge-age">T13</span>
+                            </div>
+                            <div class="card-body text-center">
+                                <h6 class="card-title mb-0">Thế Giới Khủng Long: Tái Sinh</h6>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/ListFilm.css">
+}
