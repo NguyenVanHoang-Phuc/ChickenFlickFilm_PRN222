@@ -1,9 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Service;
 
 namespace ChickenFlickFilmApplication.Controllers
 {
     public class AdminController : Controller
     {
+        private readonly IUserService _userService;
+
+        public AdminController(IUserService userService)
+        {
+            _userService = userService;
+        }
         public IActionResult Auditoriums()
         {
             return View();
@@ -20,9 +27,10 @@ namespace ChickenFlickFilmApplication.Controllers
         {
             return View();
         }
-        public IActionResult Users()
+        public async Task<IActionResult> Users()
         {
-            return View();
+            var users = await _userService.GetAllUsersAsync();
+            return View(users);
         }
         public IActionResult Theaters()
         {
