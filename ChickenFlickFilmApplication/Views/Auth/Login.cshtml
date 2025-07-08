@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
     <style>
         * {
             margin: 0;
@@ -39,120 +40,13 @@
             position: relative;
         }
 
-        .brand-logo {
+        .brand-logo img {
             width: 200px;
-            height: 200px;
+            height: auto;
             margin-bottom: 30px;
-            position: relative;
-        }
-
-        .chicken-icon {
-            width: 100%;
-            height: 100%;
-            background: #ff6b35;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 20px;
         }
-
-        .chicken-body {
-            width: 120px;
-            height: 120px;
-            background: #ff8c42;
-            border-radius: 50% 50% 40% 40%;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chicken-head {
-            width: 60px;
-            height: 60px;
-            background: #ff8c42;
-            border-radius: 50%;
-            position: absolute;
-            top: -20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chicken-beak {
-            width: 0;
-            height: 0;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 12px solid #ffa500;
-            position: absolute;
-            bottom: 15px;
-        }
-
-        .chicken-eyes {
-            position: absolute;
-            top: 8px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 15px;
-        }
-
-        .eye {
-            width: 8px;
-            height: 8px;
-            background: #333;
-            border-radius: 50%;
-        }
-
-        .chicken-wings {
-            position: absolute;
-            width: 140px;
-            height: 80px;
-            top: 30px;
-        }
-
-        .wing {
-            width: 30px;
-            height: 40px;
-            background: #e55a2b;
-            border-radius: 50% 20% 50% 20%;
-            position: absolute;
-            top: 20px;
-        }
-
-            .wing.left {
-                left: -15px;
-                transform: rotate(-20deg);
-            }
-
-            .wing.right {
-                right: -15px;
-                transform: rotate(20deg);
-            }
-
-        .tv-screen {
-            width: 40px;
-            height: 30px;
-            background: #333;
-            border-radius: 3px;
-            position: absolute;
-            bottom: 20px;
-            border: 2px solid #666;
-        }
-
-            .tv-screen::after {
-                content: '';
-                width: 30px;
-                height: 20px;
-                background: linear-gradient(45deg, #4ecdc4, #44a08d);
-                border-radius: 2px;
-                position: absolute;
-                top: 2px;
-                left: 2px;
-            }
 
         .brand-title {
             font-size: 2.5rem;
@@ -209,15 +103,15 @@
             background: white;
         }
 
-            .form-input:focus {
-                outline: none;
-                border-color: #c41e3a;
-                box-shadow: 0 0 0 0.2rem rgba(196, 30, 58, 0.25);
-            }
+        .form-input:focus {
+            outline: none;
+            border-color: #c41e3a;
+            box-shadow: 0 0 0 0.2rem rgba(196, 30, 58, 0.25);
+        }
 
-            .form-input::placeholder {
-                color: #999;
-            }
+        .form-input::placeholder {
+            color: #999;
+        }
 
         .login-btn {
             width: 100%;
@@ -233,26 +127,26 @@
             margin-bottom: 20px;
         }
 
-            .login-btn:hover {
-                background: #a01729;
-                transform: translateY(-1px);
-            }
+        .login-btn:hover {
+            background: #a01729;
+            transform: translateY(-1px);
+        }
 
         .forgot-password {
             text-align: center;
             margin-bottom: 30px;
         }
 
-            .forgot-password a {
-                color: #666;
-                text-decoration: none;
-                margin: 0 10px;
-            }
+        .forgot-password a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
 
-                .forgot-password a:hover {
-                    color: #c41e3a;
-                    text-decoration: underline;
-                }
+        .forgot-password a:hover {
+            color: #c41e3a;
+            text-decoration: underline;
+        }
 
         .divider {
             text-align: center;
@@ -261,35 +155,37 @@
             color: #666;
         }
 
-            .divider::before {
-                content: '';
-                position: absolute;
-                top: 50%;
-                left: 0;
-                right: 0;
-                height: 1px;
-                background: #ddd;
-            }
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+        }
 
-            .divider span {
-                background: #f8f9fa;
-                padding: 0 20px;
-            }
+        .divider span {
+            background: #f8f9fa;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
 
         .register-link {
             text-align: center;
             color: #666;
         }
 
-            .register-link a {
-                color: #c41e3a;
-                text-decoration: none;
-                font-weight: 600;
-            }
+        .register-link a {
+            color: #c41e3a;
+            text-decoration: none;
+            font-weight: 600;
+        }
 
-                .register-link a:hover {
-                    text-decoration: underline;
-                }
+        .register-link a:hover {
+            text-decoration: underline;
+        }
 
         @@media (max-width: 768px) {
             .login-container {
@@ -302,21 +198,10 @@
                 padding: 20px;
             }
 
-            .brand-logo {
+            .brand-logo img {
                 width: 100px;
-                height: 100px;
+                height: auto;
                 margin-bottom: 15px;
-            }
-
-            .chicken-body {
-                width: 60px;
-                height: 60px;
-            }
-
-            .chicken-head {
-                width: 30px;
-                height: 30px;
-                top: -10px;
             }
 
             .brand-title {
@@ -340,22 +225,7 @@
         <!-- Brand Section -->
         <div class="brand-section">
             <div class="brand-logo">
-                <div class="chicken-icon">
-                    <div class="chicken-wings">
-                        <div class="wing left"></div>
-                        <div class="wing right"></div>
-                    </div>
-                    <div class="chicken-body">
-                        <div class="chicken-head">
-                            <div class="chicken-eyes">
-                                <div class="eye"></div>
-                                <div class="eye"></div>
-                            </div>
-                            <div class="chicken-beak"></div>
-                        </div>
-                        <div class="tv-screen"></div>
-                    </div>
-                </div>
+                <img src="~/images/logo.png" alt="CHICKEN FLICK FILM Logo" />
             </div>
             <h1 class="brand-title">SIX CHICKENS FILMS</h1>
         </div>
@@ -400,35 +270,5 @@
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    @*   <script>
-    $(document).ready(function() {
-    // Add form validation
-    $('form').on('submit', function(e) {
-    var email = $('input[name="Email"]').val();
-    var password = $('input[name="Password"]').val();
-
-    if (!email || !password) {
-    e.preventDefault();
-    alert('Vui lòng điền đầy đủ thông tin!');
-    return false;
-    }
-
-    // Email validation
-    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-    e.preventDefault();
-    alert('Email không hợp lệ!');
-    return false;
-    }
-    });
-
-    // Add input focus effects
-    $('.form-input').on('focus', function() {
-    $(this).closest('.form-group').addClass('focused');
-    }).on('blur', function() {
-    $(this).closest('.form-group').removeClass('focused');
-    });
-    });
-    </script> *@
 </body>
 </html>
