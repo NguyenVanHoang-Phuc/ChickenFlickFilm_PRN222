@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessObjects.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,10 @@ namespace Service
 {
     public interface IMovieService
     {
+        Task<IEnumerable<Movie>> GetAllMoviesAsync();
+        Task<Movie> GetMovieByIdAsync(int id);
+        Task AddMovieAsync(Movie movie);
+        Task UpdateMovieAsync(Movie movie);
+        Task DeleteMovieAsync(int id);
     }
 }

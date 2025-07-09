@@ -9,11 +9,15 @@ namespace ChickenFlickFilmApplication.Controllers
     {
         private readonly IUserService _userService;
         private readonly ITheaterService _theaterService;
+        private readonly IMovieService _movieService;
+        private readonly IWebHostEnvironment _env;
 
-        public AdminController(IUserService userService, ITheaterService theaterService)
+        public AdminController(IUserService userService, ITheaterService theaterService, IMovieService movieService, IWebHostEnvironment env)
         {
             _userService = userService;
             _theaterService = theaterService;
+            _movieService = movieService;
+            _env = env;
         }
         public IActionResult Auditoriums()
         {
@@ -23,10 +27,159 @@ namespace ChickenFlickFilmApplication.Controllers
         {
             return View();
         }
-        public IActionResult Movies()
+
+        // Manage Movies
+        public async Task<IActionResult> Movies(int? page)
         {
-            return View();
+            int pageSize = 5;
+            int pageNumber = page ?? 1;
+
+            var movies = await _movieService.GetAllMoviesAsync();
+            return View(movies.ToPagedList(pageNumber, pageSize));
         }
+
+        // GET
+        public IActionResult GetCreateMovieModal()
+        {
+            ViewData["Title"] = "Thêm phim mới";
+            ViewData["Action"] = "CreateMovie";
+            return PartialView("Partial/_CreateOrEditModalMovie", new Movie());
+        }
+
+        public async Task<IActionResult> GetEditMovieModal(int id)
+        {
+            var movie = await _movieService.GetMovieByIdAsync(id); 
+            ViewData["Title"] = "Chỉnh sửa";
+            ViewData["Action"] = "EditMovie";
+            return PartialView("Partial/_CreateOrEditModalMovie", movie);
+        }
+
+        public async Task<IActionResult> GetDeleteMovieModal(int id)
+        {
+            var movie = await _movieService.GetMovieByIdAsync(id); 
+            return PartialView("Partial/_DeleteConfirmModalMovie", movie);
+        }
+
+
+        // Post
+        [HttpPost]
+        public async Task<IActionResult> EditMovie (Movie model)
+        {
+            var existingMovie = await _movieService.GetMovieByIdAsync(model.MovieId);
+
+            if (model.PosterFile == null)
+                model.PosterUrl = existingMovie.PosterUrl;
+
+            if (model.BannerFile == null)
+                model.BannerUrl = existingMovie.BannerUrl;
+
+            // Xử lý ảnh Poster
+            if (model.PosterFile != null)
+            {
+                var fileName = $"{Guid.NewGuid()}_{model.PosterFile.FileName}";
+                var path = Path.Combine(_env.WebRootPath, "uploads/posters", fileName);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await model.PosterFile.CopyToAsync(stream);
+                }
+                model.PosterUrl = "/uploads/posters/" + fileName;
+            }
+
+            // Xử lý ảnh Banner
+            if (model.BannerFile != null)
+            {
+                var fileName = $"{Guid.NewGuid()}_{model.BannerFile.FileName}";
+                var path = Path.Combine(_env.WebRootPath, "uploads/banners", fileName);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await model.BannerFile.CopyToAsync(stream);
+                }
+                model.BannerUrl = "/uploads/banners/" + fileName;
+            }
+
+
+            await _movieService.UpdateMovieAsync(model); 
+            TempData["SuccessMessage"] = "Movie updated!";
+            return RedirectToAction("Movies");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateMovie(Movie model)
+        {
+            // Xử lý ảnh Poster
+            if (model.PosterFile != null)
+            {
+                var fileName = $"{Guid.NewGuid()}_{model.PosterFile.FileName}";
+                var path = Path.Combine(_env.WebRootPath, "uploads/posters", fileName);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await model.PosterFile.CopyToAsync(stream);
+                }
+                model.PosterUrl = "/uploads/posters/" + fileName;
+            }
+
+            // Xử lý ảnh Banner
+            if (model.BannerFile != null)
+            {
+                var fileName = $"{Guid.NewGuid()}_{model.BannerFile.FileName}";
+                var path = Path.Combine(_env.WebRootPath, "uploads/banners", fileName);
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await model.BannerFile.CopyToAsync(stream);
+                }
+                model.BannerUrl = "/uploads/banners/" + fileName;
+            }
+
+
+            await _movieService.AddMovieAsync(model);
+            TempData["SuccessMessage"] = "Movie was created!";
+            return RedirectToAction("Movies");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmedMovie(int id)
+        {
+            await _movieService.DeleteMovieAsync(id); 
+            TempData["SuccessMessage"] = "Movie deleted successfully!";
+            return RedirectToAction("Movies");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SearchMovie(IFormCollection form, int? page)
+        {
+            string searchKey = form["searchKeyMovie"];
+            string status = form["statusMovie"];
+            string format = form["formatMovie"];
+
+            var movies = await _movieService.GetAllMoviesAsync();
+
+            // Lọc theo tên hoặc thể loại
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                movies = movies.Where(m =>
+                    m.Title.Contains(searchKey, StringComparison.OrdinalIgnoreCase) ||
+                    m.Genre.Contains(searchKey, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // Lọc theo trạng thái
+            if (!string.IsNullOrEmpty(status))
+            {
+                movies = movies.Where(m => m.Status == status);
+            }
+
+            // Lọc theo định dạng
+            if (!string.IsNullOrEmpty(format))
+            {
+                movies = movies.Where(m => m.Format == format);
+            }
+
+            int pageSize = 5;
+            int pageNumber = page ?? 1;
+
+            return View("Movies", movies.ToPagedList(pageNumber, pageSize));
+        }
+
+        // Manage Showtimes
         public IActionResult Showtimes()
         {
             return View();
@@ -85,7 +238,7 @@ namespace ChickenFlickFilmApplication.Controllers
         [HttpPost]
         public async Task<IActionResult> SearchUser(IFormCollection form, int? page)
         {
-            string searchKey = form["searchKey"];
+            string searchKey = form["searchKeyUser"];
             string role = form["role"];
 
             var allUsers = await _userService.GetAllUsersAsync();
