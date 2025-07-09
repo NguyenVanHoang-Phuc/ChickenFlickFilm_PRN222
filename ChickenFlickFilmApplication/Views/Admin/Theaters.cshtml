@@ -1,4 +1,8 @@
-﻿@{
+﻿@model X.PagedList.IPagedList<BusinessObjects.Models.Theater>
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+
+@{
     ViewData["Title"] = "Quản lý Theaters";
     Layout = "_LayoutAdmin";
 }
@@ -175,68 +179,40 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td style="font-weight: 500;">CGV Vincom Center</td>
-                    <td>191 Bà Triệu, Hai Bà Trưng, Hà Nội</td>
-                    <td>8</td>
-                    <td>2024-01-15</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="action-btn view" title="Xem">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="action-btn edit" title="Sửa">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn delete" title="Xóa">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td style="font-weight: 500;">CGV Landmark 81</td>
-                    <td>Tầng 5, Vincom Landmark 81, Quận 1, TP.HCM</td>
-                    <td>12</td>
-                    <td>2024-01-10</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="action-btn view" title="Xem">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="action-btn edit" title="Sửa">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn delete" title="Xóa">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td style="font-weight: 500;">Lotte Cinema Diamond</td>
-                    <td>34 Lê Duẩn, Quận 1, TP.HCM</td>
-                    <td>6</td>
-                    <td>2024-01-05</td>
-                    <td>
-                        <div class="action-buttons">
-                            <button class="action-btn view" title="Xem">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="action-btn edit" title="Sửa">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn delete" title="Xóa">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
+                @foreach (var theater in Model)
+                {
+                    <tr>
+                        <td>@theater.TheaterId</td>
+                        <td style="font-weight: 500;">@theater.TheaterName</td>
+                        <td>@theater.Location</td>
+                        <td>@theater.Auditoria.Count()</td>
+                        <td>@theater.CreatedAt</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn view" title="Xem">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="action-btn edit" title="Sửa">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="action-btn delete" title="Xóa">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
+    </div>
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center">
+        @Html.PagedListPager(Model, page => Url.Action("Theaters", new { page }),
+        new PagedListRenderOptions
+        {
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" }
+        })
     </div>
 </div>
 

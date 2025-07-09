@@ -1,0 +1,56 @@
+﻿/* Thêm vào file CSS của bạn */
+.modal-content {
+    padding: 20px;
+    border-radius: 8px; /* Bo góc modal */
+}
+
+.modal-header, .modal-footer {
+    padding: 15px 20px; /* Thêm padding cho header và footer */
+    background-color: #f1f1f1; /* Màu nền cho header và footer */
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Khoảng cách giữa các phần tử trong modal */
+    padding: 10px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Khoảng cách giữa label và input */
+}
+
+.form-control {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.modal-dialog {
+    max-width: 70%; /* Điều chỉnh kích thước modal */
+    margin: auto; /* Căn giữa modal */
+}
+
+.btn-primary, .btn-secondary {
+    padding: 10px 15px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
