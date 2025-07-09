@@ -1,0 +1,274 @@
+﻿@{
+    ViewData["Title"] = "Đăng Nhập - CHICKEN FLICK FILM";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .login-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .brand-section {
+            flex: 1;
+            background: linear-gradient(135deg, #c41e3a, #8b0000);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+        }
+
+        .brand-logo img {
+            width: 200px;
+            height: auto;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 20px;
+        }
+
+        .brand-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 0.1em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .login-section {
+            flex: 1;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .login-form-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 40px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .required {
+            color: #c41e3a;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #c41e3a;
+            box-shadow: 0 0 0 0.2rem rgba(196, 30, 58, 0.25);
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: #c41e3a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            background: #a01729;
+            transform: translateY(-1px);
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .forgot-password a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .forgot-password a:hover {
+            color: #c41e3a;
+            text-decoration: underline;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            position: relative;
+            color: #666;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider span {
+            background: #f8f9fa;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .register-link {
+            text-align: center;
+            color: #666;
+        }
+
+        .register-link a {
+            color: #c41e3a;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        @@media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+
+            .brand-section {
+                flex: none;
+                height: 200px;
+                padding: 20px;
+            }
+
+            .brand-logo img {
+                width: 100px;
+                height: auto;
+                margin-bottom: 15px;
+            }
+
+            .brand-title {
+                font-size: 1.5rem;
+            }
+
+            .login-section {
+                padding: 20px;
+            }
+
+            .login-title {
+                font-size: 1.5rem;
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <!-- Brand Section -->
+        <div class="brand-section">
+            <div class="brand-logo">
+                <img src="~/images/logo.png" alt="CHICKEN FLICK FILM Logo" />
+            </div>
+            <h1 class="brand-title">SIX CHICKENS FILMS</h1>
+        </div>
+
+        <!-- Login Section -->
+        <div class="login-section">
+            <div class="login-form-container">
+                <h2 class="login-title">Đăng Nhập</h2>
+
+                <form method="post" asp-action="Login">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="required">*</span>Email
+                        </label>
+                        <input type="email" name="Email" class="form-input" placeholder="Nhập Email của bạn" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">
+                            <span class="required">*</span>Mật khẩu
+                        </label>
+                        <input type="password" name="Password" class="form-input" placeholder="Nhập Mật khẩu" required />
+                    </div>
+
+                    <button type="submit" class="login-btn">Đăng Nhập</button>
+                </form>
+
+                <div class="forgot-password">
+                    <a href="#">Ghi nhớ mật khẩu</a>
+                    <a href="@Url.Action("ForgotPassword", "Auth")">Quên mật khẩu?</a>
+                </div>
+
+                <div class="divider">
+                    <span>HOẶC</span>
+                </div>
+
+                <div class="register-link">
+                    Bạn chưa có tài khoản? <a href="@Url.Action("Signup", "Auth")">Đăng kí</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</body>
+</html>
