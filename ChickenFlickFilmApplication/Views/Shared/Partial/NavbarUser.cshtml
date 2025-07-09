@@ -1,0 +1,68 @@
+﻿<nav class="navbar fixed-top navbar-expand-lg navbar-dark shadow-sm" id="header">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/Hompage.html">
+            <img src="/image/chicken_circle.png" alt="Logo" width="80" />
+        </a>
+
+        <a href="/dat-ve.html" class="btn btn-ticket me-3">Mua Vé</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto mb-3 mb-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Phim</a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#" class="dropdown-item" data-page="ListFilmDangChieu.html">
+                                Phim đang chiếu
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-item" data-page="ListFilmDangChieu.html">
+                                Phim sắp chiếu
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="dropdown-item" data-page="ListFilmDangChieu.html">
+                                Phim IMAX
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Rạp/Giá Vé</a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item load-page" href="#" data-page="">An Dương Vương</a>
+                        </li>
+                        <li><a class="dropdown-item load-page" href="#" data-page="">Quang Trung</a></li>
+                        <li>
+                            <a class="dropdown-item load-page" href="#" data-page="">Nha Trang</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/thong-bao.html">Thông báo</a>
+                </li>
+            </ul>
+
+            <div class="search-login">
+                <form class="d-flex" role="search">
+                    <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" />
+                </form>
+                <a href="#" class="text-decoration-none">Đăng Nhập</a>
+                <a href="#" class="text-decoration-none">Đăng ký</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/header.css">
+}
