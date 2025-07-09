@@ -1,0 +1,217 @@
+﻿.detail-hero {
+    position: relative;
+    background: #000;
+    height: 400px;
+    /* Giữ height nhất quán */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.hero-inner {
+    position: relative;
+    height: 100%;
+    max-width: 1200px;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-img {
+    height: 100%;
+    width: 100%;
+    /* Đảm bảo ảnh co giãn đúng */
+    object-fit: cover;
+    /* Thay đổi object-fit nếu cần */
+}
+
+.btn-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #fff;
+    z-index: 3;
+    /* Đảm bảo nút play trên ảnh */
+    cursor: pointer;
+}
+
+.movie-backdrop {
+    height: 300px;
+    background: linear-gradient(to right, #212529, #495057);
+    position: relative;
+}
+
+.movie-poster {
+    width: 100%;
+    max-width: 280px;
+    /* Giới hạn kích thước */
+    height: auto;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+}
+
+.rating-badge,
+.age-badge {
+    background-color: #fd7e14;
+    border-color: #fd7e14;
+}
+
+.section-title {
+    border-left: 4px solid #8b0000;
+    padding-left: 15px;
+}
+
+.star-filled {
+    color: #D84040;
+}
+
+.buy-ticket-btn {
+    background-color: #D84040;
+    border-color: #D84040;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2; /* Đảm bảo nút nằm trên các phần tử khác */
+    opacity: 0; /* Ban đầu ẩn nút */
+}
+
+.sidebar-movie-image:hover .buy-ticket-btn {
+    opacity: 1; /* Khi hover vào ảnh, nút Mua vé sẽ hiện lên */
+}
+
+.card-body {
+    z-index: 2;
+}
+
+.movie-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.sidebar-movie-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-movie-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+    .sidebar-movie-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /
+    }
+
+    .sidebar-movie-image:hover img {
+        opacity: 0.4; /* Làm tối đi ảnh khi hover */
+    }
+
+.movie-card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.card-body {
+    z-index: 2;
+}
+
+.release-date {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: white;
+    text-align: right;
+}
+
+.movie-info-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    margin-top: 5px;
+    width: 100%;
+    justify-content: center;
+}
+
+
+.poster-container {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    top: -30px;
+}
+
+
+.movie-poster {
+    width: 100%;
+    max-width: 1500px;
+    height: auto;
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.movie-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+    .movie-details .tag {
+        border: 1px solid #dee2e6;
+        padding: 5px 15px;
+        border-radius: 5px;
+        font-size: 14px;
+        color: black;
+        margin: 5px 0;
+        display: inline-block;
+    }
+
+    .movie-details .label {
+        font-size: 14px;
+        margin-bottom: 10px;
+        color: #6a6e73;
+    }
+
+.custom-btn {
+    color: #D84040;
+    border-color: #D84040;
+}
+
+    .custom-btn:hover {
+        color: #8E1616;
+        border-color: #8E1616;
+    }
