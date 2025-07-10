@@ -41,5 +41,9 @@ namespace Service
         {
             await _userRepository.DeleteUserAsync(userId);
         }
+        public async Task<int> GetTotalUsersAsync()
+        {
+            return await _userRepository.GetTotalUsersAsync();
+        }
     }
 }

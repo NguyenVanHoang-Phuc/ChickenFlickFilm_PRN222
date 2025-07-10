@@ -12,5 +12,7 @@ namespace Repository
         Task AddAuditoriumAsync(BusinessObjects.Models.Auditorium auditorium);
         Task UpdateAuditoriumAsync(BusinessObjects.Models.Auditorium auditorium);
         Task DeleteAuditoriumAsync(int id);
+        Task<BusinessObjects.Models.Auditorium?> GetAuditoriumByIdAsync(int id);
+        Task<int> GetTotalAuditoriumsAsync();
     }
 }

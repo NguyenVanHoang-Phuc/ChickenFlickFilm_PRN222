@@ -36,5 +36,13 @@ namespace Repository
         {
             await _auditoriumDAO.DeleteAuditoriumAsync(id);
         }
+        public async Task<Auditorium?> GetAuditoriumByIdAsync(int id)
+        {
+            return await _auditoriumDAO.GetAuditoriumByIdAsync(id);
+        }
+        public async Task<int> GetTotalAuditoriumsAsync()
+        {
+            return await _auditoriumDAO.GetTotalAuditoriumsAsync();
+        }
     }
 }

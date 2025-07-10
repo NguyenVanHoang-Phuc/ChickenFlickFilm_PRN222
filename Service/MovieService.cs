@@ -35,5 +35,9 @@ namespace Service
         {
             await _movieRepository.DeleteMovieAsync(id);
         }
+        public async Task<int> GetTotalMoviesAsync()
+        {
+            return await _movieRepository.GetTotalMoviesAsync();
+        }
     }
 }

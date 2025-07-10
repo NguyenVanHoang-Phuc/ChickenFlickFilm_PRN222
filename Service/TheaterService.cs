@@ -41,5 +41,14 @@ namespace Service
         {
             await _theaterRepository.DeleteTheaterAsync(theaterId);
         }
+
+        public async Task<Theater> GetTheaterByAuditoriumIdAsync(int auditoriumId)
+        {
+            return await _theaterRepository.GetTheaterByAuditoriumIdAsync(auditoriumId);
+        }
+        public async Task<int> GetTotalTheatersAsync()
+        {
+            return await _theaterRepository.GetTotalTheaterAsync();
+        }
     }
 }

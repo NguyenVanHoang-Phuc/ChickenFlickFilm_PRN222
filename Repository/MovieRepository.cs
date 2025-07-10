@@ -35,5 +35,9 @@ namespace Repository
         {
             await _movieDAO.DeleteMovieAsync(id);
         }
+        public async Task<int> GetTotalMoviesAsync()
+        {
+            return await _movieDAO.GetTotalMoviesAsync();
+        }
     }
 }

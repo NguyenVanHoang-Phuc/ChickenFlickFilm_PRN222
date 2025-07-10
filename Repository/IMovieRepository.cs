@@ -14,5 +14,6 @@ namespace Repository
         Task AddMovieAsync(Movie movie);
         Task UpdateMovieAsync(Movie movie);
         Task DeleteMovieAsync(int id);
+        Task<int> GetTotalMoviesAsync();
     }
 }

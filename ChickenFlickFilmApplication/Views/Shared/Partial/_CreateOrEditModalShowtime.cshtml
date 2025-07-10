@@ -1,0 +1,55 @@
+﻿@model BusinessObjects.Models.Showtime
+
+<form asp-action="@ViewData["Action"]" method="post">
+    <div class="modal-header">
+        <h5 class="modal-title">@ViewData["Title"]</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+
+    <div class="modal-body">
+        <input type="hidden" asp-for="ShowtimeId" />
+
+        <div class="form-group">
+            <label class="form-label">Phim:</label>
+            <select asp-for="MovieId" class="form-control" asp-items="ViewBag.MovieList">
+                <option value="">-- Chọn phim --</option>
+            </select>
+            <span asp-validation-for="MovieId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Phòng chiếu:</label>
+            <select asp-for="AuditoriumId" class="form-control" asp-items="ViewBag.AuditoriumList">
+                <option value="">-- Chọn phòng --</option>
+            </select>
+            <span asp-validation-for="AuditoriumId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Ngày chiếu:</label>
+            <input asp-for="ShowDate" class="form-control" type="date" />
+            <span asp-validation-for="ShowDate" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Giờ chiếu:</label>
+            <input asp-for="ShowTime" class="form-control" type="time" />
+            <span asp-validation-for="ShowTime" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Trạng thái:</label>
+            <select asp-for="Status" class="form-control">
+                <option value="Sắp chiếu">Sắp chiếu</option>
+                <option value="Đang chiếu">Đang chiếu</option>
+                <option value="Đã kết thúc">Đã kết thúc</option>
+            </select>
+            <span asp-validation-for="Status" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="submit" class="btn btn-primary">Lưu</button>
+    </div>
+</form>
