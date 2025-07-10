@@ -21,7 +21,10 @@ namespace DataAccess
         {
             return await _context.Auditoriums.ToListAsync();
         }
-
+        public async Task<Auditorium?> GetAuditoriumByIdAsync(int id)
+        {
+            return await _context.Auditoriums.FindAsync(id);
+        }
         public async Task AddAuditoriumAsync(Auditorium auditorium)
         {
             _context.Auditoriums.Add(auditorium);
@@ -42,6 +45,10 @@ namespace DataAccess
                 _context.Auditoriums.Remove(auditorium);
                 await _context.SaveChangesAsync();
             }
+        }
+        public async Task<int> GetTotalAuditoriumsAsync()
+        {
+            return await _context.Auditoriums.CountAsync();
         }
     }
 }

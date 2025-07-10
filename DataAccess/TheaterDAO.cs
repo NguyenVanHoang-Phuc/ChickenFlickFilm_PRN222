@@ -47,5 +47,19 @@ namespace DataAccess
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<Theater> GetTheaterByAuditoriumIdAsync(int auditoriumId)
+        {
+            var auditorium = await _context.Auditoriums
+                .Include(a => a.Theater)
+                .FirstOrDefaultAsync(a => a.AuditoriumId == auditoriumId);
+
+            return auditorium?.Theater!;
+        }
+
+        public async Task<int> GetTotalTheaterAsync()
+        {
+            return await _context.Theaters.CountAsync();
+        }
     }
 }

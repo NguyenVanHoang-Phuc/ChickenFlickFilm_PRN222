@@ -30,5 +30,13 @@ namespace Service
         {
             await _auditoriumRepository.DeleteAuditoriumAsync(id);
         }
+        public async Task<BusinessObjects.Models.Auditorium?> GetAuditoriumByIdAsync(int id)
+        {
+            return await _auditoriumRepository.GetAuditoriumByIdAsync(id);
+        }
+        public async Task<int> GetTotalAuditoriumsAsync()
+        {
+            return await _auditoriumRepository.GetTotalAuditoriumsAsync();
+        }
     }
 }

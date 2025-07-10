@@ -1,5 +1,7 @@
 ﻿using BusinessObjects.Models;
+using ChickenFlickFilmApplication.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Service;
 using X.PagedList.Extensions;
 
@@ -10,22 +12,36 @@ namespace ChickenFlickFilmApplication.Controllers
         private readonly IUserService _userService;
         private readonly ITheaterService _theaterService;
         private readonly IMovieService _movieService;
+        private readonly IShowtimeService _showtimeService;
+        private readonly IAuditoriumService _auditoriumService;
         private readonly IWebHostEnvironment _env;
 
-        public AdminController(IUserService userService, ITheaterService theaterService, IMovieService movieService, IWebHostEnvironment env)
+        public AdminController(IUserService userService, ITheaterService theaterService, IMovieService movieService, IShowtimeService showtimeService, IAuditoriumService auditoriumService ,IWebHostEnvironment env)
         {
             _userService = userService;
             _theaterService = theaterService;
             _movieService = movieService;
+            _showtimeService = showtimeService;
+            _auditoriumService = auditoriumService;
             _env = env;
         }
         public IActionResult Auditoriums()
         {
             return View();
         }
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
-            return View();
+            var model = new DashboardViewModel
+            {
+                TotalUsers = await _userService.GetTotalUsersAsync(),
+                TotalMovies = await _movieService.GetTotalMoviesAsync(),
+                TotalShowtimes = await _showtimeService.GetTotalShowtimesAsync(),
+                TotalTheaters = await _theaterService.GetTotalTheatersAsync(),
+                TotalAuditoriums = await _auditoriumService.GetTotalAuditoriumsAsync(),
+                MonthlyRevenue = 20000000,
+            };
+
+            return View(model);
         }
 
         // Manage Movies
@@ -73,7 +89,6 @@ namespace ChickenFlickFilmApplication.Controllers
             if (model.BannerFile == null)
                 model.BannerUrl = existingMovie.BannerUrl;
 
-            // Xử lý ảnh Poster
             if (model.PosterFile != null)
             {
                 var fileName = $"{Guid.NewGuid()}_{model.PosterFile.FileName}";
@@ -82,10 +97,9 @@ namespace ChickenFlickFilmApplication.Controllers
                 {
                     await model.PosterFile.CopyToAsync(stream);
                 }
-                model.PosterUrl = "/uploads/posters/" + fileName;
+                existingMovie.PosterUrl = "/uploads/posters/" + fileName;
             }
 
-            // Xử lý ảnh Banner
             if (model.BannerFile != null)
             {
                 var fileName = $"{Guid.NewGuid()}_{model.BannerFile.FileName}";
@@ -94,12 +108,28 @@ namespace ChickenFlickFilmApplication.Controllers
                 {
                     await model.BannerFile.CopyToAsync(stream);
                 }
-                model.BannerUrl = "/uploads/banners/" + fileName;
+                existingMovie.BannerUrl = "/uploads/banners/" + fileName;
             }
 
+            // Cập nhật các trường khác
+            existingMovie.Title = model.Title;
+            existingMovie.Genre = model.Genre;
+            existingMovie.Duration = model.Duration;
+            existingMovie.AgeRating = model.AgeRating;
+            existingMovie.Format = model.Format;
+            existingMovie.Language = model.Language;
+            existingMovie.Status = model.Status;
+            existingMovie.Description = model.Description;
+            existingMovie.Country = model.Country;
+            existingMovie.Director = model.Director;
+            existingMovie.Cast = model.Cast;
+            existingMovie.Rating = model.Rating;
+            existingMovie.TrailerUrl = model.TrailerUrl;
+            existingMovie.ReleaseDate = model.ReleaseDate;
+            existingMovie.EndDate = model.EndDate;
 
-            await _movieService.UpdateMovieAsync(model); 
-            TempData["SuccessMessage"] = "Movie updated!";
+            await _movieService.UpdateMovieAsync(existingMovie);
+            TempData["SuccessMessage"] = "Phim đã được cập nhật!";
             return RedirectToAction("Movies");
         }
 
@@ -132,7 +162,7 @@ namespace ChickenFlickFilmApplication.Controllers
 
 
             await _movieService.AddMovieAsync(model);
-            TempData["SuccessMessage"] = "Movie was created!";
+            TempData["SuccessMessage"] = "Phim được tạo thành công!";
             return RedirectToAction("Movies");
         }
 
@@ -140,7 +170,7 @@ namespace ChickenFlickFilmApplication.Controllers
         public async Task<IActionResult> DeleteConfirmedMovie(int id)
         {
             await _movieService.DeleteMovieAsync(id); 
-            TempData["SuccessMessage"] = "Movie deleted successfully!";
+            TempData["SuccessMessage"] = "Xóa phim thành công!";
             return RedirectToAction("Movies");
         }
 
@@ -180,10 +210,128 @@ namespace ChickenFlickFilmApplication.Controllers
         }
 
         // Manage Showtimes
-        public IActionResult Showtimes()
+        public async Task<IActionResult> Showtimes(int? page)
         {
-            return View();
+            var showtimes = await _showtimeService.GetShowtimesAsync();
+            var showtimeVMs = new List<ShowtimeViewModel>();
+
+            foreach (var st in showtimes)
+            {
+                var theater = await _theaterService.GetTheaterByAuditoriumIdAsync(st.AuditoriumId);
+                showtimeVMs.Add(new ShowtimeViewModel
+                {
+                    Showtime = st,
+                    TheaterName = theater?.TheaterName ?? "Không tìm thấy rạp"
+                });
+            }
+
+            int pageSize = 5;
+            int pageNumber = page ?? 1;
+
+            return View(showtimeVMs.ToPagedList(pageNumber,pageSize));
         }
+
+        // GET
+        public async Task<IActionResult> GetCreateShowtimeModal()
+        {
+            ViewBag.MovieList = new SelectList(await _movieService.GetAllMoviesAsync(), "MovieId", "Title");
+            ViewBag.AuditoriumList = new SelectList(await _auditoriumService.GetAllAuditoriumsAsync(), "AuditoriumId", "AuditoriumName");
+            ViewData["Title"] = "Thêm suất chiếu mới";
+            ViewData["Action"] = "CreateShowtime";
+            return PartialView("Partial/_CreateOrEditModalShowtime", new Showtime());
+        }
+        public async Task<IActionResult> GetEditShowtimeModal(int id)
+        {
+            ViewBag.MovieList = new SelectList(await _movieService.GetAllMoviesAsync(), "MovieId", "Title");
+            ViewBag.AuditoriumList = new SelectList(await _auditoriumService.GetAllAuditoriumsAsync(), "AuditoriumId", "AuditoriumName");
+            var showtime = await _showtimeService.GetShowtimeByIdAsync(id); 
+            ViewData["Title"] = "Chỉnh sửa suất chiếu";
+            ViewData["Action"] = "EditShowtime";
+            return PartialView("Partial/_CreateOrEditModalShowtime", showtime);
+        }
+        public async Task<IActionResult> GetDeleteShowtimeModal(int id)
+        {
+            var showtime = await _showtimeService.GetShowtimeByIdAsync(id); 
+            return PartialView("Partial/_DeleteConfirmModalShowtime", showtime);
+        }
+
+        // POST
+        [HttpPost]
+        public async Task<IActionResult> EditShowtime(Showtime model)
+        {
+            var existingShowtime = await _showtimeService.GetShowtimeByIdAsync(model.ShowtimeId);
+            if (existingShowtime == null) return NotFound();
+
+            existingShowtime.MovieId = model.MovieId;
+            existingShowtime.AuditoriumId = model.AuditoriumId;
+            existingShowtime.ShowDate = model.ShowDate;
+            existingShowtime.ShowTime = model.ShowTime;
+            existingShowtime.Status = model.Status;
+
+            await _showtimeService.UpdateShowtimeAsync(existingShowtime);
+            TempData["SuccessMessage"] = "Suất chiếu đã được cập nhật!";
+            return RedirectToAction("Showtimes");
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateShowtime(Showtime model)
+        {
+            model.Auditorium = await _auditoriumService.GetAuditoriumByIdAsync(model.AuditoriumId);
+            model.Movie = await _movieService.GetMovieByIdAsync(model.MovieId);
+
+            await _showtimeService.AddShowtimeAsync(model);
+            TempData["SuccessMessage"] = "Suất chiếu đã được tạo!";
+            return RedirectToAction("Showtimes");
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmedShowtime(int id)
+        {
+            await _showtimeService.DeleteShowtimeAsync(id); 
+            TempData["SuccessMessage"] = "Suất chiếu đã được xóa!";
+            return RedirectToAction("Showtimes");
+        }
+        [HttpPost]
+        public async Task<IActionResult> SearchShowtime(IFormCollection form, int? page)
+        {
+            string searchKey = form["searchKeyShowtime"];
+            string status = form["statusShowtime"];
+            string dateStr = form["dateShowtime"];
+
+            var showtimes = await _showtimeService.GetShowtimesAsync();
+
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                showtimes = showtimes.Where(s =>
+                    s.Movie.Title.Contains(searchKey, StringComparison.OrdinalIgnoreCase) ||
+                    s.Auditorium.Theater.TheaterName.Contains(searchKey, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                showtimes = showtimes.Where(s => s.Status == status);
+            }
+
+            if (!string.IsNullOrEmpty(dateStr) && DateOnly.TryParse(dateStr, out var parsedDate))
+            {
+                showtimes = showtimes.Where(s => s.ShowDate == parsedDate);
+            }
+
+            var showtimeVMs = new List<ShowtimeViewModel>();
+            foreach (var st in showtimes)
+            {
+                var theater = await _theaterService.GetTheaterByAuditoriumIdAsync(st.AuditoriumId);
+                showtimeVMs.Add(new ShowtimeViewModel
+                {
+                    Showtime = st,
+                    TheaterName = theater?.TheaterName ?? "Không tìm thấy rạp"
+                });
+            }
+
+            int pageSize = 5;
+            int pageNumber = page ?? 1;
+
+            return View("Showtimes", showtimeVMs.ToPagedList(pageNumber, pageSize));
+        }
+
 
 
 
@@ -223,7 +371,7 @@ namespace ChickenFlickFilmApplication.Controllers
 
             existing.Role = account.Role;
             await _userService.UpdateUserAsync(existing); 
-            TempData["SuccessMessage"] = "Account updated successfully!";
+            TempData["SuccessMessage"] = "Cập nhật vai trò thành công!";
             return RedirectToAction("Users");
         }
 
@@ -231,7 +379,7 @@ namespace ChickenFlickFilmApplication.Controllers
         public async Task<IActionResult> DeleteConfirmedUser(int id)
         {
             await _userService.DeleteUserAsync(id); 
-            TempData["SuccessMessage"] = "Account deleted successfully!";
+            TempData["SuccessMessage"] = "Xóa người dùng thành công!";
             return RedirectToAction("Users");
         }
 
@@ -265,5 +413,85 @@ namespace ChickenFlickFilmApplication.Controllers
             var theaters = await _theaterService.GetAllTheatersAsync();
             return View(theaters.ToPagedList(pageNumber, pageSize));
         }
+
+        // GET
+        public IActionResult GetCreateTheaterModal()
+        {
+            ViewData["Title"] = "Thêm rạp chiếu phim mới";
+            ViewData["Action"] = "CreateTheater";
+            return PartialView("Partial/_CreateOrEditModalTheater", new Theater());
+        }
+
+        public async Task<IActionResult> GetEditTheaterModal(int id)
+        {
+            var theater = await _theaterService.GetTheaterByIdAsync(id); 
+            ViewData["Title"] = "Chỉnh sửa";
+            ViewData["Action"] = "EditTheater";
+            return PartialView("Partial/_CreateOrEditModalTheater", theater);
+        }
+
+        public async Task<IActionResult> GetDeleteTheaterModal(int id)
+        {
+            var theater = await _theaterService.GetTheaterByIdAsync(id); 
+            return PartialView("Partial/_DeleteConfirmModalTheater", theater);
+        }
+
+        // POST
+        [HttpPost]
+        public async Task<IActionResult> EditTheater(Theater model)
+        {
+            var existingTheater = await _theaterService.GetTheaterByIdAsync(model.TheaterId);
+            if (existingTheater == null) return NotFound();
+            existingTheater.MapUrl = model.MapUrl;
+            existingTheater.TheaterName = model.TheaterName;
+            existingTheater.TotalTheaters = model.TotalTheaters;
+            existingTheater.Location = model.Location;
+            await _theaterService.UpdateTheaterAsync(existingTheater);
+            TempData["SuccessMessage"] = "Rạp đã được cập nhật!";
+            return RedirectToAction("Theaters");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTheater(Theater model)
+        {
+            model.CreatedAt = DateTime.Now;
+            if (ModelState.IsValid)
+            {
+                await _theaterService.AddTheaterAsync(model);
+                TempData["SuccessMessage"] = "Rạp mới đã được tạo!";
+                return RedirectToAction("Theaters");
+            }
+            return View("Theaters", model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmedTheater(int id)
+        {
+            await _theaterService.DeleteTheaterAsync(id); 
+            TempData["SuccessMessage"] = "Xóa rạp thành công!";
+            return RedirectToAction("Theaters");
+        }
+        [HttpPost]
+        public async Task<IActionResult> SearchTheater(IFormCollection form, int? page)
+        {
+            string searchKey = form["searchKeyTheater"];
+
+            var theaters = await _theaterService.GetAllTheatersAsync();
+
+            // Lọc theo tên rạp hoặc địa chỉ (không phân biệt hoa thường)
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                searchKey = searchKey.ToLower();
+                theaters = theaters.Where(t =>
+                    t.TheaterName.ToLower().Contains(searchKey) ||
+                    t.Location.ToLower().Contains(searchKey)).ToList();
+            }
+
+            int pageSize = 5;
+            int pageNumber = page ?? 1;
+
+            return View("Theaters", theaters.ToPagedList(pageNumber, pageSize));
+        }
+
     }
 }

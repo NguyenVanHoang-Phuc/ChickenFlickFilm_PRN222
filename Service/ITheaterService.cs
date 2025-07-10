@@ -14,5 +14,7 @@ namespace Service
         Task AddTheaterAsync(Theater theater);
         Task UpdateTheaterAsync(Theater theater);
         Task DeleteTheaterAsync(int theaterId);
+        Task<Theater> GetTheaterByAuditoriumIdAsync(int auditoriumId);
+        Task<int> GetTotalTheatersAsync();
     }
 }

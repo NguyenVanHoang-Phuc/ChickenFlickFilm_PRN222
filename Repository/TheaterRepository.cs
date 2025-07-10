@@ -41,5 +41,13 @@ namespace Repository
         {
             await _theaterDAO.DeleteTheaterAsync(theaterId);
         }
+        public async Task<Theater> GetTheaterByAuditoriumIdAsync(int auditoriumId)
+        {
+            return await _theaterDAO.GetTheaterByAuditoriumIdAsync(auditoriumId);
+        }
+        public async Task<int> GetTotalTheaterAsync()
+        {
+            return await _theaterDAO.GetTotalTheaterAsync();
+        }
     }
 }
