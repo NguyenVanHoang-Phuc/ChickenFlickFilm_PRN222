@@ -6,6 +6,7 @@
     ViewData["Title"] = "Quản lý Suất chiếu";
     Layout = "_LayoutAdmin";
 }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <div class="page-header d-flex justify-content-between align-items-center">
     <div>
@@ -126,7 +127,7 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="movieModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="showtimeModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" id="modalContent" style="max-width:none; width:100%">
             <!-- Content loaded via AJAX -->
@@ -137,7 +138,7 @@
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
-        <div id="successToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div id="successToast" class="toast custom-toast border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
                     @TempData["SuccessMessage"]
@@ -154,26 +155,36 @@
     </script>
 }
 
+<style>
+    .custom-toast {
+        background-color: var(--accent-red); /* #d84040 */
+        color: var(--white);
+        border-radius: 0.5rem;
+        padding: 1rem;
+        font-weight: 500;
+    }
+</style>
+
 @section Scripts {
     <script>
         function showCreateModal() {
             $.get('/Admin/GetCreateShowtimeModal/', function (data) {
                 $('#modalContent').html(data);
-                new bootstrap.Modal(document.getElementById('movieModal')).show();
+                new bootstrap.Modal(document.getElementById('showtimeModal')).show();
             });
         }
 
         function showEditModal(id) {
             $.get('/Admin/GetEditShowtimeModal/' + id, function (data) {
                 $('#modalContent').html(data);
-                new bootstrap.Modal(document.getElementById('movieModal')).show();
+                new bootstrap.Modal(document.getElementById('showtimeModal')).show();
             });
         }
 
         function confirmDelete(id) {
             $.get('/Admin/GetDeleteShowtimeModal/' + id, function (data) {
                 $('#modalContent').html(data);
-                new bootstrap.Modal(document.getElementById('movieModal')).show();
+                new bootstrap.Modal(document.getElementById('showtimeModal')).show();
             });
         }
     </script>

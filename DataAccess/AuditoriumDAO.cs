@@ -19,7 +19,7 @@ namespace DataAccess
 
         public async Task<IEnumerable<Auditorium>> GetAllAuditoriumsAsync()
         {
-            return await _context.Auditoriums.ToListAsync();
+            return await _context.Auditoriums.Include(a => a.Theater).Include(a => a.Seats).Include(a => a.Showtimes).ToListAsync();
         }
         public async Task<Auditorium?> GetAuditoriumByIdAsync(int id)
         {

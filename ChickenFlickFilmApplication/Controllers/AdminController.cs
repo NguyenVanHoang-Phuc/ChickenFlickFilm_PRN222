@@ -3,6 +3,7 @@ using ChickenFlickFilmApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Service;
+using System.Threading.Tasks;
 using X.PagedList.Extensions;
 
 namespace ChickenFlickFilmApplication.Controllers
@@ -25,10 +26,7 @@ namespace ChickenFlickFilmApplication.Controllers
             _auditoriumService = auditoriumService;
             _env = env;
         }
-        public IActionResult Auditoriums()
-        {
-            return View();
-        }
+        // Dashboard
         public async Task<IActionResult> Dashboard()
         {
             var model = new DashboardViewModel
@@ -44,6 +42,103 @@ namespace ChickenFlickFilmApplication.Controllers
             return View(model);
         }
 
+        // Auditoriums
+        public async Task<IActionResult> Auditoriums(int? page)
+        {
+            int pageSize = 5;
+            int pageNumber = page ?? 1;
+
+            var auditoriuums = await _auditoriumService.GetAllAuditoriumsAsync();
+            return View(auditoriuums.ToPagedList(pageNumber, pageSize));
+        }
+        // GET
+        public IActionResult GetCreateAuditoriumModal()
+        {
+            ViewBag.Theaters = new SelectList(_theaterService.GetAllTheatersAsync().Result, "TheaterId", "TheaterName");
+            ViewData["Title"] = "Thêm phòng chiếu mới";
+            ViewData["Action"] = "CreateAuditorium";
+            return PartialView("Partial/_CreateOrEditModalAuditorium", new Auditorium());
+        }
+        public async Task<IActionResult> GetEditAuditoriumModal(int id)
+        {
+            ViewBag.Theaters = new SelectList(await _theaterService.GetAllTheatersAsync(), "TheaterId", "TheaterName");
+            var auditorium = await _auditoriumService.GetAuditoriumByIdAsync(id); 
+            ViewData["Title"] = "Chỉnh sửa";
+            ViewData["Action"] = "EditAuditorium";
+            return PartialView("Partial/_CreateOrEditModalAuditorium", auditorium);
+        }
+        public async Task<IActionResult> GetDeleteAuditoriumModal(int id)
+        {
+            var auditorium = await _auditoriumService.GetAuditoriumByIdAsync(id); 
+            return PartialView("Partial/_DeleteConfirmModalAuditorium", auditorium);
+        }
+        // POST
+        [HttpPost]
+        public async Task<IActionResult> EditAuditorium(Auditorium model)
+        {
+            var existingAuditorium = await _auditoriumService.GetAuditoriumByIdAsync(model.AuditoriumId);
+            if (existingAuditorium == null) return NotFound();
+
+            existingAuditorium.AuditoriumName = model.AuditoriumName;
+            existingAuditorium.AuditoriumType = model.AuditoriumType;
+            existingAuditorium.RowNumber = model.RowNumber;
+            existingAuditorium.ColumnNumber = model.ColumnNumber;
+            existingAuditorium.TotalSeats = model.RowNumber * model.ColumnNumber;
+            existingAuditorium.TheaterId = model.TheaterId;
+
+            await _auditoriumService.UpdateAuditoriumAsync(existingAuditorium);
+            TempData["SuccessMessage"] = "Phòng chiếu đã được cập nhật!";
+            return RedirectToAction("Auditoriums");
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateAuditorium(Auditorium model)
+        {
+            model.CreatedAt = DateTime.Now;
+            model.TotalSeats = model.RowNumber * model.ColumnNumber;
+            
+            await _auditoriumService.AddAuditoriumAsync(model);
+            TempData["SuccessMessage"] = "Phòng chiếu mới đã được tạo!";
+            return RedirectToAction("Auditoriums");
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmedAuditorium(int id)
+        {
+            await _auditoriumService.DeleteAuditoriumAsync(id); 
+            TempData["SuccessMessage"] = "Xóa phòng chiếu thành công!";
+            return RedirectToAction("Auditoriums");
+        }
+        [HttpPost]
+        public async Task<IActionResult> SearchAuditorium(IFormCollection form, int? page)
+        {
+            string searchKey = form["searchKeyAuditorium"];
+            string format = form["formatAuditorium"];
+
+            var auditoriums = await _auditoriumService.GetAllAuditoriumsAsync(); 
+
+            // Lọc theo từ khóa tìm kiếm (tên phòng hoặc tên rạp)
+            if (!string.IsNullOrEmpty(searchKey))
+            {
+                auditoriums = auditoriums.Where(a =>
+                    a.AuditoriumName.Contains(searchKey, StringComparison.OrdinalIgnoreCase) ||
+                    a.Theater.TheaterName.Contains(searchKey, StringComparison.OrdinalIgnoreCase));
+            }
+
+            // Lọc theo loại phòng (2D, 3D, IMAX)
+            if (!string.IsNullOrEmpty(format))
+            {
+                auditoriums = auditoriums.Where(a =>
+                    a.AuditoriumType != null &&
+                    a.AuditoriumType.Contains(format, StringComparison.OrdinalIgnoreCase));
+            }
+
+            int pageSize = 5;
+            int pageNumber = page ?? 1;
+
+            return View("Auditoriums", auditoriums.ToPagedList(pageNumber, pageSize));
+        }
+
+
+
         // Manage Movies
         public async Task<IActionResult> Movies(int? page)
         {
@@ -55,7 +150,7 @@ namespace ChickenFlickFilmApplication.Controllers
         }
 
         // GET
-        public IActionResult GetCreateMovieModal()
+        public async Task<IActionResult> GetCreateMovieModal()
         {
             ViewData["Title"] = "Thêm phim mới";
             ViewData["Action"] = "CreateMovie";
@@ -351,7 +446,7 @@ namespace ChickenFlickFilmApplication.Controllers
         public async Task<IActionResult> GetEditUserModal(int id)
         {
             var acc = await _userService.GetUserByIdAsync(id); // Sử dụng await để nhận giá trị User
-            ViewData["Title"] = "Chỉnh sửa";
+            ViewData["Title"] = "Chỉnh sửa vai trò";
             ViewData["Action"] = "EditUser";
             return PartialView("Partial/_CreateOrEditModalAccount", acc);
         }

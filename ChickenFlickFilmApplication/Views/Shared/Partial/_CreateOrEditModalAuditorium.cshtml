@@ -1,0 +1,48 @@
+﻿@model BusinessObjects.Models.Auditorium
+
+<form asp-action="@ViewData["Action"]" method="post">
+    <div class="modal-header">
+        <h5 class="modal-title">@ViewData["Title"]</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+        <!-- Hidden ID -->
+        <input type="hidden" asp-for="AuditoriumId" />
+
+        <div class="form-group">
+            <label asp-for="AuditoriumName" class="form-label">Tên phòng chiếu:</label>
+            <input asp-for="AuditoriumName" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="AuditoriumType" class="form-label">Loại phòng:</label>
+            <select asp-for="AuditoriumType" class="form-control form-select">
+                <option value="">-- Chọn loại phòng --</option>
+                <option value="AUDI_2D">AUDI_2D</option>
+                <option value="AUDI_3D">AUDI_3D</option>
+                <option value="AUDI_IMAX">AUDI_IMAX</option>
+            </select>
+        </div>
+
+
+        <div class="form-group">
+            <label asp-for="RowNumber" class="form-label">Số hàng ghế:</label>
+            <input asp-for="RowNumber" type="number" min="1" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ColumnNumber" class="form-label">Số cột ghế:</label>
+            <input asp-for="ColumnNumber" type="number" min="1" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="TheaterId" class="form-label">Rạp chiếu:</label>
+            <select asp-for="TheaterId" class="form-control form-select" asp-items="ViewBag.Theaters"></select>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="submit" class="btn btn-primary">Lưu</button>
+    </div>
+</form>
