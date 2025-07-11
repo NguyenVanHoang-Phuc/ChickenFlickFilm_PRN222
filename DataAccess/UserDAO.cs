@@ -49,5 +49,10 @@ namespace DataAccess
             }
         }
 
+        public async Task<int> GetTotalUsersAsync()
+        {
+            return await _context.Users.CountAsync();
+        }
+
     }
 }

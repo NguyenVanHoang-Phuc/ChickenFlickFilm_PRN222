@@ -1,0 +1,71 @@
+﻿@model BusinessObjects.Models.User
+
+<form asp-action="@ViewData["Action"]" method="post">
+    <div class="modal-header">
+        <h5 class="modal-title">@ViewData["Title"]</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+        <!-- User ID, thường không hiển thị cho người dùng -->
+        <input type="hidden" asp-for="UserId" />
+
+        <!-- Full Name -->
+        <div class="form-group">
+            <label class="form-label">Họ và tên:</label>
+            <input asp-for="FullName" class="form-control" readonly />
+        </div>
+
+        <!-- Avatar (Giả sử bạn có một trường nhập liệu để thay đổi avatar) -->
+        <div class="form-group">
+            <label class="form-label">Ảnh đại diện:</label>
+            <input asp-for="Avatar" class="form-control" readonly />
+        </div>
+
+        <!-- Role (Vai trò) -->
+        <div class="form-group">
+            <label class="form-label">Vai trò:</label>
+            <select asp-for="Role" class="form-control form-select">
+                <option value="Customer">Customer</option>
+                <option value="FilmManager" >Film Manager</option>
+                <option value="Admin">Admin</option>
+            </select>
+        </div>
+
+        <!-- Gender (Giới tính) -->
+        <div class="form-group">
+            <label class="form-label">Giới tính:</label>
+            <select asp-for="Gender" class="form-control form-select" disabled>
+                <option value="true">Nam</option>
+                <option value="false">Nữ</option>
+            </select>
+        </div>
+
+        <!-- Birthday -->
+        <div class="form-group">
+            <label class="form-label">Ngày sinh:</label>
+            <input asp-for="Birthday" type="date" class="form-control" readonly />
+        </div>
+
+        <!-- Email -->
+        <div class="form-group">
+            <label class="form-label">Email:</label>
+            <input asp-for="Email" type="email" class="form-control" readonly />
+        </div>
+
+        <!-- Phone Number -->
+        <div class="form-group">
+            <label class="form-label">Số điện thoại:</label>
+            <input asp-for="PhoneNumber" type="tel" class="form-control" readonly />
+        </div>
+
+        <!-- CreatedAt (Ngày tạo) - Thường sẽ là readonly hoặc ẩn -->
+        <div class="form-group">
+            <label class="form-label">Ngày tạo:</label>
+            <input asp-for="CreatedAt" type="text" class="form-control" readonly />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+        <button type="submit" class="btn btn-primary">Lưu</button>
+    </div>
+</form>

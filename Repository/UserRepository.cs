@@ -41,5 +41,9 @@ namespace Repository
         {
             await _userDAO.DeleteUserAsync(userId);
         }
+        public async Task<int> GetTotalUsersAsync()
+        {
+            return await _userDAO.GetTotalUsersAsync();
+        }
     }
 }
