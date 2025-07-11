@@ -1,0 +1,72 @@
+﻿
+.navbar {
+    padding: 0.5rem 2rem;
+    background-color: #8E1616 !important;
+}
+
+.btn-ticket {
+    color: white !important;
+    border-radius: 0;
+    padding: 0.5rem 1rem;
+}
+
+    .btn-ticket::before {
+        content: "★ ";
+    }
+
+.nav-item .nav-link {
+    color: #333 !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+}
+
+.search-login {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+
+.nav-item .nav-link {
+    color: white !important;
+    font-weight: normal;
+    padding: 0.5rem 1rem;
+}
+
+.search-login a {
+    color: white !important;
+}
+
+.search-login input::placeholder {
+    color: black !important;
+}
+
+.nav-item.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+}
+
+.dropdown-menu {
+    text-align: center;
+    color: white !important;
+}
+
+.nav-item.dropdown .dropdown-menu {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+main.main {
+    padding-top: 82px;
+}
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+

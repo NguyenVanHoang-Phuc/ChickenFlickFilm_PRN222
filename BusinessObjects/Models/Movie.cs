@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace BusinessObjects.Models;
 
@@ -44,4 +46,10 @@ public partial class Movie
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     public virtual ICollection<Showtime> Showtimes { get; set; } = new List<Showtime>();
+
+    [NotMapped]
+    public IFormFile? PosterFile { get; set; }
+
+    [NotMapped]
+    public IFormFile? BannerFile { get; set; }
 }
