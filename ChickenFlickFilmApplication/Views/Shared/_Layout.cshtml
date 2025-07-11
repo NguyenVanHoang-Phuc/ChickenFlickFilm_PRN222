@@ -10,6 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="~/css/HeaderUser.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     @RenderSection("Styles", false);
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -32,17 +33,17 @@
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Phim</a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a asp-controller="MoviesUser" asp-action="ListFilm" class="dropdown-item">
+                                    <a asp-controller="MoviesUser" asp-action="ListFilm" asp-action="now" class="dropdown-item">
                                         Phim đang chiếu
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" class="dropdown-item" data-page="ListFilmDangChieu.html">
+                                    <a asp-controller="MoviesUser" asp-action="ListFilm" asp-action="soon" class="dropdown-item">
                                         Phim sắp chiếu
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" class="dropdown-item" data-page="ListFilmDangChieu.html">
+                                    <a asp-controller="MoviesUser" asp-action="ListFilm" asp-action="imax" class="dropdown-item">
                                         Phim IMAX
                                     </a>
                                 </li>
