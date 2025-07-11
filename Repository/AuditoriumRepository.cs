@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BusinessObjects.Models;
+using DataAccess;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,12 +12,40 @@ namespace Repository
 {
     public class AuditoriumRepository : IAuditoriumRepository
     {
-        private  readonly AuditoriumDAO auditoriumDAO;
+        private readonly AuditoriumDAO _auditoriumDAO;
+
         public AuditoriumRepository(AuditoriumDAO auditoriumDAO)
         {
-            this.auditoriumDAO = auditoriumDAO;
+            _auditoriumDAO = auditoriumDAO;
         }
 
-        public Auditorium GetAuditoriumById(int audi_id) => auditoriumDAO.GetAuditoriumById(audi_id);
+        public async Task<IEnumerable<Auditorium>> GetAllAuditoriumsAsync()
+        {
+            return await _auditoriumDAO.GetAllAuditoriumsAsync();
+        }
+
+        public async Task AddAuditoriumAsync(Auditorium auditorium)
+        {
+            await _auditoriumDAO.AddAuditoriumAsync(auditorium);
+        }
+
+        public async Task UpdateAuditoriumAsync(Auditorium auditorium)
+        {
+            await _auditoriumDAO.UpdateAuditoriumAsync(auditorium);
+        }
+
+        public async Task DeleteAuditoriumAsync(int id)
+        {
+            await _auditoriumDAO.DeleteAuditoriumAsync(id);
+        }
+        public async Task<Auditorium?> GetAuditoriumByIdAsync(int id)
+        {
+            return await _auditoriumDAO.GetAuditoriumByIdAsync(id);
+        }
+        public async Task<int> GetTotalAuditoriumsAsync()
+        {
+            return await _auditoriumDAO.GetTotalAuditoriumsAsync();
+        }
+        public Auditorium GetAuditoriumById(int audi_id) => _auditoriumDAO.GetAuditoriumById(audi_id);
     }
 }

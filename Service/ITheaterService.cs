@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BusinessObjects.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,12 @@ namespace Service
 {
     public interface ITheaterService
     {
+        Task<List<Theater>> GetAllTheatersAsync();
+        Task<Theater> GetTheaterByIdAsync(int theaterId);
+        Task AddTheaterAsync(Theater theater);
+        Task UpdateTheaterAsync(Theater theater);
+        Task DeleteTheaterAsync(int theaterId);
+        Task<Theater> GetTheaterByAuditoriumIdAsync(int auditoriumId);
+        Task<int> GetTotalTheatersAsync();
     }
 }

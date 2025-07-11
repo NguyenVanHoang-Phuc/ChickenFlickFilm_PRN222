@@ -1,0 +1,15 @@
+﻿@model BusinessObjects.Models.Auditorium
+<form asp-action="DeleteConfirmedAuditorium" asp-controller="Admin" asp-route-id="@Model.AuditoriumId" method="post">
+    <input type="hidden" asp-for="AuditoriumId" />
+    <div class="modal-header">
+        <h5 class="modal-title">Xác nhận xóa phòng chiếu phim?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    </div>
+    <div class="modal-body">
+        <p>Xóa vĩnh viễn phòng chiếu <strong>@Model.AuditoriumName</strong>?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-danger">Xóa</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+    </div>
+</form>
