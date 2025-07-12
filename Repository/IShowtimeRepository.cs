@@ -15,5 +15,6 @@ namespace Repository
         Task UpdateShowtimeAsync(Showtime showtime);
         Task DeleteShowtimeAsync(int id);
         Task<int> GetTotalShowtimeAsync();
+        Task<IEnumerable<Showtime>> GetShowtimesForNext7DaysAsync();
     }
 }

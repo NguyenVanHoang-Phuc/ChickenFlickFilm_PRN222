@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DataAccess;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,11 @@ namespace Repository
         public async Task<int> GetTotalShowtimeAsync()
         {
             return await _showtimeDAO.GetTotalShowtimeAsync();
+        }
+
+        public async Task<IEnumerable<Showtime>> GetShowtimesForNext7DaysAsync()
+        {
+            return await _showtimeDAO.GetShowtimesForNext7DaysAsync();
         }
     }
 }

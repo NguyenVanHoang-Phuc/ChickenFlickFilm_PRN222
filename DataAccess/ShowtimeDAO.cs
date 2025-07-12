@@ -54,5 +54,21 @@ namespace DataAccess
         {
             return await _context.Showtimes.CountAsync();
         }
+
+
+        public async Task<IEnumerable<Showtime>> GetShowtimesForNext7DaysAsync()
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var endDate = today.AddDays(7);
+            var showtimes = await _context.Showtimes
+        .Where(s =>
+            s.ShowDate.HasValue
+            && s.ShowDate.Value >= today
+            && s.ShowDate.Value <= endDate
+        )
+        .OrderBy(s => s.ShowDate)
+        .ToListAsync();
+            return showtimes;
+        }
     }
 }
