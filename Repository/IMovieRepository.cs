@@ -15,5 +15,6 @@ namespace Repository
         Task UpdateMovieAsync(Movie movie);
         Task DeleteMovieAsync(int id);
         Task<int> GetTotalMoviesAsync();
+        Task<IEnumerable<Movie>> GetMoviesByEnableStatusAsync();
     }
 }

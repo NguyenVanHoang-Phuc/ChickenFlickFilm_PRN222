@@ -41,6 +41,10 @@ namespace Service
         {
             return await _showtimeRepository.GetTotalShowtimeAsync();
         }
+        public async Task<IEnumerable<Showtime>> GetShowtimesByMovieIdAsync(int movieId)
+        {
+            return await _showtimeRepository.GetShowtimesByMovieIdAsync(movieId);
+        }
         public async Task<IEnumerable<Showtime>> GetShowtimesForNext7DaysAsync()
         {
             return await _showtimeRepository.GetShowtimesForNext7DaysAsync();

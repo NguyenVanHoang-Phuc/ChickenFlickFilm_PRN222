@@ -52,5 +52,12 @@ namespace DataAccess
         {
             return await _context.Movies.CountAsync();
         }
+
+        public async Task<IEnumerable<Movie>> GetMoviesByEnableStatusAsync()
+        {
+            return await _context.Movies
+                .Where(m => m.Status == "Đang chiếu" || m.Status == "Sắp chiếu")
+                .ToListAsync();
+        }
     }
 }

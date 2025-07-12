@@ -39,5 +39,9 @@ namespace Service
         {
             return await _movieRepository.GetTotalMoviesAsync();
         }
+        public async Task<IEnumerable<Movie>> GetMoviesByEnableStatusAsync()
+        {
+            return await _movieRepository.GetMoviesByEnableStatusAsync();
+        }
     }
 }
