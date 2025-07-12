@@ -54,5 +54,13 @@ namespace DataAccess
         {
             return await _context.Showtimes.CountAsync();
         }
+
+        public async Task<IEnumerable<Showtime>> GetShowtimesByMovieIdAsync(int movieId)
+        {
+            return await _context.Showtimes
+                        .Where(s => s.MovieId == movieId)
+                        .Include(s => s.Auditorium)
+                        .ToListAsync();
+        }
     }
 }

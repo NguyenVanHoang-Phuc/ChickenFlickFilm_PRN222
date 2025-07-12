@@ -41,5 +41,9 @@ namespace Repository
         {
             return await _showtimeDAO.GetTotalShowtimeAsync();
         }
+        public async Task<IEnumerable<Showtime>> GetShowtimesByMovieIdAsync(int movieId)
+        {
+            return await _showtimeDAO.GetShowtimesByMovieIdAsync(movieId);
+        }
     }
 }

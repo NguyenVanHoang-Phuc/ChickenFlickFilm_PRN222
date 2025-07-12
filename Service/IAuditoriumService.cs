@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessObjects.Models;
 
 namespace Service
 {
@@ -15,5 +16,6 @@ namespace Service
         Task DeleteAuditoriumAsync(int id);
         Task<Auditorium?> GetAuditoriumByIdAsync(int id);
         Task<int> GetTotalAuditoriumsAsync();
+        Auditorium GetAuditoriumById(int audi_id);
     }
 }
