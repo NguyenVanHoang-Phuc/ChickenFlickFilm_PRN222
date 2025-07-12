@@ -56,9 +56,6 @@
     transform: translateX(-50%);
 }
 
-main.main {
-    padding-top: 82px;
-}
 html, body {
     height: 100%;
     margin: 0;
