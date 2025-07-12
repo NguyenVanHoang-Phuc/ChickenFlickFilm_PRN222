@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessObjects.Models;
+using DataAccess;
 
 namespace Repository
 {
@@ -44,5 +46,6 @@ namespace Repository
         {
             return await _auditoriumDAO.GetTotalAuditoriumsAsync();
         }
+        public Auditorium GetAuditoriumById(int audi_id) => _auditoriumDAO.GetAuditoriumById(audi_id);
     }
 }

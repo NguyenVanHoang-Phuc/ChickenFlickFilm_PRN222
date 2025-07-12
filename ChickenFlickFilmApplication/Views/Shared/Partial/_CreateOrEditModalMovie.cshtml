@@ -70,6 +70,16 @@
         </div>
 
         <div class="form-group">
+            <label class="form-label">Ngày khởi chiếu:</label>
+            <input asp-for="ReleaseDate" class="form-control" type="date" />
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Ngày kết thúc:</label>
+            <input asp-for="EndDate" class="form-control" type="date" />
+        </div>
+
+        <div class="form-group">
             <label class="form-label">Đánh giá(thang điểm 10):</label>
             <input asp-for="Rating" class="form-control" />
         </div>
@@ -88,18 +98,6 @@
             <label class="form-label">TrailerURL:</label>
             <input asp-for="TrailerUrl" class="form-control" />
         </div>
-
-        <div class="form-group">
-            <label class="form-label">Trạng thái:</label>
-            <select asp-for="Status" class="form-control">
-                <option value="Sắp chiếu">Sắp chiếu</option>
-                <option value="Đang chiếu">Đang chiếu</option>
-                <option value="Đã kết thúc">Đã kết thúc</option>
-            </select>
-        </div>
-
-
-
         
     </div>
     <div class="modal-footer">
