@@ -5,8 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BusinessObjects.Models;
-using Repository;
-
 namespace Service
 {
     public class AuditoriumService : IAuditoriumService
@@ -16,15 +14,15 @@ namespace Service
         {
             _auditoriumRepository = auditoriumRepository;
         }
-        public async Task<IEnumerable<BusinessObjects.Models.Auditorium>> GetAllAuditoriumsAsync()
+        public async Task<IEnumerable<Auditorium>> GetAllAuditoriumsAsync()
         {
             return await _auditoriumRepository.GetAllAuditoriumsAsync();
         }
-        public async Task AddAuditoriumAsync(BusinessObjects.Models.Auditorium auditorium)
+        public async Task AddAuditoriumAsync(Auditorium auditorium)
         {
             await _auditoriumRepository.AddAuditoriumAsync(auditorium);
         }
-        public async Task UpdateAuditoriumAsync(BusinessObjects.Models.Auditorium auditorium)
+        public async Task UpdateAuditoriumAsync(Auditorium auditorium)
         {
             await _auditoriumRepository.UpdateAuditoriumAsync(auditorium);
         }
@@ -41,6 +39,6 @@ namespace Service
             return await _auditoriumRepository.GetTotalAuditoriumsAsync();
         }
         public Auditorium GetAuditoriumById(int audi_id)
-      => auditoriumRepository.GetAuditoriumById(audi_id);
+      => _auditoriumRepository.GetAuditoriumById(audi_id);
     }
 }
