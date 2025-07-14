@@ -160,10 +160,10 @@ namespace ChickenFlickFilmApplication.Controllers
                 {
                     movie.Status = "Sắp chiếu";
                 }
-                else if (movie.EndDate < today)
-                {
-                    movie.Status = "Đã kết thúc";
-                }
+                //else if (movie.EndDate < today)
+                //{
+                //    movie.Status = "Đã kết thúc";
+                //}
 
                 await _movieService.UpdateMovieAsync(movie); 
             }
@@ -354,8 +354,8 @@ namespace ChickenFlickFilmApplication.Controllers
                     newStatus = "Sắp chiếu";
                 else if (now >= showDateTime && now < endDateTime)
                     newStatus = "Đang chiếu";
-                else
-                    newStatus = "Đã chiếu";
+                //else
+                //    newStatus = "Đã chiếu";
 
                 // Chỉ cập nhật nếu khác với status cũ để tránh lỗi constraint
                 if (st.Status != newStatus)
