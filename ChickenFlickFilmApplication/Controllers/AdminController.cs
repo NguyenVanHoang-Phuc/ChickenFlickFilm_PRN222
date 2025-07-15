@@ -145,7 +145,30 @@ namespace ChickenFlickFilmApplication.Controllers
             int pageSize = 5;
             int pageNumber = page ?? 1;
 
-            var movies = await _movieService.GetAllMoviesAsync();
+            var movies = (await _movieService.GetAllMoviesAsync())
+                    .OrderByDescending(m => m.ReleaseDate)
+                    .ToList();
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            foreach (var movie in movies)
+            {
+                if (movie.ReleaseDate <= today && movie.EndDate >= today)
+                {
+                    movie.Status = "Đang chiếu";
+                }
+                else if (movie.ReleaseDate > today)
+                {
+                    movie.Status = "Sắp chiếu";
+                }
+                else if (movie.EndDate < today)
+                {
+                    movie.Status = "Đã kết thúc";
+                }
+
+                await _movieService.UpdateMovieAsync(movie); 
+            }
+
+
             return View(movies.ToPagedList(pageNumber, pageSize));
         }
 
@@ -307,12 +330,42 @@ namespace ChickenFlickFilmApplication.Controllers
         // Manage Showtimes
         public async Task<IActionResult> Showtimes(int? page)
         {
-            var showtimes = await _showtimeService.GetShowtimesAsync();
+            ViewBag.MovieListRaw = await _movieService.GetMoviesByEnableStatusAsync();
+            var now = DateTime.Now;
+
+            var showtimes = (await _showtimeService.GetShowtimesAsync())
+                .OrderByDescending(s => s.ShowDate)
+                .ThenByDescending(s => s.ShowTime)
+                .ToList();
+
             var showtimeVMs = new List<ShowtimeViewModel>();
 
             foreach (var st in showtimes)
             {
+                var movie = await _movieService.GetMovieByIdAsync(st.MovieId);
+
+                var showDateTime = (st.ShowDate ?? default).ToDateTime(st.ShowTime);
+                var endDateTime = showDateTime.AddMinutes(movie?.Duration ?? 0);
+
+                // Xác định status mới
+                string newStatus = string.Empty;
+
+                if (showDateTime > now)
+                    newStatus = "Sắp chiếu";
+                else if (now >= showDateTime && now < endDateTime)
+                    newStatus = "Đang chiếu";
+                else
+                    newStatus = "Đã chiếu";
+
+                // Chỉ cập nhật nếu khác với status cũ để tránh lỗi constraint
+                if (st.Status != newStatus)
+                {
+                    st.Status = newStatus;
+                    await _showtimeService.UpdateShowtimeAsync(st);
+                }
+
                 var theater = await _theaterService.GetTheaterByAuditoriumIdAsync(st.AuditoriumId);
+
                 showtimeVMs.Add(new ShowtimeViewModel
                 {
                     Showtime = st,
@@ -323,13 +376,15 @@ namespace ChickenFlickFilmApplication.Controllers
             int pageSize = 5;
             int pageNumber = page ?? 1;
 
-            return View(showtimeVMs.ToPagedList(pageNumber,pageSize));
+            return View(showtimeVMs.ToPagedList(pageNumber, pageSize));
         }
+
 
         // GET
         public async Task<IActionResult> GetCreateShowtimeModal()
         {
-            ViewBag.MovieList = new SelectList(await _movieService.GetAllMoviesAsync(), "MovieId", "Title");
+            ViewBag.MovieRaw = await _movieService.GetMoviesByEnableStatusAsync();
+            ViewBag.MovieList = new SelectList(await _movieService.GetMoviesByEnableStatusAsync(), "MovieId", "Title");
             ViewBag.AuditoriumList = new SelectList(await _auditoriumService.GetAllAuditoriumsAsync(), "AuditoriumId", "AuditoriumName");
             ViewData["Title"] = "Thêm suất chiếu mới";
             ViewData["Action"] = "CreateShowtime";
@@ -337,7 +392,7 @@ namespace ChickenFlickFilmApplication.Controllers
         }
         public async Task<IActionResult> GetEditShowtimeModal(int id)
         {
-            ViewBag.MovieList = new SelectList(await _movieService.GetAllMoviesAsync(), "MovieId", "Title");
+            ViewBag.MovieList = new SelectList(await _movieService.GetMoviesByEnableStatusAsync(), "MovieId", "Title");
             ViewBag.AuditoriumList = new SelectList(await _auditoriumService.GetAllAuditoriumsAsync(), "AuditoriumId", "AuditoriumName");
             var showtime = await _showtimeService.GetShowtimeByIdAsync(id); 
             ViewData["Title"] = "Chỉnh sửa suất chiếu";

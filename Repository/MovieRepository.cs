@@ -39,5 +39,9 @@ namespace Repository
         {
             return await _movieDAO.GetTotalMoviesAsync();
         }
+        public async Task<IEnumerable<Movie>> GetMoviesByEnableStatusAsync()
+        {
+            return await _movieDAO.GetMoviesByEnableStatusAsync();
+        }
     }
 }

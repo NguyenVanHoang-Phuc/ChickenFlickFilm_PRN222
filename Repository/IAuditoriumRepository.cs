@@ -3,16 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessObjects.Models;
 
 namespace Repository
 {
     public interface IAuditoriumRepository
     {
-        Task<IEnumerable<BusinessObjects.Models.Auditorium>> GetAllAuditoriumsAsync();
-        Task AddAuditoriumAsync(BusinessObjects.Models.Auditorium auditorium);
-        Task UpdateAuditoriumAsync(BusinessObjects.Models.Auditorium auditorium);
+        Task<IEnumerable<Auditorium>> GetAllAuditoriumsAsync();
+        Task AddAuditoriumAsync(Auditorium auditorium);
+        Task UpdateAuditoriumAsync(Auditorium auditorium);
         Task DeleteAuditoriumAsync(int id);
-        Task<BusinessObjects.Models.Auditorium?> GetAuditoriumByIdAsync(int id);
+        Task<Auditorium?> GetAuditoriumByIdAsync(int id);
         Task<int> GetTotalAuditoriumsAsync();
+        Auditorium GetAuditoriumById(int audi_id);
     }
 }
