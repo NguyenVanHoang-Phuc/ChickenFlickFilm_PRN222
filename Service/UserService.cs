@@ -3,6 +3,7 @@ using Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,7 +27,10 @@ namespace Service
         {
             return await _userRepository.GetUserByIdAsync(userId);
         }
-
+        public async Task<User?> GetAsync(Expression<Func<User, bool>> predicate)
+        {
+            return await _userRepository.GetAsync(predicate);
+        }
         public async Task AddUserAsync(User user)
         {
             await _userRepository.AddUserAsync(user);

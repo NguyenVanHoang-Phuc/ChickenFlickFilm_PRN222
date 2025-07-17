@@ -3,6 +3,7 @@ using DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,6 +26,10 @@ namespace Repository
         public async Task<User> GetUserByIdAsync(int userId)
         {
             return await _userDAO.GetUserByIdAsync(userId);
+        }
+        public async Task<User?> GetAsync(Expression<Func<User, bool>> predicate)
+        {
+            return await _userDAO.GetAsync(predicate);
         }
 
         public async Task AddUserAsync(User user)
