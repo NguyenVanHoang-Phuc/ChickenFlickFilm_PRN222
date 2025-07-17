@@ -26,8 +26,9 @@ namespace ChickenFlickFilmApplication.Controllers
         [HttpGet]
         public IActionResult Signup()
         {
-            return View();
+            return View(new RegisterViewModel());
         }
+
         [HttpPost]
         public async Task<IActionResult> SignupAsync(RegisterViewModel model)
         {
@@ -37,11 +38,10 @@ namespace ChickenFlickFilmApplication.Controllers
             }
 
             var existingUser = await _userService.GetAsync(u => u.Email == model.Email);
-
             if (existingUser != null)
             {
-                ModelState.AddModelError("", "Username or email is already taken.");
-                return RedirectToAction("Signup");
+                ModelState.AddModelError("Email", "Email này đã được sử dụng.");
+                return View(model); // Return view with model, not redirect
             }
 
             var user = new User
@@ -52,20 +52,26 @@ namespace ChickenFlickFilmApplication.Controllers
                 Gender = model.Gender,
                 CreatedAt = DateTime.UtcNow,
                 IsConfirmed = false,
-                Avatar = "/image/avatar.png",
-                PhoneNumber = "0000000000"
+                Avatar = "/image/default-avatar.png",
+                PhoneNumber = "0000000000",
+                Role = "Customer",
             };
 
             var passwordHasher = new PasswordHasher<User>();
             user.Password = passwordHasher.HashPassword(user, model.Password);
 
-            await _userService.AddUserAsync(user);
-
-            var code = $"CF-" + DateTime.Now.Ticks;
-
-            await SenConfirmationEmailAsync(user.Email, code, user.FullName);
-
-            return RedirectToAction("ConfirmEmail", new { email = user.Email, code });
+            try
+            {
+                await _userService.AddUserAsync(user);
+                var code = $"CF-" + DateTime.Now.Ticks;
+                await SenConfirmationEmailAsync(user.Email, code, user.FullName);
+                return RedirectToAction("ConfirmEmail", new { email = user.Email, code });
+            }
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.");
+                return View(model);
+            }
         }
 
         [HttpGet]
@@ -268,9 +274,29 @@ namespace ChickenFlickFilmApplication.Controllers
             return View("Login");
         }
 
-        public IActionResult UserProfile()
+        [HttpGet]
+        public async Task<IActionResult> UserProfileAsync()
         {
-            return View();
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userService.GetAsync(u => u.UserId.ToString() == userId);
+            if (user != null)
+            {
+                var model = new UserProfileViewModel
+                {
+                    DateOfBirth = user.Birthday,
+                    Email = user.Email,
+                    FullName = user.FullName,
+                    Gender = user.Gender ? "Male" : "Female",
+                    PhoneNumber = user.PhoneNumber,
+                    TotalSpending = 0
+                };
+                return View(model);
+            }
+            return NotFound();
         }
         private async Task SenConfirmationEmailAsync(string email, string code, string fullname)
         {

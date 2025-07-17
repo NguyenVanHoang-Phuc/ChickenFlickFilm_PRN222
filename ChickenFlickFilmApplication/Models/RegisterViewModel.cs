@@ -4,34 +4,37 @@ namespace ChickenFlickFilmApplication.Models
 {
     public class RegisterViewModel
     {
-        [Required]
+        [Required(ErrorMessage = "Họ và tên là bắt buộc")]
         [RegularExpression(@"^[a-zA-Z0-9\-._@+àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵđ() ]+$",
-            ErrorMessage = "Username must only contain numbers, letters, or the following special characters: \"-._@+()\"")]
+            ErrorMessage = "Họ và tên chỉ được chứa chữ cái, số và các ký tự đặc biệt sau: \"-._@+()\"")]
+        [Display(Name = "Họ và tên")]
         public string FullName { get; set; }
 
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Email là bắt buộc")]
+        [EmailAddress(ErrorMessage = "Email không hợp lệ")]
         [Display(Name = "Email")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Ngày sinh là bắt buộc")]
         [DataType(DataType.Date)]
-        [Display(Name = "Date of Birth")]
+        [Display(Name = "Ngày sinh")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime DateOfBirth { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Giới tính là bắt buộc")]
+        [Display(Name = "Giới tính")]
         public bool Gender { get; set; }
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {100} characters long.", MinimumLength = 6)]
+        [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
+        [StringLength(100, ErrorMessage = "Mật khẩu phải có ít nhất {2} ký tự và tối đa {1} ký tự", MinimumLength = 6)]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Mật khẩu")]
         public string Password { get; set; }
 
+        [Required(ErrorMessage = "Xác nhận mật khẩu là bắt buộc")]
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        [Display(Name = "Xác nhận mật khẩu")]
+        [Compare("Password", ErrorMessage = "Mật khẩu xác nhận không khớp")]
         public string ConfirmPassword { get; set; }
     }
 }

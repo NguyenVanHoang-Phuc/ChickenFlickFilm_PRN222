@@ -1,378 +1,211 @@
-﻿@{
-    ViewData["Title"] = "Thông tin cá nhân - CHICKEN FLICK FILM";
-}
+﻿@model UserProfileViewModel
 
-@model UserProfileViewModel
-
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
-<body style="background-color: #f5f5f5;">
-    <!-- Top Navigation -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #B22222;">
-        <div class="container-fluid">
-            <!-- Logo -->
-            <a class="navbar-brand d-flex align-items-center text-white" href="@Url.Action("Index", "Home")">
-                <div class="mascot-small me-2">
-                    <svg width="40" height="40" viewBox="0 0 200 200">
-                        <!-- Turkey body -->
-                        <ellipse cx="100" cy="120" rx="40" ry="35" fill="#8B4513" stroke="#654321" stroke-width="2" />
-                        <!-- Turkey head -->
-                        <circle cx="100" cy="80" r="25" fill="#D2691E" stroke="#A0522D" stroke-width="2" />
-                        <!-- Turkey tail feathers -->
-                        <path d="M60 100 Q50 80 45 100 Q40 120 50 130 Q60 125 60 100" fill="#FF4500" stroke="#DC143C" stroke-width="2" />
-                        <path d="M65 95 Q55 75 50 95 Q45 115 55 125 Q65 120 65 95" fill="#FF6347" stroke="#DC143C" stroke-width="2" />
-                        <path d="M140 100 Q150 80 155 100 Q160 120 150 130 Q140 125 140 100" fill="#FF4500" stroke="#DC143C" stroke-width="2" />
-                        <path d="M135 95 Q145 75 150 95 Q155 115 145 125 Q135 120 135 95" fill="#FF6347" stroke="#DC143C" stroke-width="2" />
-                        <!-- TV screen -->
-                        <rect x="85" y="90" width="30" height="20" fill="#000" stroke="#333" stroke-width="2" rx="2" />
-                        <rect x="87" y="92" width="26" height="16" fill="#FF0000" rx="1" />
-                        <!-- Eyes -->
-                        <circle cx="92" cy="75" r="4" fill="white" />
-                        <circle cx="108" cy="75" r="4" fill="white" />
-                        <circle cx="92" cy="75" r="2" fill="black" />
-                        <circle cx="108" cy="75" r="2" fill="black" />
-                        <!-- Beak -->
-                        <path d="M100 82 L95 88 L105 88 Z" fill="#FFA500" />
-                        <!-- Wattle -->
-                        <ellipse cx="100" cy="90" rx="3" ry="6" fill="#DC143C" />
-                    </svg>
-                </div>
-            </a>
-
-            <!-- Navigation Menu -->
-            <div class="navbar-nav ml-auto d-flex flex-row">
-                <a class="nav-link text-white px-3" href="@Url.Action("BuyTickets", "Tickets")">Mua vé</a>
-                <a class="nav-link text-white px-3" href="@Url.Action("Movies", "Home")">Phim</a>
-                <a class="nav-link text-white px-3" href="@Url.Action("News", "Home")">Thông báo</a>
-                <a class="nav-link text-white px-3" href="@Url.Action("About", "Home")">Rạp/Giá vé</a>
-
-                <!-- Search Icon -->
-                <a class="nav-link text-white px-2" href="#" data-toggle="modal" data-target="#searchModal">
-                    <i class="fas fa-search"></i>
-                </a>
-
-                <!-- User Profile Dropdown -->
-                <div class="nav-item dropdown">
-                    <a class="nav-link text-white d-flex align-items-center px-3" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-                        <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px;">
-                            <i class="fas fa-user text-dark"></i>
+<div class="container-fluid" style="background-color: #f5f5f5; min-height: 100vh; padding: 20px;">
+    <div class="row">
+        <!-- Left Sidebar -->
+        <div class="col-md-3">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <div class="profile-image mb-3">
+                        <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; margin: 0 auto;">
+                            <i class="fas fa-camera text-white" style="font-size: 24px;"></i>
                         </div>
-                        <div class="d-flex flex-column">
-                            <span class="small">@Model.FullName</span>
-                            <span class="small text-light">Hạng thành viên</span>
-                        </div>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="@Url.Action("Profile", "Account")">Thông tin cá nhân</a>
-                        <a class="dropdown-item" href="@Url.Action("Settings", "Account")">Cài đặt</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="@Url.Action("Logout", "Account")">Đăng xuất</a>
+                    </div>
+                    <h6 class="mb-1">@(Model?.FullName ?? "Nguyễn Văn A")</h6>
+                    <div class="mt-3">
+                        <p class="mb-1"><strong>Tổng chi tiêu năm 2025:</strong></p>
+                        <p class="text-muted">@(Model?.TotalSpending.ToString("N0") ?? "0") VND</p>
                     </div>
                 </div>
             </div>
         </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="container-fluid mt-4">
-        <div class="row">
-            <!-- Left Sidebar -->
-            <div class="col-md-3">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <!-- Profile Picture -->
-                        <div class="mb-3">
-                            <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
-                                <i class="fas fa-camera text-white" style="font-size: 24px;"></i>
-                            </div>
-                        </div>
-                        <h5 class="mb-1">@Model.FullName</h5>
-                        <p class="text-muted small mb-3">
-                            Tổng chi tiêu năm 2025: <span class="text-danger">...VNĐ</span>
-                        </p>
-                    </div>
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab">
+                                Lịch sử giao dịch
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link text-danger" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal" type="button" role="tab">
+                                Thông tin cá nhân
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="promotions-tab" data-bs-toggle="tab" data-bs-target="#promotions" type="button" role="tab">
+                                Khuyến mãi
+                            </button>
+                        </li>
+                    </ul>
                 </div>
-            </div>
 
-            <!-- Main Content Area -->
-            <div class="col-md-9">
-                <div class="card shadow-sm">
-                    <!-- Tab Navigation -->
-                    <div class="card-header bg-white">
-                        <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link active" id="history-tab" data-toggle="tab" href="#history" role="tab">
-                                    Lịch sử giao dịch
-                                </a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="personal-info-tab" data-toggle="tab" href="#personal-info" role="tab">
-                                    Thông tin cá nhân
-                                </a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="promotions-tab" data-toggle="tab" href="#promotions" role="tab">
-                                    Khuyến mãi
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="history" role="tabpanel">
+                            <!-- Transaction History Content -->
+                            <p class="text-muted">Lịch sử giao dịch sẽ hiển thị tại đây...</p>
+                        </div>
 
-                    <!-- Tab Content -->
-                    <div class="card-body">
-                        <div class="tab-content" id="profileTabsContent">
-                            <!-- Transaction History Tab -->
-                            <div class="tab-pane fade show active" id="history" role="tabpanel">
-                                <div class="text-center py-5">
-                                    <p class="text-muted">Chưa có giao dịch nào</p>
+                        <div class="tab-pane fade" id="personal" role="tabpanel">
+                            <!-- Personal Information Form -->
+                            <form asp-action="UpdateProfile" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="fullName" class="form-label">Họ và Tên</label>
+                                            <input type="text" class="form-control" id="fullName" asp-for="FullName" placeholder="Nhập họ và tên">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="birthDate" class="form-label">Ngày sinh</label>
+                                            <input type="date" class="form-control" id="birthDate" asp-for="DateOfBirth">
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Personal Information Tab -->
-                            <div class="tab-pane fade" id="personal-info" role="tabpanel">
-                                <div class="border border-primary rounded p-4">
-                                    @using (Html.BeginForm("UpdateProfile", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
-                                    {
-                                        @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" id="email" asp-for="Email" placeholder="Nhập email">
+                                            <small class="text-danger">Thay đổi</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="phoneNumber" class="form-label">Số điện thoại</label>
+                                            <input type="tel" class="form-control" id="phoneNumber" asp-for="PhoneNumber" placeholder="Nhập số điện thoại">
+                                        </div>
+                                    </div>
+                                </div>
 
-                                        <div class="row">
-                                            <!-- Left Column -->
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="FullName" class="form-label">Họ và tên</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text bg-light">
-                                                                <i class="fas fa-user text-muted"></i>
-                                                            </span>
-                                                        </div>
-                                                        @Html.TextBoxFor(m => m.FullName, new
-                                                            {
-                                                                @class = "form-control bg-light",
-                                                                @readonly = "readonly",
-                                                                style = "background-color: #f8f9fa !important;"
-                                                            })
-                                                    </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Giới tính</label>
+                                            <div class="d-flex gap-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="Gender" id="male" value="Nam" @(Model?.Gender == "Nam" ? "checked" : "")>
+                                                    <label class="form-check-label" for="male">
+                                                        Nam
+                                                    </label>
                                                 </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label for="Email" class="form-label">Email</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text bg-light">
-                                                                <i class="fas fa-envelope text-muted"></i>
-                                                            </span>
-                                                        </div>
-                                                        @Html.TextBoxFor(m => m.Email, new
-                                                            {
-                                                                @class = "form-control bg-light",
-                                                                @readonly = "readonly",
-                                                                style = "background-color: #f8f9fa !important;"
-                                                            })
-                                                        <div class="input-group-append">
-                                                            <button class="btn btn-outline-danger btn-sm" type="button" onclick="enableEdit('Email')">
-                                                                Thay đổi
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label">Giới tính</label>
-                                                    <div class="d-flex">
-                                                        <div class="form-check mr-3">
-                                                            @Html.RadioButtonFor(m => m.Gender, "male", new { @class = "form-check-input", @disabled = "disabled" })
-                                                            <label class="form-check-label">Nam</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            @Html.RadioButtonFor(m => m.Gender, "female", new { @class = "form-check-input", @disabled = "disabled" })
-                                                            <label class="form-check-label">Nữ</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Right Column -->
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="DateOfBirth" class="form-label">Ngày sinh</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text bg-light">
-                                                                <i class="fas fa-calendar text-muted"></i>
-                                                            </span>
-                                                        </div>
-                                                        @Html.TextBoxFor(m => m.DateOfBirth, "{0:dd/MM/yyyy}", new
-                                                            {
-                                                                @class = "form-control bg-light",
-                                                                @readonly = "readonly",
-                                                                style = "background-color: #f8f9fa !important;"
-                                                            })
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label for="PhoneNumber" class="form-label">Số điện thoại</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text bg-light">
-                                                                <i class="fas fa-phone text-muted"></i>
-                                                            </span>
-                                                        </div>
-                                                        @Html.TextBoxFor(m => m.PhoneNumber, new
-                                                            {
-                                                                @class = "form-control bg-light",
-                                                                @readonly = "readonly",
-                                                                style = "background-color: #f8f9fa !important;"
-                                                            })
-                                                        <div class="input-group-append">
-                                                            <button class="btn btn-outline-danger btn-sm" type="button" onclick="enableEdit('PhoneNumber')">
-                                                                Thay đổi
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label for="Password" class="form-label">Mật khẩu</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text bg-light">
-                                                                <i class="fas fa-lock text-muted"></i>
-                                                            </span>
-                                                        </div>
-                                                        <input type="password" class="form-control bg-light" value="••••••••" readonly style="background-color: #f8f9fa !important;">
-                                                        <div class="input-group-append">
-                                                            <button class="btn btn-outline-danger btn-sm" type="button" onclick="openChangePasswordModal()">
-                                                                Thay đổi
-                                                            </button>
-                                                        </div>
-                                                    </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="Gender" id="female" value="Nữ" @(Model?.Gender == "Nữ" ? "checked" : "")>
+                                                    <label class="form-check-label" for="female">
+                                                        Nữ
+                                                    </label>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="text-right mt-4">
-                                            <button type="submit" class="btn btn-danger px-4" style="background-color: #B22222;">
-                                                Cập nhật
-                                            </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Mật khẩu</label>
+                                            <input type="password" class="form-control" id="password" name="Password" placeholder="Nhập mật khẩu">
+                                            <small class="text-danger">Thay đổi</small>
                                         </div>
-                                    }
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Promotions Tab -->
-                            <div class="tab-pane fade" id="promotions" role="tabpanel">
-                                <div class="text-center py-5">
-                                    <p class="text-muted">Chưa có khuyến mãi nào</p>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-danger px-4">Cập nhật</button>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
+                        </div>
+
+                        <div class="tab-pane fade" id="promotions" role="tabpanel">
+                            <!-- Promotions Content -->
+                            <p class="text-muted">Thông tin khuyến mãi sẽ hiển thị tại đây...</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+@section Scripts {
+    <script>
+        // Initialize Bootstrap tabs
+        var triggerTabList = [].slice.call(document.querySelectorAll('button[data-bs-toggle="tab"]'))
+        triggerTabList.forEach(function (triggerEl) {
+            var tabTrigger = new bootstrap.Tab(triggerEl)
 
+            triggerEl.addEventListener('click', function (event) {
+                event.preventDefault()
+                tabTrigger.show()
+            })
+        })
+    </script>
+}
+
+@section Styles {
     <style>
+        .profile-image {
+            position: relative;
+        }
+
         .nav-tabs .nav-link {
-            color: #666;
+            color: #6c757d;
             border: none;
             border-bottom: 2px solid transparent;
+            padding: 15px 20px;
         }
 
-        .nav-tabs .nav-link.active {
-            color: #007bff;
-            background-color: transparent;
-            border-color: #007bff;
-            border-bottom: 2px solid #007bff;
+            .nav-tabs .nav-link.active {
+                color: #dc3545;
+                border-bottom-color: #dc3545;
+                background-color: transparent;
+            }
+
+            .nav-tabs .nav-link:hover {
+                border-bottom-color: #dc3545;
+            }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            padding: 10px 15px;
         }
 
-        .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
+            .form-control:focus {
+                border-color: #dc3545;
+                box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+            }
 
-        .input-group-text {
-            border-right: none;
-        }
-
-        .form-control[readonly] {
-            background-color: #f8f9fa !important;
-            opacity: 1;
-        }
-
-        .btn-outline-danger {
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-
-        .btn-outline-danger:hover {
+        .btn-danger {
             background-color: #dc3545;
             border-color: #dc3545;
+            border-radius: 8px;
+            padding: 10px 20px;
         }
 
         .card {
             border: none;
+            border-radius: 12px;
         }
 
-        .navbar-nav .nav-link {
-            transition: opacity 0.2s ease;
+        .card-header {
+            border-bottom: 1px solid #dee2e6;
         }
 
-        .navbar-nav .nav-link:hover {
-            opacity: 0.8;
+        .form-check-input:checked {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
         }
     </style>
-
-    <script>
-        // Set the Personal Information tab as active on page load
-        $(document).ready(function() {
-            $('#personal-info-tab').tab('show');
-        });
-
-        function enableEdit(fieldName) {
-            const field = document.querySelector(`input[name="${fieldName}"]`);
-            if (field) {
-                field.removeAttribute('readonly');
-                field.classList.remove('bg-light');
-                field.style.backgroundColor = 'white';
-                field.focus();
-            }
-        }
-
-        function openChangePasswordModal() {
-            // This would open a password change modal
-            alert('Chức năng đổi mật khẩu sẽ được triển khai');
-        }
-
-        // Form validation
-        (function() {
-            'use strict';
-            window.addEventListener('load', function() {
-                var forms = document.getElementsByClassName('needs-validation');
-                var validation = Array.prototype.filter.call(forms, function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            }, false);
-        })();
-    </script>
-</body>
-</html>
+}
