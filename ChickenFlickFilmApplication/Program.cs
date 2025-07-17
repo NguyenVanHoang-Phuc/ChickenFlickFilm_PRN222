@@ -65,9 +65,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         //options.AccessDeniedPath = "/Auth/AccessDenied";
     });
 
+builder.Services.AddMemoryCache();
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+    options.ExpireTimeSpan = TimeSpan.FromDays(2);
     options.SlidingExpiration = true;
 });
 

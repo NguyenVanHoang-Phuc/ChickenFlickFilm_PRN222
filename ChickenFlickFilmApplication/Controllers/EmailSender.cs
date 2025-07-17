@@ -1,9 +1,9 @@
-﻿namespace ChickenFlickFilmApplication.Controllers
-{
-    using System.Net;
-    using System.Net.Mail;
-    using System.Text;
+﻿using System.Net;
+using System.Net.Mail;
+using System.Text;
 
+namespace ChickenFlickFilmApplication.Controllers
+{
     public class EmailSender : IEmailSender
     {
         private readonly IConfiguration _config;
@@ -15,38 +15,43 @@
 
         public async Task SendEmailAsync(string toEmail, string subject, string htmlMessage)
         {
-            var smtpClient = new SmtpClient(_config["Email:SmtpServer"])
+            var server = _config["Email:SmtpServer"];
+            var port = _config["Email:Port"];
+            var from = _config["Email:From"];
+            var smtpClient = new SmtpClient(server)
             {
                 Port = int.Parse(_config["Email:Port"]),
-                Credentials = new NetworkCredential(_config["Email:Username"], _config["Email:Password"]),
+                Credentials = new NetworkCredential(
+                    _config["Email:Username"],
+                    _config["Email:Password"]
+                ),
                 EnableSsl = true,
+                UseDefaultCredentials = false,
+                Timeout = 10000 // 10 seconds timeout
             };
 
-            var mail = new MailMessage
+            var mailMessage = new MailMessage
             {
                 From = new MailAddress(_config["Email:From"]),
                 Subject = subject,
                 Body = htmlMessage,
-                IsBodyHtml = true,
+                IsBodyHtml = true
             };
+            mailMessage.To.Add(toEmail);
 
-            mail.To.Add(toEmail);
-            await smtpClient.SendMailAsync(mail);
+            await smtpClient.SendMailAsync(mailMessage);
+            smtpClient.Dispose();
         }
 
-        public async Task SendInvitationEmailAsync(string toEmail, string recipientName, string eventTitle,
-            string eventDate, string eventTime, string eventLocation, string personalMessage = "",
-            string rsvpLink = "")
+        public async Task SendForgotPasswordEmailAsync(string toEmail, string recipientName, string resetLink)
         {
-            var subject = $"You're Invited: {eventTitle}";
-            var htmlMessage = CreateInvitationHtml(recipientName, eventTitle, eventDate, eventTime,
-                eventLocation, personalMessage, rsvpLink);
+            var subject = "Password Reset Request";
+            var htmlMessage = CreateForgotPasswordHtml(recipientName, resetLink);
 
             await SendEmailAsync(toEmail, subject, htmlMessage);
         }
 
-        private string CreateInvitationHtml(string recipientName, string eventTitle, string eventDate,
-            string eventTime, string eventLocation, string personalMessage, string rsvpLink)
+        private string CreateForgotPasswordHtml(string recipientName, string resetLink)
         {
             var html = new StringBuilder();
 
@@ -56,7 +61,111 @@
 <head>
     <meta charset='UTF-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Invitation</title>
+    <title>Password Reset</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #ff6a00 0%, #ee0979 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .content {
+            padding: 30px;
+        }
+        .content h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 25px;
+            background-color: #ee0979;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #d1066d;
+        }
+        .footer {
+            background-color: #f1f1f1;
+            color: #666;
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='header'>
+            <h1>Password Reset</h1>
+        </div>
+        <div class='content'>
+            <h2>Hello " + recipientName + @",</h2>
+            <p>You recently requested to reset your password for your account. Click the button below to reset it.</p>
+            <p><strong>This password reset link is valid for a limited time.</strong></p>
+            <a href='" + resetLink + @"' class='button'>Reset Your Password</a>
+            <p>If you didn't request a password reset, you can safely ignore this email. Your password will not change.</p>
+        </div>
+        <div class='footer'>
+            &copy; " + DateTime.Now.Year + @" ChickenFlick Film. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>");
+
+            return html.ToString();
+        }
+
+        public async Task SendConfirmationEmailAsync(string toEmail, string recipientName, string actionType,
+            string details, string confirmationNumber = "", string nextSteps = "")
+        {
+            var subject = $"Confirmation: {actionType}";
+            var htmlMessage = CreateConfirmationHtml(recipientName, actionType, details, confirmationNumber, nextSteps);
+
+            await SendEmailAsync(toEmail, subject, htmlMessage);
+        }
+        /// <summary>
+        /// usage: await emailSender.SendConfirmationEmailAsync(
+        ///"user@example.com",
+        ///"John Doe",
+        ///"Account Registration",
+        ///"Your account has been successfully created and is now active.",
+        ///"CF-" + DateTime.Now.Ticks,
+        ///"Please log in to your account to complete your profile setup."
+        ///)
+        /// </summary>
+        private string CreateConfirmationHtml(string recipientName, string actionType, string details,
+            string confirmationNumber, string nextSteps)
+        {
+            var html = new StringBuilder();
+
+            html.Append(@"
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Confirmation</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -67,115 +176,85 @@
         }
         .container {
             max-width: 600px;
-            margin: 0 auto;
+            margin: 20px auto;
             background-color: #ffffff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
         }
         .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-color: #4CAF50;
             color: white;
-            padding: 40px 30px;
+            padding: 30px;
             text-align: center;
         }
         .header h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 300;
-            letter-spacing: 1px;
+        }
+        .checkmark {
+            font-size: 48px;
+            margin-bottom: 10px;
         }
         .content {
-            padding: 40px 30px;
+            padding: 30px;
         }
         .greeting {
             font-size: 18px;
             margin-bottom: 20px;
             color: #2c3e50;
         }
-        .event-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
-            margin: 20px 0;
-            text-align: center;
-            padding: 20px;
-            background-color: #f8f9ff;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-        .event-details {
+        .confirmation-details {
             background-color: #f8f9fa;
-            padding: 25px;
+            padding: 20px;
             border-radius: 8px;
             margin: 20px 0;
+            border-left: 4px solid #4CAF50;
         }
-        .detail-item {
-            margin: 12px 0;
-            display: flex;
-            align-items: center;
-        }
-        .detail-icon {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
-            font-size: 16px;
+        .detail-row {
+            margin: 10px 0;
+            color: #555;
         }
         .detail-label {
             font-weight: bold;
             color: #2c3e50;
-            min-width: 80px;
         }
-        .detail-value {
-            color: #34495e;
+        .confirmation-number {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #2e7d32;
         }
-        .personal-message {
+        .next-steps {
             background-color: #fff3cd;
             border: 1px solid #ffeaa7;
             border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
-            font-style: italic;
             color: #856404;
         }
-        .rsvp-section {
-            text-align: center;
-            margin: 30px 0;
-        }
-        .rsvp-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 16px;
-            transition: transform 0.2s;
-        }
-        .rsvp-button:hover {
-            transform: translateY(-2px);
+        .next-steps h3 {
+            margin-top: 0;
+            color: #856404;
         }
         .footer {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px 30px;
+            background-color: #f1f1f1;
+            color: #666;
+            padding: 20px;
             text-align: center;
             font-size: 14px;
         }
-        .divider {
-            height: 2px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            margin: 20px 0;
-            border-radius: 1px;
-        }
         @media (max-width: 600px) {
             .container {
-                margin: 0 10px;
+                margin: 10px;
             }
             .header, .content {
                 padding: 20px;
-            }
-            .event-title {
-                font-size: 20px;
             }
         }
     </style>
@@ -183,7 +262,8 @@
 <body>
     <div class='container'>
         <div class='header'>
-            <h1>🎬 You're Invited! 🎬</h1>
+            <div class='checkmark'>✓</div>
+            <h1>Confirmation</h1>
         </div>
         
         <div class='content'>
@@ -191,59 +271,52 @@
                 Hello " + recipientName + @",
             </div>
             
-            <div class='event-title'>
-                " + eventTitle + @"
-            </div>
+            <p>This email confirms that your <strong>" + actionType + @"</strong> has been successfully processed.</p>
             
-            <div class='divider'></div>
-            
-            <div class='event-details'>
-                <div class='detail-item'>
-                    <span class='detail-icon'>📅</span>
-                    <span class='detail-label'>Date:</span>
-                    <span class='detail-value'>" + eventDate + @"</span>
+            <div class='confirmation-details'>
+                <div class='detail-row'>
+                    <span class='detail-label'>Action:</span> " + actionType + @"
                 </div>
-                <div class='detail-item'>
-                    <span class='detail-icon'>🕒</span>
-                    <span class='detail-label'>Time:</span>
-                    <span class='detail-value'>" + eventTime + @"</span>
+                <div class='detail-row'>
+                    <span class='detail-label'>Details:</span> " + details + @"
                 </div>
-                <div class='detail-item'>
-                    <span class='detail-icon'>📍</span>
-                    <span class='detail-label'>Location:</span>
-                    <span class='detail-value'>" + eventLocation + @"</span>
+                <div class='detail-row'>
+                    <span class='detail-label'>Date:</span> " + DateTime.Now.ToString("MMMM dd, yyyy") + @"
+                </div>
+                <div class='detail-row'>
+                    <span class='detail-label'>Time:</span> " + DateTime.Now.ToString("h:mm tt") + @"
                 </div>
             </div>");
 
-            if (!string.IsNullOrEmpty(personalMessage))
+            if (!string.IsNullOrEmpty(confirmationNumber))
             {
                 html.Append(@"
-            <div class='personal-message'>
-                <strong>Personal Message:</strong><br>
-                " + personalMessage + @"
+            <div class='confirmation-number'>
+                Confirmation Number: " + confirmationNumber + @"
             </div>");
             }
 
-            if (!string.IsNullOrEmpty(rsvpLink))
+            if (!string.IsNullOrEmpty(nextSteps))
             {
                 html.Append(@"
-            <div class='rsvp-section'>
-                <a href='" + rsvpLink + @"' class='rsvp-button'>RSVP Now</a>
+            <div class='next-steps'>
+                <h3>Next Steps:</h3>
+                <p>" + nextSteps + @"</p>
             </div>");
             }
 
             html.Append(@"
-            <div class='divider'></div>
+            <p>If you have any questions or concerns, please don't hesitate to contact our support team.</p>
             
-            <p style='text-align: center; color: #7f8c8d; font-size: 14px;'>
-                We can't wait to see you there! 🎉
+            <p style='margin-top: 30px; color: #7f8c8d;'>
+                Thank you for using ChickenFlick Film!
             </p>
         </div>
         
         <div class='footer'>
-            <p>This invitation was sent by ChickenFlick Film Application</p>
+            <p>&copy; " + DateTime.Now.Year + @" ChickenFlick Film. All rights reserved.</p>
             <p style='font-size: 12px; margin-top: 10px;'>
-                If you have any questions, please contact us.
+                This is an automated message. Please do not reply to this email.
             </p>
         </div>
     </div>
@@ -251,13 +324,6 @@
 </html>");
 
             return html.ToString();
-        }
-
-        // Alternative method for custom HTML content
-        public async Task SendCustomInvitationEmailAsync(string toEmail, string subject,
-            string customHtmlContent)
-        {
-            await SendEmailAsync(toEmail, subject, customHtmlContent);
         }
     }
 }

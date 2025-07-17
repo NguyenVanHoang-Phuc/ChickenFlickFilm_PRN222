@@ -24,6 +24,7 @@ public partial class User
     public string PhoneNumber { get; set; } = null!;
 
     public DateTime? CreatedAt { get; set; }
+    public bool IsConfirmed { get; set; } = false;
 
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 

@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Đăng ký - Six Chickens Films";
+    ViewData["Title"] = "Đăng ký - CHICKEN FLICK FILM";
 }
 @model RegisterViewModel
 
@@ -32,7 +32,7 @@
             <div class="w-100 px-4" style="max-width: 400px;">
                 <h2 class="text-center mb-4 text-dark">Đăng ký</h2>
 
-                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                @using (Html.BeginForm("Signup", "Auth", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
                 {
                     @Html.AntiForgeryToken()
 
