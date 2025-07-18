@@ -2,22 +2,17 @@
 @using System.Text.Json
 @using BusinessObjects.Models;
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "Movie Seat Booking";
     string rows = "ABCDEFGHIJKLMN";
     List<Seat> Seats = Model.Auditorium.Seats.ToList();
     Movie movie = Model.Movie;
     List<Showtime> showtimes = movie.Showtimes.ToList();
     int curIndex = 0;
 }
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Seat Booking</title>
-</head>
-<body>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Auditorium.css" asp-append-version="true" />
+}
+<div class="Auditorium-page">
     <div class="movie-booking">
         <!-- Progress Bar - Updated structure -->
         <div class="progress-container">
@@ -172,6 +167,7 @@
             </div>
         </div>
     </div>
+</div>
     <script>
          const divs = document.querySelectorAll(".SeatType");
          let selectedIds = [];
@@ -325,6 +321,5 @@
             submitFormPost(selectedIds, total)
           });
     </script>
-</body>
-</html>
+
 
