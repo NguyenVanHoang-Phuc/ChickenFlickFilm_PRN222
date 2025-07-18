@@ -1,7 +1,19 @@
 ﻿@{
-    ViewData["Title"] = "Đăng ký - Six Chickens Films";
+    ViewData["Title"] = "Đăng ký - CHICKEN FLICK FILM";
 }
 @model RegisterViewModel
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
 
 <div class="container-fluid p-0">
     <div class="row no-gutters min-vh-100">
@@ -20,7 +32,7 @@
             <div class="w-100 px-4" style="max-width: 400px;">
                 <h2 class="text-center mb-4 text-dark">Đăng ký</h2>
 
-                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
+                @using (Html.BeginForm("Signup", "Auth", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
                 {
                     @Html.AntiForgeryToken()
 
@@ -32,8 +44,8 @@
 
                     <div class="form-group mb-3">
                         <label class="form-label text-dark"><span class="text-danger">*</span>Email/Số Điện Thoại</label>
-                        @Html.TextBoxFor(m => m.EmailOrPhone, new { @class = "form-control", placeholder = "Nhập Email/Số điện thoại", required = "required" })
-                        @Html.ValidationMessageFor(m => m.EmailOrPhone, "", new { @class = "text-danger small" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Nhập Email", required = "required" })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
                     </div>
 
                     <div class="form-group mb-3">
@@ -45,10 +57,8 @@
                     <div class="form-group mb-3">
                         <label class="form-label text-dark"><span class="text-danger">*</span>Giới tính</label>
                         @Html.DropDownListFor(m => m.Gender, new SelectList(new[] {
-                    new { Value = "", Text = "Giới tính" },
-                    new { Value = "male", Text = "Nam" },
-                    new { Value = "female", Text = "Nữ" },
-                    new { Value = "other", Text = "Khác" }
+                    new { Value = true, Text = "Nam" },
+                    new { Value = false, Text = "Nữ" },
                     }, "Value", "Text"), new { @class = "form-control", required = "required" })
                         @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "text-danger small" })
                     </div>

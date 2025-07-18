@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,6 +26,12 @@ namespace DataAccess
         public async Task<User> GetUserByIdAsync(int userId)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+        }
+        public async Task<User?> GetAsync(Expression<Func<User, bool>> predicate)
+        {
+            return await _context.Users
+                .AsNoTracking() // Use AsNoTracking for read-only queries
+                .FirstOrDefaultAsync(predicate); // Return the first matching user or null if none found
         }
 
         public async Task AddUserAsync(User user)
