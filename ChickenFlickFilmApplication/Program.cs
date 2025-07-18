@@ -1,3 +1,4 @@
+using ChickenFlickFilmApplication.Services.VnPay;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Repository;
@@ -53,6 +54,9 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<PriceByTypeDAO>();
 builder.Services.AddScoped<IPriceByTypeRepository, PriceByTypeRepository>();
 builder.Services.AddScoped<IPriceByTypeService, PriceByTypeService>();
+
+//Connect VNPay API
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 var app = builder.Build();
 
