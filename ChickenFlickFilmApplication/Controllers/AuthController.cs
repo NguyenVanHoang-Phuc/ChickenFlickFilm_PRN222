@@ -53,7 +53,7 @@ namespace ChickenFlickFilmApplication.Controllers
                 CreatedAt = DateTime.UtcNow,
                 IsConfirmed = false,
                 Avatar = "/image/default-avatar.png",
-                PhoneNumber = "0000000000",
+                PhoneNumber = model.PhoneNumber,
                 Role = "Customer",
             };
 
@@ -93,7 +93,7 @@ namespace ChickenFlickFilmApplication.Controllers
                 Code = code,
                 Email = email
             };
-            return RedirectToAction("ConfirmEmail", model);
+            return View(model);
         }
 
         [HttpPost]
@@ -110,14 +110,19 @@ namespace ChickenFlickFilmApplication.Controllers
             {
                 return NotFound("User not found.");
             }
-            if (!model.Code.Equals(model.CodeEnter, StringComparison.OrdinalIgnoreCase))
+            if (model.Code.Equals(model.CodeEnter, StringComparison.OrdinalIgnoreCase))
             {
                 user.IsConfirmed = true;
+                ViewBag.Message = "Xác thực thành công";
+                await _userService.UpdateUserAsync(user);
             }
-            await _userService.UpdateUserAsync(user);
-
+            else
+            {
+                ViewBag.Error = "Mã xác thực không chính xác. Vui lòng kiểm tra lại mã bạn đã nhập.";
+            }
             return RedirectToAction("Login");
         }
+
         [HttpGet]
         public async Task<IActionResult> ResendConfirmationEmailAsync(string email)
         {
@@ -176,7 +181,8 @@ namespace ChickenFlickFilmApplication.Controllers
                 new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new(ClaimTypes.Name, user.FullName),
                 new(ClaimTypes.Email, user.Email),
-                new(ClaimTypes.Gender, user.Gender.ToString())
+                new(ClaimTypes.Gender, user.Gender.ToString()),
+                new(ClaimTypes.Role, user.Role)
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
