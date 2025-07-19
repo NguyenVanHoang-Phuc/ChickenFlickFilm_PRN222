@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.AspNetCore.Http;
+using System.Text.Json.Serialization;
 
 namespace BusinessObjects.Models;
 
@@ -42,14 +43,16 @@ public partial class Movie
     public string? TrailerUrl { get; set; }
 
     public string? Country { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
-
+    [JsonIgnore]
     public virtual ICollection<Showtime> Showtimes { get; set; } = new List<Showtime>();
 
     [NotMapped]
+    [JsonIgnore]
     public IFormFile? PosterFile { get; set; }
 
     [NotMapped]
+    [JsonIgnore]
     public IFormFile? BannerFile { get; set; }
 }
