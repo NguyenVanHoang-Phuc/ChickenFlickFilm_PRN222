@@ -68,14 +68,25 @@ s
                             <a class="nav-link" href="/thong-bao.html">Thông báo</a>
                         </li>
                     </ul>
-
-                    <div class="search-login">
-                        <form class="d-flex" role="search">
-                            <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" />
-                        </form>
-                        <a href="@Url.Action("Login", "Auth")" class="text-decoration-none">Đăng Nhập</a>
-                        <a href="@Url.Action("Signup", "Auth")" class="text-decoration-none">Đăng ký</a>
-                    </div>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <div class="search-login">
+                            <form class="d-flex" role="search">
+                                <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" />
+                            </form>
+                            <a href="@Url.Action("Login", "Auth")" class="text-decoration-none">Đăng Nhập</a>
+                            <a href="@Url.Action("Signup", "Auth")" class="text-decoration-none">Đăng ký</a>
+                        </div>
+                    }
+                    else if (User.IsInRole("Customer"))
+                    {
+                        <div class="search-login">
+                            <form class="d-flex" role="search">
+                                <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" />
+                            </form>
+                            <a href="@Url.Action("UserProfile", "Auth")" class="text-decoration-none">Profile</a>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>
