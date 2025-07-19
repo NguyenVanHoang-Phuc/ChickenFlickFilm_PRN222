@@ -12,12 +12,15 @@ namespace ChickenFlickFilmApplication.Models
 
         public DateOnly SelectedDate { get; set; }
 
+        // Add TheaterLookup property that the view expects
+        public Dictionary<int, Theater> TheaterLookup { get; set; }
+            = new Dictionary<int, Theater>();
+
         // Helper method to get dates for the next week
         public List<DateDisplayInfo> GetWeekDates()
         {
             var dates = new List<DateDisplayInfo>();
             var today = DateTime.Today;
-
             for (int i = 0; i < 7; i++)
             {
                 var date = today.AddDays(i);
@@ -28,7 +31,6 @@ namespace ChickenFlickFilmApplication.Models
                     DisplayName = GetDateDisplayName(date, today),
                     ShortDate = dateOnly.ToString("dd/MM")
                 });
-
             }
             return dates;
         }
@@ -58,7 +60,7 @@ namespace ChickenFlickFilmApplication.Models
     public class DateDisplayInfo
     {
         public DateOnly Date { get; set; }
-        public string DisplayName { get; set; }
-        public string ShortDate { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
+        public string ShortDate { get; set; } = string.Empty;
     }
 }
