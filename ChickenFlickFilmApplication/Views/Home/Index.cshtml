@@ -272,10 +272,36 @@
         border: 1px solid #ffeaa7;
     }
 
+    /* New theater grouping styles */
+    .theater-group {
+        margin-bottom: 15px;
+        border-left: 3px solid #dee2e6;
+        padding-left: 15px;
+    }
+
+    .theater-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #6c757d;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .theater-icon {
+        width: 16px;
+        height: 16px;
+        background: #6c757d;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
     .time-slots {
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
+        margin-bottom: 10px;
     }
 
     .time-slot {
@@ -285,6 +311,8 @@
         transition: all 0.3s;
         font-weight: 500;
         border: 2px solid;
+        font-size: 14px;
+        position: relative;
     }
 
     /* Different styles for time slots based on status */
@@ -361,6 +389,86 @@
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 20px;
         }
+       /* Improved sorting controls */
+        .sort-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .sort-label-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #495057;
+        }
+
+        .sort-label-section i {
+            color: #c41e3a;
+            font-size: 18px;
+        }
+
+        .sort-label {
+            font-weight: 600;
+            font-size: 16px;
+            color: #495057;
+            margin: 0;
+        }
+
+        .sort-dropdown-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sort-dropdown {
+            appearance: none;
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 12px 45px 12px 15px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .sort-dropdown:hover {
+            border-color: #c41e3a;
+            box-shadow: 0 4px 15px rgba(196, 30, 58, 0.1);
+        }
+
+        .sort-dropdown:focus {
+            outline: none;
+            border-color: #c41e3a;
+            box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.15);
+        }
+
+        .sort-dropdown-wrapper::after {
+            content: '\f107';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            color: #c41e3a;
+            pointer-events: none;
+            transition: transform 0.3s ease;
+        }
+
+        .sort-dropdown:focus + .sort-dropdown-wrapper::after,
+        .sort-dropdown-wrapper:hover::after {
+            transform: rotate(180deg);
+        }
 
         .date-selector {
             justify-content: flex-start;
@@ -379,7 +487,16 @@
 
         .time-slot {
             padding: 6px 12px;
-            font-size: 14px;
+            font-size: 13px;
+        }
+
+        .theater-group {
+            margin-bottom: 12px;
+            padding-left: 10px;
+        }
+
+        .theater-name {
+            font-size: 13px;
         }
     }
     </style>
@@ -447,6 +564,21 @@
                 }
             </div>
 
+            <div class="sort-controls">
+                <div class="sort-label-section">
+                    <i class="fas fa-sort-alpha-down"></i>
+                    <label for="theater-sort" class="sort-label" >Sắp xếp theo:</label>
+                    
+                    <div class="sort-dropdown-wrapper">
+                        <select id="theater-sort" class="sort-dropdown">
+                            <option value="name-asc">Tên rạp (A-Z)</option>
+                            <option value="name-desc">Tên rạp (Z-A)</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
             <!-- Showtimes Container -->
             <div id="showtimes-container">
                 @if (Model.ShowtimesByDate.ContainsKey(Model.SelectedDate))
@@ -466,14 +598,46 @@
                                     @movie.Title
                                     <span class="status-badge @statusBadgeClass">@statusText</span>
                                 </h4>
-                                <div class="time-slots">
-                                    @foreach (var showtime in movieGroup.Value)
+                                
+                                @{
+                                    // Group showtimes by theater for better organization
+                                    var showtimesByTheater = movieGroup.Value
+                                        .GroupBy(s => s.AuditoriumId)
+                                        .OrderBy(g => 
+                                        {
+                                            if (g.Key == 0) return "ZZZ";
+                                            return Model.TheaterLookup.TryGetValue(g.Key, out var theater) 
+                                                ? theater?.TheaterName ?? "Unknown Theater" 
+                                                : "Unknown Theater";
+                                        });
+                                }
+
+                                @foreach (var theaterGroup in showtimesByTheater)
+                                {
+                                    var theaterName = "Unknown Theater";
+                                    if (theaterGroup.Key != 0 && Model.TheaterLookup.TryGetValue(theaterGroup.Key, out var theater))
                                     {
-                                        <div class="time-slot" data-showtime-id="@showtime.ShowtimeId" data-status="@showtime.Status">
-                                            @showtime.ShowTime.ToString("HH:mm")
-                                        </div>
+                                        theaterName = theater?.TheaterName ?? "Unknown Theater";
                                     }
-                                </div>
+
+                                    <div class="theater-group">
+                                        <div class="theater-name">
+                                            <span class="theater-icon"></span>
+                                            @theaterName
+                                        </div>
+                                        <div class="time-slots">
+                                            @foreach (var showtime in theaterGroup.OrderBy(s => s.ShowTime))
+                                            {
+                                                <div class="time-slot" 
+                                                     data-showtime-id="@showtime.ShowtimeId" 
+                                                     data-status="@showtime.Status"
+                                                     data-theater-id="@showtime.AuditoriumId">
+                                                    @(showtime.ShowTime.ToString("HH:mm") ?? "00:00")
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         }
                     }
@@ -511,10 +675,10 @@
                     try {
                         // Fetch showtimes for selected date
                         const response = await fetch(`/Home/GetShowtimesForDate?date=${selectedDate}`);
-                        const showtimes = await response.json();
+                        const data = await response.json();
                         
                         // Update showtimes display
-                        updateShowtimesDisplay(showtimes);
+                        updateShowtimesDisplay(data.showtimes, data.theaters);
                     } catch (error) {
                         console.error('Error fetching showtimes:', error);
                         showtimesContainer.innerHTML = '<div class="no-showtimes"><p>Lỗi khi tải suất chiếu</p></div>';
@@ -528,7 +692,6 @@
                     // Remove active styling from all time slots
                     document.querySelectorAll('.time-slot').forEach(slot => {
                         const parentSection = slot.closest('.movie-showtimes');
-                        const status = slot.getAttribute('data-status');
                         
                         // Reset to default styles based on status
                         if (parentSection.classList.contains('now-showing')) {
@@ -554,15 +717,20 @@
                         e.target.style.borderColor = '#ffc107';
                     }
                     
-                    // You can add booking functionality here
+                    // Get booking information
                     const showtimeId = e.target.getAttribute('data-showtime-id');
                     const status = e.target.getAttribute('data-status');
-                    console.log('Selected showtime:', showtimeId, 'Status:', status);
+                    const theaterId = e.target.getAttribute('data-theater-id');
+                    console.log('Selected showtime:', { showtimeId, status, theaterId });
+                    
+                    // You can add booking functionality here
+                    // For example: redirect to booking page
+                    // window.location.href = `/Booking/Create?showtimeId=${showtimeId}`;
                 }
             });
         });
 
-        function updateShowtimesDisplay(showtimes) {
+        function updateShowtimesDisplay(showtimes, theaters) {
             const container = document.getElementById('showtimes-container');
             const movies = @Html.Raw(Json.Serialize(Model.Movies));
             
@@ -585,24 +753,100 @@
                             <h4>
                                 ${movie.title}
                                 <span class="status-badge ${statusBadgeClass}">${statusText}</span>
-                            </h4>
-                            <div class="time-slots">`;
+                            </h4>`;
                     
+                    // Group by theater
+                    const showtimesByTheater = {};
                     movieShowtimes.forEach(showtime => {
-                        const time = new Date('2000-01-01T' + showtime.showTime).toLocaleTimeString('vi-VN', {
-                            hour: '2-digit',
-                            minute: '2-digit'
+                        const theaterId = showtime.auditoriumId || 0;
+                        if (!showtimesByTheater[theaterId]) {
+                            showtimesByTheater[theaterId] = [];
+                        }
+                        showtimesByTheater[theaterId].push(showtime);
+                    });
+
+                    // Sort theaters by name
+                    const sortedTheaterIds = Object.keys(showtimesByTheater).sort((a, b) => {
+                        const theaterA = theaters[a] ? theaters[a].name || 'Unknown Theater' : 'Unknown Theater';
+                        const theaterB = theaters[b] ? theaters[b].name || 'Unknown Theater' : 'Unknown Theater';
+                        if (a == 0) return 1;
+                        if (b == 0) return -1;
+                        return theaterA.localeCompare(theaterB);
+                    });
+
+                    sortedTheaterIds.forEach(theaterId => {
+                        const theaterShowtimes = showtimesByTheater[theaterId];
+                        const theaterName = theaterId != 0 && theaters[theaterId] 
+                            ? theaters[theaterId].name || 'Unknown Theater'
+                            : 'Unknown Theater';
+                        
+                        html += `
+                            <div class="theater-group">
+                                <div class="theater-name">
+                                    <span class="theater-icon"></span>
+                                    ${theaterName}
+                                </div>
+                                <div class="time-slots">`;
+                        
+                        // Sort showtimes by time
+                        theaterShowtimes.sort((a, b) => a.showTime.localeCompare(b.showTime));
+                        
+                        theaterShowtimes.forEach(showtime => {
+                            const time = new Date('2000-01-01T' + showtime.showTime).toLocaleTimeString('vi-VN', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                            html += `<div class="time-slot" 
+                                         data-showtime-id="${showtime.showtimeId}" 
+                                         data-status="${showtime.status}"
+                                         data-theater-id="${showtime.auditoriumId || ''}">${time}</div>`;
                         });
-                        html += `<div class="time-slot" data-showtime-id="${showtime.showtimeId}" data-status="${showtime.status}">${time}</div>`;
+                        
+                        html += `
+                                </div>
+                            </div>`;
                     });
                     
-                    html += `
-                            </div>
-                        </div>`;
+                    html += `</div>`;
                 }
             }
             
             container.innerHTML = html;
+        }
+
+        // Theater sorting functionality
+        document.getElementById('theater-sort').addEventListener('change', function() {
+            const sortType = this.value;
+            
+            // Get current showtimes data and re-sort
+            const currentMovieShowtimes = document.querySelectorAll('.movie-showtimes');
+            
+            currentMovieShowtimes.forEach(movieSection => {
+                const theaterGroups = Array.from(movieSection.querySelectorAll('.theater-group'));
+                const sortedGroups = sortTheaterGroups(theaterGroups, sortType);
+                
+                // Remove existing theater groups
+                theaterGroups.forEach(group => group.remove());
+                
+                // Add sorted theater groups back
+                sortedGroups.forEach(group => movieSection.appendChild(group));
+            });
+        });
+        
+        function sortTheaterGroups(theaterGroups, sortType) {
+            return theaterGroups.sort((a, b) => {
+                const nameA = a.querySelector('.theater-name').textContent.trim();
+                const nameB = b.querySelector('.theater-name').textContent.trim();
+                
+                switch(sortType) {
+                    case 'name-asc':
+                        return nameA.localeCompare(nameB, 'vi');
+                    case 'name-desc':
+                        return nameB.localeCompare(nameA, 'vi');
+                    default:
+                        return 0;
+                }
+            });
         }
     </script>
 </body>
