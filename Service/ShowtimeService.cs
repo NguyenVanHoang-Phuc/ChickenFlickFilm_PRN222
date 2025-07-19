@@ -3,6 +3,7 @@ using Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +23,14 @@ namespace Service
         public async Task<Showtime> GetShowtimeByIdAsync(int id)
         {
             return await _showtimeRepository.GetShowtimeByIdAsync(id);
+        }
+        public Task<IEnumerable<Showtime>> GetAllAsync(Expression<Func<Showtime, bool>> predicate)
+        {
+            return _showtimeRepository.GetAllAsync(predicate);
+        }
+        public Task<Showtime?> GetAsync(Expression<Func<Showtime, bool>> predicate)
+        {
+            return _showtimeRepository.GetAsync(predicate);
         }
         public async Task AddShowtimeAsync(Showtime showtime)
         {

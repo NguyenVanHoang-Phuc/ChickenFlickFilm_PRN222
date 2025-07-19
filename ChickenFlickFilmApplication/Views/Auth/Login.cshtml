@@ -2,7 +2,7 @@
     ViewData["Title"] = "Đăng Nhập - CHICKEN FLICK FILM";
     Layout = null;
 }
-
+@model LoginViewModel
 <!DOCTYPE html>
 <html>
 <head>
@@ -235,26 +235,47 @@
             <div class="login-form-container">
                 <h2 class="login-title">Đăng Nhập</h2>
 
+                @if (!string.IsNullOrEmpty(ViewBag.Message))
+                {
+                    <div class="alert alert-success text-center">@ViewBag.Message</div> <!-- For general success/info messages -->
+                }
+
+                @if (!string.IsNullOrEmpty(ViewBag.Error))
+                {
+                    <div class="alert alert-danger text-center">@ViewBag.Error</div> <!-- For error messages -->
+                }
+
                 <form method="post" asp-action="Login">
                     <div class="form-group">
                         <label class="form-label">
                             <span class="required">*</span>Email
                         </label>
-                        <input type="email" name="Email" class="form-input" placeholder="Nhập Email của bạn" required />
+                        <input asp-for="Email" class="form-input" placeholder="Nhập Email của bạn" />
+                        <span class="text-danger small" asp-validation-for="Email"></span>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">
                             <span class="required">*</span>Mật khẩu
                         </label>
-                        <input type="password" name="Password" class="form-input" placeholder="Nhập Mật khẩu" required />
+                        <input asp-for="Password" class="form-input" placeholder="Nhập Mật khẩu" />
+                        <span class="text-danger small" asp-validation-for="Password"></span>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input asp-for="RememberMe" class="form-check-input" />
+                        <label asp-for="RememberMe" class="form-check-label text-dark"></label>
                     </div>
 
                     <button type="submit" class="login-btn">Đăng Nhập</button>
+
+                    @if (!string.IsNullOrEmpty(ViewBag.Error))
+                    {
+                        <div class="text-danger text-center mt-2">@ViewBag.Error</div>
+                    }
                 </form>
 
+
                 <div class="forgot-password">
-                    <a href="#">Ghi nhớ mật khẩu</a>
                     <a href="@Url.Action("ForgotPassword", "Auth")">Quên mật khẩu?</a>
                 </div>
 
