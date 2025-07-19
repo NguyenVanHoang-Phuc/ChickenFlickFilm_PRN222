@@ -304,6 +304,56 @@ namespace ChickenFlickFilmApplication.Controllers
             }
             return NotFound();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile(UserProfileViewModel model)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View("UserProfile", model);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userService.GetAsync(u => u.UserId.ToString() == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Update user properties
+            user.FullName = model.FullName;
+            user.Birthday = model.DateOfBirth;
+            user.Gender = model.Gender == "Male";
+
+            var existPhone = await _userService.GetAsync(u => u.PhoneNumber.Equals(model.PhoneNumber));
+            if (existPhone != null)
+            {
+                TempData["Error"] = "Đã xảy ra lỗi khi cập nhật thông tin. Vui lòng thử lại.";
+            }
+            else
+            {
+                user.PhoneNumber = model.PhoneNumber;
+            }
+            try
+            {
+                await _userService.UpdateUserAsync(user);
+                TempData["Success"] = "Thông tin cá nhân đã được cập nhật thành công.";
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "Đã xảy ra lỗi khi cập nhật thông tin. Vui lòng thử lại.";
+            }
+
+            return RedirectToAction("UserProfile");
+        }
+
         private async Task SenConfirmationEmailAsync(string email, string code, string fullname)
         {
             await _emailSender.SendConfirmationEmailAsync(
