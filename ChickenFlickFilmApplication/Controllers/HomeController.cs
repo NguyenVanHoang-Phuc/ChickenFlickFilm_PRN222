@@ -10,6 +10,7 @@ namespace ChickenFlickFilmApplication.Controllers
         private readonly ILogger<HomeController> _logger;
         private IMovieService _movieService;
         private IShowtimeService _showtimeService;
+
         public HomeController(ILogger<HomeController> logger, IMovieService movieService, IShowtimeService showtimeService)
         {
             _logger = logger;
@@ -20,15 +21,13 @@ namespace ChickenFlickFilmApplication.Controllers
         public async Task<IActionResult> Index()
         {
             var movies = await _movieService.GetAllMoviesAsync();
-
             var startDate = DateOnly.FromDateTime(DateTime.Today);
             var endDate = startDate.AddDays(6);
-
             var showtimes = await _showtimeService.GetAllAsync(s => s.ShowDate >= startDate && s.ShowDate <= endDate);
 
-            // Group showtimes by date and movie
+            // Group showtimes by date and movie (including both statuses)
             var showtimesByDate = showtimes
-                .Where(s => s.Status == "Đang chiếu") // Only active showtimes
+                .Where(s => s.Status == "Đang chiếu" || s.Status == "Sắp chiếu")
                 .GroupBy(s => s.ShowDate.Value)
                 .ToDictionary(
                     g => g.Key,
@@ -49,10 +48,10 @@ namespace ChickenFlickFilmApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> GetShowtimesForDate(DateOnly date)
         {
-            var showtimes = await _showtimeService.GetAllAsync(s =>s.ShowDate.HasValue && s.ShowDate.Value >= date);
+            var showtimes = await _showtimeService.GetAllAsync(s => s.ShowDate.HasValue && s.ShowDate.Value == date);
 
             var activeShowtimes = showtimes
-                .Where(s => s.Status == "Đang chiếu")
+                .Where(s => s.Status == "Đang chiếu" || s.Status == "Sắp chiếu")
                 .GroupBy(s => s.MovieId)
                 .ToDictionary(g => g.Key, g => g.OrderBy(s => s.ShowTime).ToList());
 
