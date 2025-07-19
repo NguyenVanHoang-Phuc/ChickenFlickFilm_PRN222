@@ -60,7 +60,7 @@ namespace ChickenFlickFilmApplication.Controllers
             {
                 return Content("No seats selected.");
             }
-            return RedirectToAction("CreatePaymentUrlVnpay","PaymentController", new
+            return RedirectToAction("CreatePaymentUrlVnpay","Payment", new
             {
                 Amount = total,
                 Name = Name,

@@ -1,14 +1,26 @@
 ﻿@{
+    ViewData["Title"] = "MakePaymentFailed";
+    Layout = "_Layout";
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h2>Xuất vé thất bại</h2>
-    <button type="submit" onclick="goHome()">Quay Về Trang Chủ</button>
-</body>
-</html>
+@section Styles {
+    <link rel="stylesheet" href="~/css/MakePaymentFailed.css" asp-append-version="true" />
+}
+
+<div class="make-payment-failed">
+    <div class="overlay">
+        <div class="card">
+            <img src="/images/error-icon.jpg" alt="Error">
+            <h1>Xuất vé thất bại</h1>
+            <p>Vui lòng thanh toán để nhận vé.</p>
+            <button class="btn" onclick="goHome()">Quay về Trang Chủ</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function goHome() {
+            window.location.href = '/';
+        }
+    </script>
+}
