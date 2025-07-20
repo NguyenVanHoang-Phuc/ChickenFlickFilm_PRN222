@@ -1,378 +1,335 @@
-﻿@{
-    ViewData["Title"] = "Thông tin cá nhân - CHICKEN FLICK FILM";
+﻿@model ChickenFlickFilmApplication.Models.UserProfileViewModel
+@{
+    ViewData["Title"] = "Thông tin tài khoản";
 }
 
-@model UserProfileViewModel
+<style>
+    .profile-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+        min-height: 100vh;
+    }
 
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
-<body style="background-color: #f5f5f5;">
-    <!-- Top Navigation -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #B22222;">
-        <div class="container-fluid">
-            <!-- Logo -->
-            <a class="navbar-brand d-flex align-items-center text-white" href="@Url.Action("Index", "Home")">
-                <div class="mascot-small me-2">
-                    <svg width="40" height="40" viewBox="0 0 200 200">
-                        <!-- Turkey body -->
-                        <ellipse cx="100" cy="120" rx="40" ry="35" fill="#8B4513" stroke="#654321" stroke-width="2" />
-                        <!-- Turkey head -->
-                        <circle cx="100" cy="80" r="25" fill="#D2691E" stroke="#A0522D" stroke-width="2" />
-                        <!-- Turkey tail feathers -->
-                        <path d="M60 100 Q50 80 45 100 Q40 120 50 130 Q60 125 60 100" fill="#FF4500" stroke="#DC143C" stroke-width="2" />
-                        <path d="M65 95 Q55 75 50 95 Q45 115 55 125 Q65 120 65 95" fill="#FF6347" stroke="#DC143C" stroke-width="2" />
-                        <path d="M140 100 Q150 80 155 100 Q160 120 150 130 Q140 125 140 100" fill="#FF4500" stroke="#DC143C" stroke-width="2" />
-                        <path d="M135 95 Q145 75 150 95 Q155 115 145 125 Q135 120 135 95" fill="#FF6347" stroke="#DC143C" stroke-width="2" />
-                        <!-- TV screen -->
-                        <rect x="85" y="90" width="30" height="20" fill="#000" stroke="#333" stroke-width="2" rx="2" />
-                        <rect x="87" y="92" width="26" height="16" fill="#FF0000" rx="1" />
-                        <!-- Eyes -->
-                        <circle cx="92" cy="75" r="4" fill="white" />
-                        <circle cx="108" cy="75" r="4" fill="white" />
-                        <circle cx="92" cy="75" r="2" fill="black" />
-                        <circle cx="108" cy="75" r="2" fill="black" />
-                        <!-- Beak -->
-                        <path d="M100 82 L95 88 L105 88 Z" fill="#FFA500" />
-                        <!-- Wattle -->
-                        <ellipse cx="100" cy="90" rx="3" ry="6" fill="#DC143C" />
-                    </svg>
+    .profile-sidebar {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: #333;
+        margin: 0 auto 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 24px;
+    }
+
+    .profile-name {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+    .profile-spending {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .profile-main {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .profile-tabs {
+        display: flex;
+        border-bottom: 1px solid #eee;
+    }
+
+    .profile-tab {
+        flex: 1;
+        padding: 15px;
+        text-align: center;
+        background: #f9f9f9;
+        border: none;
+        cursor: pointer;
+        font-size: 14px;
+        color: #666;
+        border-right: 1px solid #eee;
+    }
+
+        .profile-tab:last-child {
+            border-right: none;
+        }
+
+        .profile-tab.active {
+            background: white;
+            color: #333;
+            font-weight: bold;
+        }
+
+    .profile-content {
+        padding: 30px;
+    }
+
+    .form-row {
+        display: flex;
+        margin-bottom: 20px;
+        gap: 20px;
+    }
+
+    .form-group {
+        flex: 1;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            background: #f9f9f9;
+        }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: #007bff;
+                background: white;
+            }
+
+    .gender-group {
+        display: flex;
+        gap: 20px;
+        margin-top: 8px;
+    }
+
+    .gender-option {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+        .gender-option input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+
+    .change-link {
+        color: #dc3545;
+        text-decoration: none;
+        font-size: 12px;
+        margin-left: 10px;
+    }
+
+        .change-link:hover {
+            text-decoration: underline;
+        }
+
+    .update-btn {
+        background: #dc3545;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+        .update-btn:hover {
+            background: #c82333;
+        }
+
+    .alert {
+        padding: 12px 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+
+    .alert i {
+        font-size: 16px;
+    }
+
+    .row {
+        display: flex;
+        gap: 20px;
+    }
+
+    .col-md-3 {
+        flex: 0 0 25%;
+    }
+
+    .col-md-9 {
+        flex: 0 0 75%;
+    }
+</style>
+
+<div class="profile-container">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="profile-sidebar">
+                <div class="profile-avatar">
+                    <i class="fas fa-camera"></i>
                 </div>
-            </a>
-
-            <!-- Navigation Menu -->
-            <div class="navbar-nav ml-auto d-flex flex-row">
-                <a class="nav-link text-white px-3" href="@Url.Action("BuyTickets", "Tickets")">Mua vé</a>
-                <a class="nav-link text-white px-3" href="@Url.Action("Movies", "Home")">Phim</a>
-                <a class="nav-link text-white px-3" href="@Url.Action("News", "Home")">Thông báo</a>
-                <a class="nav-link text-white px-3" href="@Url.Action("About", "Home")">Rạp/Giá vé</a>
-
-                <!-- Search Icon -->
-                <a class="nav-link text-white px-2" href="#" data-toggle="modal" data-target="#searchModal">
-                    <i class="fas fa-search"></i>
-                </a>
-
-                <!-- User Profile Dropdown -->
-                <div class="nav-item dropdown">
-                    <a class="nav-link text-white d-flex align-items-center px-3" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
-                        <div class="rounded-circle bg-white d-flex align-items-center justify-content-center me-2" style="width: 30px; height: 30px;">
-                            <i class="fas fa-user text-dark"></i>
-                        </div>
-                        <div class="d-flex flex-column">
-                            <span class="small">@Model.FullName</span>
-                            <span class="small text-light">Hạng thành viên</span>
-                        </div>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="@Url.Action("Profile", "Account")">Thông tin cá nhân</a>
-                        <a class="dropdown-item" href="@Url.Action("Settings", "Account")">Cài đặt</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="@Url.Action("Logout", "Account")">Đăng xuất</a>
-                    </div>
+                <div class="profile-name">@Model.FullName</div>
+                <div class="profile-spending">
+                    Tổng chi tiêu năm 2025: <span style="color: #dc3545;">@Model.TotalSpending.ToString("N0") VNĐ</span>
                 </div>
             </div>
         </div>
-    </nav>
 
-    <!-- Main Content -->
-    <div class="container-fluid mt-4">
-        <div class="row">
-            <!-- Left Sidebar -->
-            <div class="col-md-3">
-                <div class="card shadow-sm">
-                    <div class="card-body text-center">
-                        <!-- Profile Picture -->
-                        <div class="mb-3">
-                            <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
-                                <i class="fas fa-camera text-white" style="font-size: 24px;"></i>
-                            </div>
-                        </div>
-                        <h5 class="mb-1">@Model.FullName</h5>
-                        <p class="text-muted small mb-3">
-                            Tổng chi tiêu năm 2025: <span class="text-danger">...VNĐ</span>
-                        </p>
-                    </div>
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="profile-main">
+                <!-- Tabs -->
+                <div class="profile-tabs">
+                    <button class="profile-tab" onclick="showTab('history')">Lịch sử giao dịch</button>
+                    <button class="profile-tab active" onclick="showTab('personal')">Thông tin cá nhân</button>
+                    <button class="profile-tab" onclick="showTab('promotion')">Khuyến mãi</button>
                 </div>
-            </div>
 
-            <!-- Main Content Area -->
-            <div class="col-md-9">
-                <div class="card shadow-sm">
-                    <!-- Tab Navigation -->
-                    <div class="card-header bg-white">
-                        <ul class="nav nav-tabs card-header-tabs" id="profileTabs" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link active" id="history-tab" data-toggle="tab" href="#history" role="tab">
-                                    Lịch sử giao dịch
-                                </a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="personal-info-tab" data-toggle="tab" href="#personal-info" role="tab">
-                                    Thông tin cá nhân
-                                </a>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <a class="nav-link" id="promotions-tab" data-toggle="tab" href="#promotions" role="tab">
-                                    Khuyến mãi
-                                </a>
-                            </li>
-                        </ul>
+                <!-- Content -->
+                <div class="profile-content">
+                    <!-- TempData Messages -->
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            @TempData["Success"]
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            @TempData["Error"]
+                        </div>
+                    }
+
+                    <div id="personal-info">
+                        <form asp-action="UpdateProfile" method="post">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="fullname">Họ và tên</label>
+                                    <input type="text" id="fullname" name="FullName" value="@Model.FullName" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="birthday">Ngày sinh</label>
+                                    <input type="date" id="birthday" name="DateOfBirth" value="@Model.DateOfBirth.ToString("yyyy-MM-dd")" />
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">
+                                        Email
+                                        <a href="#" class="change-link">Thay đổi</a>
+                                    </label>
+                                    <input type="email" id="email" name="Email" value="@Model.Email" readonly />
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Số điện thoại</label>
+                                    <input type="tel" id="phone" name="PhoneNumber" value="@Model.PhoneNumber" />
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Giới tính</label>
+                                    <div class="gender-group">
+                                        <div class="gender-option">
+                                            <input type="radio" id="male" name="Gender" value="Male" @(Model.Gender == "Male" ? "checked" : "") />
+                                            <label for="male">Nam</label>
+                                        </div>
+                                        <div class="gender-option">
+                                            <input type="radio" id="female" name="Gender" value="Female" @(Model.Gender == "Female" ? "checked" : "") />
+                                            <label for="female">Nữ</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">
+                                        Mật khẩu
+                                        <a href="#" class="change-link">Thay đổi</a>
+                                    </label>
+                                    <input type="password" id="password" value="••••••••" readonly />
+                                </div>
+                            </div>
+
+                            <button type="submit" class="update-btn">Cập nhật</button>
+                        </form>
                     </div>
 
-                    <!-- Tab Content -->
-                    <div class="card-body">
-                        <div class="tab-content" id="profileTabsContent">
-                            <!-- Transaction History Tab -->
-                            <div class="tab-pane fade show active" id="history" role="tabpanel">
-                                <div class="text-center py-5">
-                                    <p class="text-muted">Chưa có giao dịch nào</p>
-                                </div>
-                            </div>
+                    <div id="history-info" style="display: none;">
+                        <p>Lịch sử giao dịch sẽ được hiển thị ở đây.</p>
+                    </div>
 
-                            <!-- Personal Information Tab -->
-                            <div class="tab-pane fade" id="personal-info" role="tabpanel">
-                                <div class="border border-primary rounded p-4">
-                                    @using (Html.BeginForm("UpdateProfile", "Account", FormMethod.Post, new { @class = "needs-validation", novalidate = "novalidate" }))
-                                    {
-                                        @Html.AntiForgeryToken()
-
-                                        <div class="row">
-                                            <!-- Left Column -->
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="FullName" class="form-label">Họ và tên</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text bg-light">
-                                                                <i class="fas fa-user text-muted"></i>
-                                                            </span>
-                                                        </div>
-                                                        @Html.TextBoxFor(m => m.FullName, new
-                                                            {
-                                                                @class = "form-control bg-light",
-                                                                @readonly = "readonly",
-                                                                style = "background-color: #f8f9fa !important;"
-                                                            })
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label for="Email" class="form-label">Email</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text bg-light">
-                                                                <i class="fas fa-envelope text-muted"></i>
-                                                            </span>
-                                                        </div>
-                                                        @Html.TextBoxFor(m => m.Email, new
-                                                            {
-                                                                @class = "form-control bg-light",
-                                                                @readonly = "readonly",
-                                                                style = "background-color: #f8f9fa !important;"
-                                                            })
-                                                        <div class="input-group-append">
-                                                            <button class="btn btn-outline-danger btn-sm" type="button" onclick="enableEdit('Email')">
-                                                                Thay đổi
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label class="form-label">Giới tính</label>
-                                                    <div class="d-flex">
-                                                        <div class="form-check mr-3">
-                                                            @Html.RadioButtonFor(m => m.Gender, "male", new { @class = "form-check-input", @disabled = "disabled" })
-                                                            <label class="form-check-label">Nam</label>
-                                                        </div>
-                                                        <div class="form-check">
-                                                            @Html.RadioButtonFor(m => m.Gender, "female", new { @class = "form-check-input", @disabled = "disabled" })
-                                                            <label class="form-check-label">Nữ</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Right Column -->
-                                            <div class="col-md-6">
-                                                <div class="form-group mb-3">
-                                                    <label for="DateOfBirth" class="form-label">Ngày sinh</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text bg-light">
-                                                                <i class="fas fa-calendar text-muted"></i>
-                                                            </span>
-                                                        </div>
-                                                        @Html.TextBoxFor(m => m.DateOfBirth, "{0:dd/MM/yyyy}", new
-                                                            {
-                                                                @class = "form-control bg-light",
-                                                                @readonly = "readonly",
-                                                                style = "background-color: #f8f9fa !important;"
-                                                            })
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label for="PhoneNumber" class="form-label">Số điện thoại</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text bg-light">
-                                                                <i class="fas fa-phone text-muted"></i>
-                                                            </span>
-                                                        </div>
-                                                        @Html.TextBoxFor(m => m.PhoneNumber, new
-                                                            {
-                                                                @class = "form-control bg-light",
-                                                                @readonly = "readonly",
-                                                                style = "background-color: #f8f9fa !important;"
-                                                            })
-                                                        <div class="input-group-append">
-                                                            <button class="btn btn-outline-danger btn-sm" type="button" onclick="enableEdit('PhoneNumber')">
-                                                                Thay đổi
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group mb-3">
-                                                    <label for="Password" class="form-label">Mật khẩu</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text bg-light">
-                                                                <i class="fas fa-lock text-muted"></i>
-                                                            </span>
-                                                        </div>
-                                                        <input type="password" class="form-control bg-light" value="••••••••" readonly style="background-color: #f8f9fa !important;">
-                                                        <div class="input-group-append">
-                                                            <button class="btn btn-outline-danger btn-sm" type="button" onclick="openChangePasswordModal()">
-                                                                Thay đổi
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="text-right mt-4">
-                                            <button type="submit" class="btn btn-danger px-4" style="background-color: #B22222;">
-                                                Cập nhật
-                                            </button>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <!-- Promotions Tab -->
-                            <div class="tab-pane fade" id="promotions" role="tabpanel">
-                                <div class="text-center py-5">
-                                    <p class="text-muted">Chưa có khuyến mãi nào</p>
-                                </div>
-                            </div>
-                        </div>
+                    <div id="promotion-info" style="display: none;">
+                        <p>Thông tin khuyến mãi sẽ được hiển thị ở đây.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    function showTab(tabName) {
+        // Hide all content sections
+        document.getElementById('personal-info').style.display = 'none';
+        document.getElementById('history-info').style.display = 'none';
+        document.getElementById('promotion-info').style.display = 'none';
 
-    <style>
-        .nav-tabs .nav-link {
-            color: #666;
-            border: none;
-            border-bottom: 2px solid transparent;
+        // Remove active class from all tabs
+        const tabs = document.querySelectorAll('.profile-tab');
+        tabs.forEach(tab => tab.classList.remove('active'));
+
+        // Show selected content and activate tab
+        if (tabName === 'personal') {
+            document.getElementById('personal-info').style.display = 'block';
+            tabs[1].classList.add('active');
+        } else if (tabName === 'history') {
+            document.getElementById('history-info').style.display = 'block';
+            tabs[0].classList.add('active');
+        } else if (tabName === 'promotion') {
+            document.getElementById('promotion-info').style.display = 'block';
+            tabs[2].classList.add('active');
         }
-
-        .nav-tabs .nav-link.active {
-            color: #007bff;
-            background-color: transparent;
-            border-color: #007bff;
-            border-bottom: 2px solid #007bff;
-        }
-
-        .form-control:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        }
-
-        .input-group-text {
-            border-right: none;
-        }
-
-        .form-control[readonly] {
-            background-color: #f8f9fa !important;
-            opacity: 1;
-        }
-
-        .btn-outline-danger {
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-
-        .btn-outline-danger:hover {
-            background-color: #dc3545;
-            border-color: #dc3545;
-        }
-
-        .card {
-            border: none;
-        }
-
-        .navbar-nav .nav-link {
-            transition: opacity 0.2s ease;
-        }
-
-        .navbar-nav .nav-link:hover {
-            opacity: 0.8;
-        }
-    </style>
-
-    <script>
-        // Set the Personal Information tab as active on page load
-        $(document).ready(function() {
-            $('#personal-info-tab').tab('show');
-        });
-
-        function enableEdit(fieldName) {
-            const field = document.querySelector(`input[name="${fieldName}"]`);
-            if (field) {
-                field.removeAttribute('readonly');
-                field.classList.remove('bg-light');
-                field.style.backgroundColor = 'white';
-                field.focus();
-            }
-        }
-
-        function openChangePasswordModal() {
-            // This would open a password change modal
-            alert('Chức năng đổi mật khẩu sẽ được triển khai');
-        }
-
-        // Form validation
-        (function() {
-            'use strict';
-            window.addEventListener('load', function() {
-                var forms = document.getElementsByClassName('needs-validation');
-                var validation = Array.prototype.filter.call(forms, function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (form.checkValidity() === false) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-            }, false);
-        })();
-    </script>
-</body>
-</html>
+    }
+</script>

@@ -59,29 +59,37 @@
                             <a class="nav-link" href="/thong-bao.html">Thông báo</a>
                         </li>
                     </ul>
-
-                    <div class="search-login">
-                        <form class="d-flex" role="search">
-                            <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" />
-                        </form>
-                        <a href="#" class="text-decoration-none">Đăng Nhập</a>
-                        <a href="#" class="text-decoration-none">Đăng ký</a>
-                    </div>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <div class="search-login">
+                            <form class="d-flex" role="search">
+                                <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" />
+                            </form>
+                            <a href="@Url.Action("Login", "Auth")" class="text-decoration-none">Đăng Nhập</a>
+                            <a href="@Url.Action("Signup", "Auth")" class="text-decoration-none">Đăng ký</a>
+                        </div>
+                    }
+                    else if (User.IsInRole("Customer"))
+                    {
+                        <div class="search-login">
+                            <form class="d-flex" role="search">
+                                <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" />
+                            </form>
+                            <a href="@Url.Action("UserProfile", "Auth")" class="text-decoration-none">Profile</a>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="mt-auto border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - ChickenFlickFilmApplication - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    @Html.Partial("_Footer")
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

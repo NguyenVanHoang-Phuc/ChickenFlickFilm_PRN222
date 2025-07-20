@@ -1,8 +1,8 @@
 ﻿@{
-    ViewData["Title"] = "Quên Mật Khẩu - CHICKEN FLICKS FILM";
+    ViewData["Title"] = "Kích Hoạt Tài Khoản - CHICKEN FLICKS FILM";
     Layout = null;
 }
-@model ForgotPasswordViewModel
+@model ConfirmEmailViewModel
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -77,9 +77,9 @@
             padding: 5px;
         }
 
-        .close-btn:hover {
-            color: #666;
-        }
+            .close-btn:hover {
+                color: #666;
+            }
 
         .form-logo {
             width: 80px;
@@ -123,9 +123,18 @@
             transition: border-color 0.3s ease;
         }
 
-        .form-input:focus {
-            outline: none;
-            border-color: #3b82f6;
+            .form-input:focus {
+                outline: none;
+                border-color: #3b82f6;
+            }
+
+        .code-input {
+            text-align: center;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            font-family: 'Courier New', monospace;
         }
 
         .submit-btn {
@@ -141,29 +150,54 @@
             transition: background-color 0.3s ease;
         }
 
-        .submit-btn:hover {
-            background-color: #ea580c;
+            .submit-btn:hover {
+                background-color: #ea580c;
+            }
+
+        .resend-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+            .resend-link a {
+                color: #3b82f6;
+                text-decoration: none;
+                font-size: 14px;
+            }
+
+                .resend-link a:hover {
+                    text-decoration: underline;
+                }
+
+        .email-info {
+            background-color: #f0f9ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #1e40af;
         }
 
         @@media (max-width: 768px) {
             body {
                 flex-direction: column;
             }
-            
+
             .left-panel {
                 width: 100%;
                 height: 40vh;
             }
-            
+
             .right-panel {
                 width: 100%;
                 height: 60vh;
             }
-            
+
             .company-name {
                 font-size: 2rem;
             }
-            
+
             .form-container {
                 width: 90%;
                 padding: 30px;
@@ -180,36 +214,50 @@
     <div class="right-panel">
         <div class="form-container">
             <button class="close-btn" type="button" onclick="window.history.back()">×</button>
-            
+
             <img src="~/images/logo.png" alt="CHICKEN FLICKS FILM" class="form-logo" />
-            
-            <h2 class="form-title">Quên Mật Khẩu?</h2>
-            
+
+            <h2 class="form-title">Kích Hoạt Tài Khoản</h2>
+
             <p class="form-description">
-                Vui lòng cung cấp email đăng nhập, chúng tôi sẽ gửi link kích hoạt cho bạn.
+                Vui lòng nhập mã kích hoạt đã được gửi đến email của bạn.
             </p>
 
-            <form method="post" asp-action="ForgotPassword" asp-controller="Auth">
+            <div class="email-info">
+                📧 Mã kích hoạt đã được gửi đến: <strong>@Model?.Email</strong>
+            </div>
+
+            <form method="post" asp-action="ConfirmEmail" asp-controller="Auth">
+                <input type="hidden" asp-for="Email" value="@Model.Email" />
+                <input type="hidden" asp-for="Code" value="@Model.Code" />
+
                 <div class="form-group">
-                    <label class="form-label" for="email">Email</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        class="form-input" 
-                        placeholder="Nhập Email" 
-                        required 
-                        asp-for="Email"
-                    />
-                    <span asp-validation-for="Email" class="text-danger"></span>
+                    <label class="form-label" for="activationCode">Mã Kích Hoạt</label>
+                    <input type="text"
+                           id="CodeEnter"
+                           name="CodeEnter"
+                           class="form-input code-input"
+                           required
+                           asp-for="CodeEnter"
+                           placeholder="CF-12345..." />
+                    <span asp-validation-for="CodeEnter" class="text-danger"></span>
                 </div>
 
                 <button type="submit" class="submit-btn">
-                    CẤP LẠI MẬT KHẨU
+                    KÍCH HOẠT TÀI KHOẢN
                 </button>
             </form>
+
+            <div class="resend-link">
+                <a href="@Url.Action("ResendConfirmationEmail", "Auth", new { email = Model.Email })">Không nhận được mã? Gửi lại</a>
+            </div>
         </div>
     </div>
+
+    <script>
+        // Auto-focus on the activation code input
+        document.getElementById('activationCode').focus();
+    </script>
 
     @section Scripts {
         <partial name="_ValidationScriptsPartial" />

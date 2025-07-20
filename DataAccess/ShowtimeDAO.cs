@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,6 +27,19 @@ namespace DataAccess
                         .Include(s => s.Movie)
                         .Include(s => s.Auditorium)
                         .FirstOrDefaultAsync(s => s.ShowtimeId == id);
+        }
+        public async Task<Showtime?> GetAsync(Expression<Func<Showtime, bool>> predicate)
+        {
+            return await _context.Showtimes
+                .AsNoTracking() 
+                .FirstOrDefaultAsync(predicate);
+        }
+        public async Task<IEnumerable<Showtime>> GetAllAsync(Expression<Func<Showtime, bool>> predicate)
+        {
+            return await _context.Showtimes
+                .AsNoTracking()
+                .Where(predicate)
+                .ToListAsync();
         }
 
         public async Task AddShowtimeAsync(Showtime showtime)

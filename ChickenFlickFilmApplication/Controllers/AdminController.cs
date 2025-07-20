@@ -383,17 +383,26 @@ namespace ChickenFlickFilmApplication.Controllers
         // GET
         public async Task<IActionResult> GetCreateShowtimeModal()
         {
-            ViewBag.MovieRaw = await _movieService.GetMoviesByEnableStatusAsync();
-            ViewBag.MovieList = new SelectList(await _movieService.GetMoviesByEnableStatusAsync(), "MovieId", "Title");
-            ViewBag.AuditoriumList = new SelectList(await _auditoriumService.GetAllAuditoriumsAsync(), "AuditoriumId", "AuditoriumName");
+            var movieList = await _movieService.GetMoviesByEnableStatusAsync();  
+            ViewBag.MovieRaw = movieList;
+
+            var auditoriumList = await _auditoriumService.GetAllAuditoriumsAsync();
+            ViewBag.AuditoriumList = new SelectList(auditoriumList, "AuditoriumId", "AuditoriumName");
+
+            ViewBag.MovieList = new SelectList(movieList, "MovieId", "Title");
             ViewData["Title"] = "Thêm suất chiếu mới";
             ViewData["Action"] = "CreateShowtime";
             return PartialView("Partial/_CreateOrEditModalShowtime", new Showtime());
         }
         public async Task<IActionResult> GetEditShowtimeModal(int id)
         {
-            ViewBag.MovieList = new SelectList(await _movieService.GetMoviesByEnableStatusAsync(), "MovieId", "Title");
-            ViewBag.AuditoriumList = new SelectList(await _auditoriumService.GetAllAuditoriumsAsync(), "AuditoriumId", "AuditoriumName");
+            var movieList = await _movieService.GetMoviesByEnableStatusAsync();  
+            ViewBag.MovieRaw = movieList;
+       
+            var auditoriumList = await _auditoriumService.GetAllAuditoriumsAsync();
+            ViewBag.AuditoriumList = new SelectList(auditoriumList, "AuditoriumId", "AuditoriumName");
+
+            ViewBag.MovieList = new SelectList(movieList, "MovieId", "Title");
             var showtime = await _showtimeService.GetShowtimeByIdAsync(id); 
             ViewData["Title"] = "Chỉnh sửa suất chiếu";
             ViewData["Action"] = "EditShowtime";

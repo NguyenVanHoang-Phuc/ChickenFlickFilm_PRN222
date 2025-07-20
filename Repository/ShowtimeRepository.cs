@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,6 +25,10 @@ namespace Repository
         {
             return await _showtimeDAO.GetShowtimeByIdAsync(id);
         }
+        public Task<IEnumerable<Showtime>> GetAllAsync(Expression<Func<Showtime, bool>> predicate)
+        {
+            return _showtimeDAO.GetAllAsync(predicate);
+        }
         public async Task AddShowtimeAsync(Showtime showtime)
         {
             if (showtime == null) throw new ArgumentNullException(nameof(showtime));
@@ -41,6 +46,10 @@ namespace Repository
         public async Task<int> GetTotalShowtimeAsync()
         {
             return await _showtimeDAO.GetTotalShowtimeAsync();
+        }
+        public async Task<Showtime?> GetAsync(Expression<Func<Showtime, bool>> predicate)
+        {
+            return await _showtimeDAO.GetAsync(predicate);
         }
 
         public async Task<IEnumerable<Showtime>> GetShowtimesByMovieIdAsync(int movieId)

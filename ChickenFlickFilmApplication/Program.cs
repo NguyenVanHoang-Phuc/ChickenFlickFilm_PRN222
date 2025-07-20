@@ -1,4 +1,6 @@
+using ChickenFlickFilmApplication.Controllers;
 using DataAccess;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Repository;
 using Service;
@@ -54,6 +56,23 @@ builder.Services.AddScoped<PriceByTypeDAO>();
 builder.Services.AddScoped<IPriceByTypeRepository, PriceByTypeRepository>();
 builder.Services.AddScoped<IPriceByTypeService, PriceByTypeService>();
 
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        //options.AccessDeniedPath = "/Auth/AccessDenied";
+    });
+
+builder.Services.AddMemoryCache();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromDays(2);
+    options.SlidingExpiration = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -62,6 +81,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
+
+app.UseCookiePolicy();
 
 app.UseRouting();
 

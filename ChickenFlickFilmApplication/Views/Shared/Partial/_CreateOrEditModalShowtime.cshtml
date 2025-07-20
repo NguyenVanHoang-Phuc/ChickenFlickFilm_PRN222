@@ -28,6 +28,7 @@
         <div class="form-group">
             <label class="form-label">Ngày chiếu:</label>
             <input asp-for="ShowDate" class="form-control" type="date" id="show-date" />
+            <small id="date-info" class="form-text text-muted"></small> 
             <span asp-validation-for="ShowDate" class="text-danger"></span>
         </div>
 
@@ -43,3 +44,52 @@
         <button type="submit" class="btn btn-primary">Lưu</button>
     </div>
 </form>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const movieSelect = document.getElementById('movie-select');
+    const showDateInput = document.getElementById('show-date');
+    const dateInfoText = document.getElementById('date-info');  // Phần tử hiển thị giới hạn ngày
+
+    const movieData = @Html.Raw(Json.Serialize(ViewBag.MovieRaw));
+
+    // Hàm để gắn lại sự kiện change khi modal được mở
+    function initializeMovieSelectEvent() {
+        movieSelect.addEventListener('change', function () {
+            const selectedId = parseInt(this.value);
+            const selectedMovie = movieData.find(m => m.movieId === selectedId);
+            console.log("Movie:", movieData);
+            console.log("Selected Movie:", selectedMovie);  // Kiểm tra giá trị của selectedMovie
+            if (selectedMovie) {
+                const releaseDate = selectedMovie.releaseDate;
+                const endDate = selectedMovie.endDate;
+
+                showDateInput.min = releaseDate;
+                showDateInput.max = endDate;
+
+                // Hiển thị giới hạn ngày
+                dateInfoText.textContent = `Ngày chiếu phải nằm trong khoảng: ${releaseDate} - ${endDate}`;
+            } else {
+                showDateInput.removeAttribute('min');
+                showDateInput.removeAttribute('max');
+                dateInfoText.textContent = '';
+            }
+        });
+
+        // Nếu modal đã có giá trị phim được chọn, kích hoạt lại sự kiện change
+        if (movieSelect.value) {
+            movieSelect.dispatchEvent(new Event('change'));
+        }
+    }
+
+    // Gắn lại sự kiện khi modal được mở lại
+    $('#showtimeModal').on('shown.bs.modal', function () {
+        initializeMovieSelectEvent();
+    });
+
+    // Khởi tạo sự kiện lần đầu tiên khi modal được load
+    if ($('#showtimeModal').hasClass('show')) {
+        initializeMovieSelectEvent();
+    }
+</script>
