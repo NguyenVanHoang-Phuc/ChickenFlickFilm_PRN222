@@ -75,16 +75,16 @@ namespace ChickenFlickFilmApplication.Controllers
                 Description = movie.Description,
                 TrailerUrl = movie.TrailerUrl,
                 Country = movie.Country,
-                Showtimes = movieShowtimes.Select(group => new ShowtimeUserViewModel
-                {
-                    ShowDate = group.Key.ToString("dd/MM/yyyy"),
-                    DayOfWeek = group.Key.ToString("dddd", new System.Globalization.CultureInfo("vi-VN")),
-                    Showtimes = group.Select(st => new ShowtimeDetailViewModel
-                    {
-                        ShowTime = st.ShowTime.ToString("HH:mm"),
-                        Format = st.Movie.Format,
-                    }).ToList()
-                }).ToList()
+                //Showtimes = movieShowtimes.Select(group => new ShowtimeUserViewModel
+                //{
+                //    ShowDate = group.Key.ToString("dd/MM/yyyy"),
+                //    DayOfWeek = group.Key.ToString("dddd", new System.Globalization.CultureInfo("vi-VN")),
+                //    Showtimes = group.Select(st => new ShowtimeDetailViewModel
+                //    {
+                //        ShowTime = st.ShowTime.ToString("HH:mm"),
+                //        Format = st.Movie.Format,
+                //    }).ToList()
+                //}).ToList()
             };
 
             return View(vm);
