@@ -55,20 +55,41 @@ namespace DataAccess
             return await _context.Showtimes.CountAsync();
         }
 
+        public async Task<IEnumerable<Showtime>> GetShowtimesByMovieIdAsync(int movieId)
+        {
+            return await _context.Showtimes
+                        .Where(s => s.MovieId == movieId)
+                        .Include(s => s.Auditorium)
+                        .ToListAsync();
+        }
 
-        public async Task<IEnumerable<Showtime>> GetShowtimesForNext7DaysAsync()
+        public async Task<IEnumerable<Showtime>> GetShowtimeForNext3DaysAsync()
         {
             var today = DateOnly.FromDateTime(DateTime.Now);
-            var endDate = today.AddDays(7);
+            var twoDaysLater = today.AddDays(2);
+
+            // Lấy tất cả showtimes từ cơ sở dữ liệu
             var showtimes = await _context.Showtimes
-        .Where(s =>
-            s.ShowDate.HasValue
-            && s.ShowDate.Value >= today
-            && s.ShowDate.Value <= endDate
-        )
-        .OrderBy(s => s.ShowDate)
-        .ToListAsync();
-            return showtimes;
+                .Where(s => s.ShowDate.HasValue) // Chỉ lấy các showtimes có ShowDate
+                .OrderBy(s => s.ShowDate) // Sắp xếp theo ShowDate
+                .ThenBy(s => s.ShowTime) // Sắp xếp theo ShowTime
+                .ToListAsync();
+
+            // Lọc ra các showtimes trong khoảng từ hôm nay đến hai ngày sau
+            var filteredShowtimes = showtimes
+                .Where(s => s.ShowDate.Value >= today && s.ShowDate.Value <= twoDaysLater)
+                .ToList();
+
+            // Nếu không có showtimes cho ngày hôm nay, lấy ba ngày tiếp theo
+            if (!filteredShowtimes.Any())
+            {
+                filteredShowtimes = showtimes
+                    .Where(s => s.ShowDate.Value > today)
+                    .Take(3) // Lấy 3 showtimes tiếp theo
+                    .ToList();
+            }
+
+            return filteredShowtimes;
         }
     }
 }

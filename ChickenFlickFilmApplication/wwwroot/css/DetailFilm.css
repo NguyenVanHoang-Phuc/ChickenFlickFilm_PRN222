@@ -230,3 +230,19 @@ button.btn {
         border-color: #D84040;
         /* Đổi màu viền */
     }
+
+.actor-list {
+    display: flex;
+    gap: 0.5rem; /* Khoảng cách giữa các thẻ */
+    flex-wrap: wrap; /* Cho phép bọc các thẻ ra dòng mới nếu cần */
+}
+
+.actor-box {
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    color: #333;
+    border: 1px solid #ccc;
+    white-space: nowrap;
+}
+

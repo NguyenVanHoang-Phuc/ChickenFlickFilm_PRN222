@@ -1,16 +1,21 @@
 ﻿using BusinessObjects.Models;
+using ChickenFlickFilmApplication.Models;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace ChickenFlickFilmApplication.Controllers
 {
     public class MoviesUserController : Controller
     {
         private readonly IMovieService _movieService;
-       
-        public MoviesUserController(IMovieService movieService)
+        private readonly IShowtimeService _showtimeService;
+
+        public MoviesUserController(IMovieService movieService, IShowtimeService showtimeService)
         {
             _movieService = movieService;
+            _showtimeService = showtimeService;
         }
         public async Task<IActionResult> ListFilm()
         {
@@ -34,13 +39,55 @@ namespace ChickenFlickFilmApplication.Controllers
             }
             ViewBag.NowShowing = nowShowing;
             ViewBag.Upcoming = upcoming;
-
+            
             return View();
         }
 
-        public IActionResult DetailFilm(int id)
+        public async Task<IActionResult> DetailFilm(int id)
         {
-            return View();
+            var movie = await _movieService.GetMovieByIdAsync(id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+            var showtimes = await _showtimeService.GetShowtimeForNext3DaysAsync();
+            var movieShowtimes = showtimes
+       .Where(s => s.MovieId == id) // Lọc theo movieId của phim
+       .GroupBy(s => s.ShowDate) // Nhóm theo ngày
+       .ToList();
+
+            var vm = new MovieUserViewModel
+            {
+                Title = movie.Title,
+                BannerUrl = movie.BannerUrl,
+                PosterUrl = movie.PosterUrl,
+                AgeRating = movie.AgeRating,
+                Genre = movie.Genre,
+                Duration = movie.Duration,
+                ReleaseDate = movie.ReleaseDate,
+                EndDate = movie.EndDate,
+                Rating = movie.Rating,
+                Status = movie.Status,
+                Format = movie.Format,
+                Language = movie.Language,
+                Director = movie.Director,
+                Cast = movie.Cast,
+                Description = movie.Description,
+                TrailerUrl = movie.TrailerUrl,
+                Country = movie.Country,
+                Showtimes = movieShowtimes.Select(group => new ShowtimeUserViewModel
+                {
+                    ShowDate = group.Key.ToString("dd/MM/yyyy"),
+                    DayOfWeek = group.Key.ToString("dddd", new System.Globalization.CultureInfo("vi-VN")),
+                    Showtimes = group.Select(st => new ShowtimeDetailViewModel
+                    {
+                        ShowTime = st.ShowTime.ToString("HH:mm"),
+                        Format = st.Movie.Format,
+                    }).ToList()
+                }).ToList()
+            };
+
+            return View(vm);
         }
     }
 }

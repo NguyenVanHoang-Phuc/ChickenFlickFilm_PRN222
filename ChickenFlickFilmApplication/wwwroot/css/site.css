@@ -1,4 +1,4 @@
-﻿html, body {
+﻿/*html, body {
     height: 100%;
     margin: 0;
 }
@@ -9,5 +9,5 @@ body {
 }
 
 main.main {
-    flex: 1; /* phần nội dung chính sẽ chiếm không gian còn lại */
-}
+    flex: 1;*/ /* phần nội dung chính sẽ chiếm không gian còn lại */
+/*}*/

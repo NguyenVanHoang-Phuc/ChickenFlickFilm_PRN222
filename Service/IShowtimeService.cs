@@ -16,6 +16,6 @@ namespace Service
         Task DeleteShowtimeAsync(int id);
         Task<int> GetTotalShowtimesAsync();
         Task<IEnumerable<Showtime>> GetShowtimesByMovieIdAsync(int movieId);
-        Task<IEnumerable<Showtime>> GetShowtimesForNext7DaysAsync();
+        Task<IEnumerable<Showtime>> GetShowtimeForNext3DaysAsync();
     }
 }
