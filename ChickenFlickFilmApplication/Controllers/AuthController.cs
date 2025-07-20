@@ -197,10 +197,15 @@ namespace ChickenFlickFilmApplication.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authProperties);
 
+            if(user.Role == "FilmManager" || user.Role == "Admin")
+            {
+                return RedirectToAction("Dashboard", "Admin");
+            }
+
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> LogoutAsync()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
