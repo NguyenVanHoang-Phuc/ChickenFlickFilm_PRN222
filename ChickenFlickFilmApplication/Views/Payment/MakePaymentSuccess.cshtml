@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "MakePaymentSuccess";
+    Layout = "_Layout";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/MakePaymentSuccess.css" asp-append-version="true" />
+}
+<div class="make-payment-success">
+    <div class="overlay" id="successOverlay">
+        <div class="card">
+            <div class="icon">✔</div>
+            <h1>Thanh toán thành công!</h1>
+            <div class="ticket-information">
+                <h5><b>THÔNG TIN ĐẶT VÉ</b></h5>
+                <div class="row">
+                    <div class="col-2 left"><b>Phim</b></div>
+                    <div class="col-10 right"><b>@TempData["MovieName"]</b></div>
+                </div>
+                <div class="row">
+                    <div class="col-2 left""><b>Rạp</b></div>
+                    <div class="col-10 right">
+                        <div class="theater-name"><b>@TempData["TheaterName"]</b></div>
+                        <div class="showtime"><i>@TempData["Showtime"]</i></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 left"><b>Phòng</b></div>
+                    <div class="col-10 right">
+                        <div class="room-name">@TempData["Auditorium"]</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 left"><b>Ghế</b></div>
+                    <div class="col-10 right">
+                        <div class="seat-code">@TempData["listSeat"]</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-2 left"><b>Tổng</b></div>
+                    <div class="col-10 right" style="font-size: 18px;"><b>@TempData["total"]</b></div>
+                </div>
+            </div>
+            <div class="button-group">
+                <button id="homeBtn" class="btn home">Quay về Trang Chủ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Quay về trang chủ
+        document.getElementById('homeBtn').addEventListener('click', () => {
+            window.location.href = '/';
+        });
+    </script>
+}

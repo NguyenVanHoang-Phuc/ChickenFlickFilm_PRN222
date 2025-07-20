@@ -1,25 +1,26 @@
-﻿* {
+﻿.Auditorium-page * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: Arial, sans-serif;
 }
 
-.container {
+.Auditorium-page .container {
     min-width: 100%;
     min-height: 100%;
     padding: 0;
     margin-top: 2.4%;
 }
 
-.movie-booking {
+.Auditorium-page .movie-booking {
     width: 100%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
+
 /* Navbar Styles */
-.navbar {
+.Auditorium-page .navbar {
     background-color: #8b0000;
     height: 60px;
     color: white;
@@ -27,7 +28,7 @@
     align-items: center;
 }
 
-    .navbar .container {
+    .Auditorium-page .navbar .container {
         width: 100%;
         display: flex;
         justify-content: space-between;
@@ -35,40 +36,41 @@
         padding: 0 20px;
     }
 
-.logo img {
+.Auditorium-page .logo img {
     width: 40px;
     height: 40px;
 }
 
-.menu {
+.Auditorium-page .menu {
     display: flex;
     gap: 20px;
 }
 
-    .menu a {
+    .Auditorium-page .menu a {
         color: white;
         text-decoration: none;
     }
 
-.user-info {
+.Auditorium-page .user-info {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.avatar img {
+.Auditorium-page .avatar img {
     width: 40px;
     height: 40px;
     border-radius: 50%;
 }
+
 /* Progress Bar Styles - Fixed */
-.progress-container {
+.Auditorium-page .progress-container {
     padding: 20px;
     background-color: #f5f5f5;
     border-bottom: 1px solid #ddd;
 }
 
-.progress-bar {
+.Auditorium-page .progress-bar {
     display: flex;
     justify-content: space-between;
     position: relative;
@@ -78,7 +80,7 @@
     background-color: #f5f5f5;
 }
 
-    .progress-bar::before {
+    .Auditorium-page .progress-bar::before {
         content: '';
         position: absolute;
         top: 15px;
@@ -89,7 +91,7 @@
         z-index: 0;
     }
 
-.progress-line {
+.Auditorium-page .progress-line {
     position: absolute;
     top: 15px;
     left: 0;
@@ -99,7 +101,7 @@
     width: 37%; /* Will be updated by JS */
 }
 
-.step {
+.Auditorium-page .step {
     position: relative;
     z-index: 1;
     background-color: #f5f5f5;
@@ -110,7 +112,7 @@
     color: black;
 }
 
-    .step::before {
+    .Auditorium-page .step::before {
         content: '';
         width: 20px;
         height: 20px;
@@ -119,73 +121,76 @@
         margin-bottom: 5px;
     }
 
-    .step.active::before {
+    .Auditorium-page .step.active::before {
         background-color: #8b0000;
     }
 
-    .step.completed::before {
+    .Auditorium-page .step.completed::before {
         background-color: #8b0000;
     }
 
-    .step.active {
+    .Auditorium-page .step.active {
         color: #8b0000;
         font-weight: bold;
     }
+
 /* Main Content Styles */
-.main-content {
+.Auditorium-page .main-content {
     display: flex;
     padding: 20px;
     gap: 20px;
 }
 
-.left-section {
+.Auditorium-page .left-section {
     flex: 7;
     justify-items: center;
 }
 
-.right-section {
+.Auditorium-page .right-section {
     flex: 3;
     background-color: #f9f9f9;
     padding: 15px;
     border-radius: 5px;
     border: 1px solid #ddd;
 }
+
 /* Showtime Selection Styles */
-.showtime-selection {
+.Auditorium-page .showtime-selection {
     margin-bottom: 20px;
     min-width: 80%;
     display: flex;
     gap: 10%;
 }
 
-.showtime-buttons {
+.Auditorium-page .showtime-buttons {
     display: flex;
     gap: 10px;
 }
 
-.time-btn {
+.Auditorium-page .time-btn {
     padding: 8px 16px;
     border: 1px solid #ddd;
     background-color: #f5f5f5;
     cursor: pointer;
 }
 
-    .time-btn.active {
+    .Auditorium-page .time-btn.active {
         background-color: #8b0000;
         color: white;
     }
+
 /* Seat Grid Styles */
-.seat-grid-container {
+.Auditorium-page .seat-grid-container {
     margin-bottom: 20px;
     min-width: 80%;
 }
 
-.seat-grid-header {
+.Auditorium-page .seat-grid-header {
     display: flex;
     margin-left: 30px;
 }
 
-.seat-col-number {
+.Auditorium-page .seat-col-number {
     width: 100%;
     height: 30px;
     display: flex;
@@ -194,24 +199,24 @@
     font-size: 100%;
 }
 
-.seat-grid {
+.Auditorium-page .seat-grid {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-.seat-row {
+.Auditorium-page .seat-row {
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
-.seat-row-letter {
+.Auditorium-page .seat-row-letter {
     width: 100%;
     text-align: center;
 }
 
-.seat {
+.Auditorium-page .seat {
     width: 100%;
     height: 30px;
     border: 1px solid #888;
@@ -222,110 +227,113 @@
     align-items: center;
 }
 
-    .seat.normal {
+    .Auditorium-page .seat.normal {
         background-color: #e0f0ff;
     }
 
-    .seat.vip {
+    .Auditorium-page .seat.vip {
         background-color: #ffe0e0;
     }
 
-    .seat.couple {
+    .Auditorium-page .seat.couple {
         background-color: #ffd2ff;
     }
 
-    .seat.sold {
+    .Auditorium-page .seat.sold {
         background-color: #bfbfbf;
         cursor: not-allowed;
     }
 
-    .seat.selected {
+    .Auditorium-page .seat.selected {
         background-color: #c62828;
     }
 
-    .seat.unavailable {
+    .Auditorium-page .seat.unavailable {
         background-color: #bfbfbf;
         cursor: not-allowed;
     }
+
 /* Screen Styles */
-.screen {
+.Auditorium-page .screen {
     display: flex;
     justify-content: center;
     padding-left: 3%;
     width: 95%;
 }
 
-.screen-label {
+.Auditorium-page .screen-label {
     background-color: #ddd;
     width: 80%;
     padding: 5px;
     text-align: center;
     border-radius: 5px;
 }
+
 /* Legend Styles */
-.seat-legend {
+.Auditorium-page .seat-legend {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     margin-top: 20px;
 }
 
-.legend-item {
+.Auditorium-page .legend-item {
     display: flex;
     align-items: center;
     gap: 5px;
     font-size: 12px;
 }
 
-.legend-box {
+.Auditorium-page .legend-box {
     width: 20px;
     height: 20px;
     border: 1px solid #888;
     border-radius: 3px;
 }
 
-    .legend-box.normal {
+    .Auditorium-page .legend-box.normal {
         background-color: #e0f0ff;
     }
 
-    .legend-box.vip {
+    .Auditorium-page .legend-box.vip {
         background-color: #ffe0e0;
     }
 
-    .legend-box.couple {
+    .Auditorium-page .legend-box.couple {
         background-color: #ffd2ff;
     }
 
-    .legend-box.sold {
+    .Auditorium-page .legend-box.sold {
         background-color: #bfbfbf;
     }
 
-    .legend-box.selected {
+    .Auditorium-page .legend-box.selected {
         background-color: #c62828;
     }
 
-    .legend-box.unavailable {
+    .Auditorium-page .legend-box.unavailable {
         background-color: #bfbfbf;
     }
+
 /* Movie Details Styles */
-.movie-details {
+.Auditorium-page .movie-details {
     display: flex;
     gap: 15px;
     margin-bottom: 20px;
 }
 
-.movie-poster img {
+.Auditorium-page .movie-poster img {
     width: 140px;
     height: 200px;
     object-fit: cover;
 }
 
-.movie-info h2 {
+.Auditorium-page .movie-info h2 {
     margin-bottom: 5px;
     font-size: 18px;
 }
 
-.movie-tag {
+.Auditorium-page .movie-tag {
     display: inline-block;
     background-color: #f0f0f0;
     padding: 2px 5px;
@@ -334,27 +342,28 @@
     margin-bottom: 10px;
 }
 
-.theater-info,
-.showtime-info {
+.Auditorium-page .theater-info,
+.Auditorium-page .showtime-info {
     margin-bottom: 5px;
 }
+
 /* Booking Details Styles */
-.booking-details {
+.Auditorium-page .booking-details {
     border-top: 1px solid #ddd;
     padding-top: 15px;
 }
 
-.selected-seats {
+.Auditorium-page .selected-seats {
     margin-bottom: 15px;
 }
 
-.seat-type,
-.seat-id,
-.seat-price {
+.Auditorium-page .seat-type,
+.Auditorium-page .seat-id,
+.Auditorium-page .seat-price {
     margin-bottom: 5px;
 }
 
-.total-section {
+.Auditorium-page .total-section {
     display: flex;
     justify-content: space-between;
     font-weight: bold;
@@ -364,14 +373,14 @@
     border-bottom: 1px solid #ddd;
 }
 
-.action-buttons {
+.Auditorium-page .action-buttons {
     display: flex;
     gap: 10px;
     margin-top: 20px;
 }
 
-.back-btn,
-.payment-btn {
+.Auditorium-page .back-btn,
+.Auditorium-page .payment-btn {
     flex: 1;
     padding: 10px;
     border: none;
@@ -379,16 +388,17 @@
     cursor: pointer;
 }
 
-.back-btn {
+.Auditorium-page .back-btn {
     background-color: #f0f0f0;
 }
 
-.payment-btn {
+.Auditorium-page .payment-btn {
     background-color: #8b0000;
     color: white;
 }
+
 /* Payment Success Modal */
-.modal {
+.Auditorium-page .modal {
     display: none;
     position: fixed;
     top: 0;
@@ -401,7 +411,7 @@
     align-items: center;
 }
 
-.modal-content {
+.Auditorium-page .modal-content {
     background-color: white;
     padding: 30px;
     border-radius: 5px;
@@ -410,45 +420,46 @@
     width: 80%;
 }
 
-.success-icon {
+.Auditorium-page .success-icon {
     color: #4CAF50;
     font-size: 60px;
     margin-bottom: 20px;
 }
 
-.modal-title {
+.Auditorium-page .modal-title {
     font-size: 24px;
     margin-bottom: 15px;
 }
 
-.modal-message {
+.Auditorium-page .modal-message {
     margin-bottom: 20px;
     font-size: 16px;
     line-height: 1.5;
 }
 
-.modal-buttons {
+.Auditorium-page .modal-buttons {
     display: flex;
     justify-content: center;
     gap: 10px;
 }
 
-.modal-button {
+.Auditorium-page .modal-button {
     padding: 10px 20px;
     border: none;
     border-radius: 3px;
     cursor: pointer;
 }
 
-    .modal-button.primary {
+    .Auditorium-page .modal-button.primary {
         background-color: #8b0000;
         color: white;
     }
 
-    .modal-button.secondary {
+    .Auditorium-page .modal-button.secondary {
         background-color: #f0f0f0;
     }
-.popup-information-book-ticket {
+
+.Auditorium-page .popup-information-book-ticket {
     display: none;
     position: absolute;
     z-index: 10;
@@ -459,52 +470,59 @@
     justify-items: center;
 }
 
-.information-book-ticket {
+.Auditorium-page .information-book-ticket {
     width: 30%;
-    height:70%;
+    height: 70%;
     background: white;
 }
 
-.title-indformation-book-ticket-popup {
+.Auditorium-page .title-indformation-book-ticket-popup {
     padding-left: 10%;
     padding-top: 5%;
     font-weight: bolder;
 }
-.detail-book-ticket-popup {
+
+.Auditorium-page .detail-book-ticket-popup {
     display: flex;
     padding-left: 5%;
     padding-bottom: 6%;
 }
-.text-detail-book-ticket-popup {
+
+.Auditorium-page .text-detail-book-ticket-popup {
     min-width: 20%;
     align-content: center;
     font-weight: bolder;
 }
-.infor-detail-book-ticket-popup {
+
+.Auditorium-page .infor-detail-book-ticket-popup {
     border: 1px solid black;
     border-radius: 15px;
     min-width: 60%;
     padding: 3%;
 }
-.header-infor-detail-book-ticket-popup {
+
+.Auditorium-page .header-infor-detail-book-ticket-popup {
     color: red;
     font-weight: bolder;
     font-size: 100%;
 }
-.description-infor-detail-book-ticket-popup {
 
+.Auditorium-page .description-infor-detail-book-ticket-popup {
 }
-.total-confirm-pay-ticket {
+
+.Auditorium-page .total-confirm-pay-ticket {
     margin-top: 18%;
 }
-.total-ticket {
+
+.Auditorium-page .total-ticket {
     display: flex;
     margin-left: 8%;
 }
-.price-detail-book-ticket {
 
+.Auditorium-page .price-detail-book-ticket {
 }
-hr {
+
+.Auditorium-page hr {
     border: none;
     border-top: 4px dotted black;
     background-color: #fff;
@@ -512,7 +530,8 @@ hr {
     width: 90%;
     justify-self: center;
 }
-.payment-btn-confirm {
+
+.Auditorium-page .payment-btn-confirm {
     flex: 1;
     padding: 10px;
     border: none;

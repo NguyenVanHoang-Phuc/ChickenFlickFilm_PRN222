@@ -1,0 +1,134 @@
+﻿/* Font chung */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+.make-payment-success .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.make-payment-success .card {
+    background: #ffffffcc; /* trắng hơi trong suốt */
+    border-radius: 12px;
+    max-width: 400px;
+    width: 90%;
+    padding: 30px 25px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    font-family: 'Poppins', sans-serif;
+    text-align: left;
+}
+
+.make-payment-success .icon {
+    font-size: 48px;
+    color: #2ecc71;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.make-payment-success h1 {
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.make-payment-success .ticket-information {
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+}
+
+    .make-payment-success .ticket-information h5 {
+        text-align: center;
+        font-size: 18px;
+        margin-bottom: 12px;
+        color: #8E1616;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .make-payment-success .ticket-information .row {
+        display: flex;
+        align-items: baseline;
+        margin-bottom: 10px;
+    }
+
+    .make-payment-success .ticket-information .left {
+        flex: 0 0 30%;
+        font-weight: 500;
+        color: #8E1616;
+    }
+
+    .make-payment-success .ticket-information .right {
+        flex: 1;
+        color: #444;
+    }
+
+        .make-payment-success .ticket-information .right b {
+            color: #333;
+        }
+
+.make-payment-success .theater-name {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.make-payment-success .showtime {
+    font-style: italic;
+    color: #777;
+    font-size: 14px;
+}
+
+.make-payment-success .room-name,
+.make-payment-success .seat-code {
+    font-size: 14px;
+    color: #555;
+    margin-top: 2px;
+}
+
+.make-payment-success .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.make-payment-success .btn {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+}
+
+    .make-payment-success .btn.receive {
+        background: #2ecc71;
+        color: #fff;
+    }
+
+        .make-payment-success .btn.receive:hover {
+            background: #28b463;
+        }
+
+    .make-payment-success .btn.home {
+        background: #fff;
+        color: #333;
+        border: 1px solid #ccc;
+    }
+
+        .make-payment-success .btn.home:hover {
+            background: #f5f5f5;
+        }
+.make-payment-success #homeBtn {
+    background-color: darkgray;
+}

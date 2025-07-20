@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewData["Title"] = "BookingDetails";
+    Layout = "_Layout";
+}
+@section Styles {
+    <link rel="stylesheet" href="~/css/BookingDetails.css" asp-append-version="true" />
+}
+<div class="booking-details">
+    <div class="container-fluid">
+        <button type="submit" class="btn" onclick="openPopup()">Thanh toán</button>
+        <div class="overlay" id="overlay">
+            <div class="close-button">
+                <button type="button" onclick="closePopup()">
+                    <img src="images/close-button.png" alt="close-button">
+                </button>
+            </div>
+            <div class="popup" id="popup">
+                <div class="ticket-information">
+                    <h5><b>THÔNG TIN ĐẶT VÉ</b></h5>
+                    <div class="row">
+                        <div class="col-2 left" style="color: #8E1616;"><b>Phim</b></div>
+                        <div class="col-10 right"><b>Bí Kíp Luyện Rồng</b></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2 left" style="color: #8E1616;"><b>Rạp</b></div>
+                        <div class="col-10 right">
+                            <div class="theater-name"><b>Galaxy Tân Bình</b></div>
+                            <div class="showtime"><i>14:45 - Thứ Năm, 26/06/2025</i></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2 left"></div>
+                        <div class="col-10 right">
+                            <div class="room-name">RAP 5</div>
+                            <div class="seat-code">Người lớn - Member 14</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-2 left" style="color: #8E1616;"><b>Tổng</b></div>
+                        <div class="col-10 right" style="font-size: 18px;"><b>75.000 VNĐ</b></div>
+                    </div>
+                </div>
+                <div class="dashed-line"></div>
+                <div class="confirmation">
+                    <div class="row">
+                        <div class="col-11">
+                            <label for="agreeCheckbox">
+                                Tôi xác nhận thông tin đặt vé đã chính xác.
+                            </label>
+                        </div>
+                        <div class="col-1"><input type="checkbox" id="agreeCheckbox" onchange="toggleButton()"></div>
+                    </div>
+                </div>
+                <div class="make-payment">
+                    <button type="button" id="payment-button" onclick="closePopup()" disabled>Thanh toán</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script>
+        function openPopup() {
+            overlay.classList.add("active");
+            popup.classList.add("active");
+
+        }
+        function closePopup() {
+            overlay.classList.remove("active");
+            popup.classList.remove("active");
+        }
+        function toggleButton() {
+            let checkbox = document.getElementById("agreeCheckbox");
+            let button = document.getElementById("payment-button");
+            button.disabled = !checkbox.checked;
+        }
+    </script>
+

@@ -1,3 +1,4 @@
+using ChickenFlickFilmApplication.Services.VnPay;
 using ChickenFlickFilmApplication.Controllers;
 using DataAccess;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -56,6 +57,8 @@ builder.Services.AddScoped<PriceByTypeDAO>();
 builder.Services.AddScoped<IPriceByTypeRepository, PriceByTypeRepository>();
 builder.Services.AddScoped<IPriceByTypeService, PriceByTypeService>();
 
+//Connect VNPay API
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
