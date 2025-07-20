@@ -517,7 +517,7 @@
             <div class="movies-grid">
                 @foreach (var movie in Model.Movies)
                 {
-                    <a href="@Url.Action("Details", "Movie", new { id = movie.MovieId })" class="movie-link">
+                    <a href="@Url.Action("DetailFilm", "MoviesUser", new { id = movie.MovieId })" class="movie-link">
                         <div class="movie-card">
                             <div class="movie-poster" style="
                                 background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('@movie.PosterUrl');
