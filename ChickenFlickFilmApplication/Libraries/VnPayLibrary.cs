@@ -1,4 +1,5 @@
-﻿using ChickenFlickFilmApplication.PaymentGatewayIntegration.VnPay;
+﻿
+using ChickenFlickFilmApplication.PaymentGatewayIntegration.VnPay;
 using System.Net.Sockets;
 using System.Net;
 using System.Security.Cryptography;
@@ -180,4 +181,3 @@ namespace ChickenFlickFilmApplication.Libraries
 
 
 }
-

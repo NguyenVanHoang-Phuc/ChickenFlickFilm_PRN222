@@ -309,18 +309,73 @@
             document.body.appendChild(form);
             form.submit();  
           }
-          document.addEventListener("DOMContentLoaded", function () {
-            updateSeatGrid();
-            updateProgressBar()
-          });
-          document.querySelector('.payment-btn').addEventListener('click', async function() {
-              if ( selectedIds.length <= 0 ) {
-				   alert("Chưa chọn ghế nào");
-                   return; 
-              }
-             let total = calculateTotal();
-            submitFormPost(selectedIds, total)
-          });
+         
+     function submitTicketDetails(MovieName, TheaterName, Showtime, Auditorium, selectedIds, total) {
+       const form = document.createElement("form");
+       form.method = "POST";
+       form.action = '@Url.Action("ShowTicketDetails", "Payment")';
+       
+       // Movie name
+         const movieName = document.createElement("input");
+         movieName.type = "hidden";
+         movieName.name = "MovieName";  
+         movieName.value = MovieName;
+         form.appendChild(movieName);
+       // Theater name
+         const theaterName = document.createElement("input");
+         theaterName.type = "hidden";
+         theaterName.name = "TheaterName";
+        theaterName.value = TheaterName;
+        form.appendChild(theaterName);
+       // Showtime
+        const showtime = document.createElement("input");
+        showtime.type = "hidden";
+        showtime.name = "Showtime";
+       showtime.value = Showtime;
+       form.appendChild(showtime);
+      // Auditorium
+        const auditorium = document.createElement("input");
+        auditorium.type = "hidden";
+        auditorium.name = "Auditorium";
+       auditorium.value = Auditorium;
+       form.appendChild(auditorium);
+       //Selected Seats
+        selectedIds.forEach(id => {
+        const inputSeatId = document.createElement("input");
+        inputSeatId.type = "hidden";
+        inputSeatId.name = "listSeat[]";
+        inputSeatId.value = id;
+        form.appendChild(inputSeatId);
+       });
+       // Total amount
+       const Total = document.createElement("input");
+       Total.type = "hidden";
+       Total.name = "total";
+       Total.value = total;
+       form.appendChild(Total);
+
+       document.body.appendChild(form);
+       form.submit();
+     }
+     document.addEventListener("DOMContentLoaded", function () {
+       updateSeatGrid();
+       updateProgressBar()
+     });
+     document.querySelector('.payment-btn').addEventListener('click', async function() {
+         if ( selectedIds.length <= 0 ) {
+              alert("Chưa chọn ghế nào");
+              return;
+         }
+
+        let total = calculateTotal();
+
+        const MovieName = "@movie.Title";
+       const TheaterName = "@Model.Auditorium.Theater.TheaterName";
+      const Showtime = "@Model.ShowTime";
+      const Auditorium = "@Model.Auditorium.AuditoriumName";
+        submitFormPost(selectedIds, total);
+        submitTicketDetails(MovieName, TheaterName, Showtime, Auditorium, selectedIds, total);
+     });
     </script>
 
 

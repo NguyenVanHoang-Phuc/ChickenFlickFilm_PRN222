@@ -14,30 +14,30 @@
                 <h5><b>THÔNG TIN ĐẶT VÉ</b></h5>
                 <div class="row">
                     <div class="col-2 left"><b>Phim</b></div>
-                    <div class="col-10 right"><b>Bí Kíp Luyện Rồng</b></div>
+                    <div class="col-10 right"><b>@TempData["MovieName"]</b></div>
                 </div>
                 <div class="row">
                     <div class="col-2 left""><b>Rạp</b></div>
                     <div class="col-10 right">
-                        <div class="theater-name"><b>Galaxy Tân Bình</b></div>
-                        <div class="showtime"><i>14:45 - Thứ Năm, 26/06/2025</i></div>
+                        <div class="theater-name"><b>@TempData["TheaterName"]</b></div>
+                        <div class="showtime"><i>@TempData["Showtime"]</i></div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-2 left"><b>Phòng</b></div>
                     <div class="col-10 right">
-                        <div class="room-name">RAP 5</div>
+                        <div class="room-name">@TempData["Auditorium"]</div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-2 left"><b>Ghế</b></div>
                     <div class="col-10 right">
-                        <div class="seat-code">Người lớn - Member 14</div>
+                        <div class="seat-code">@TempData["listSeat"]</div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-2 left"><b>Tổng</b></div>
-                    <div class="col-10 right" style="font-size: 18px;"><b>75.000 VNĐ</b></div>
+                    <div class="col-10 right" style="font-size: 18px;"><b>@TempData["total"]</b></div>
                 </div>
             </div>
             <div class="button-group">
