@@ -19,5 +19,6 @@ namespace Service
         Task<IEnumerable<Showtime>> GetAllAsync(Expression<Func<Showtime, bool>> predicate);
         Task<Showtime?> GetAsync(Expression<Func<Showtime, bool>> predicate);
         Task<IEnumerable<Showtime>> GetShowtimesByMovieIdAsync(int movieId);
+        Task<IEnumerable<Showtime>> GetShowtimeForNext3DaysAsync();
     }
 }
