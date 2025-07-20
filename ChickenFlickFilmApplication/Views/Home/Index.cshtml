@@ -2,9 +2,8 @@
     ViewData["Title"] = "CHICKEN FLICK FILM - Trang Chủ";
     Layout = "_Layout";
 }
+@model ChickenFlickFilmApplication.Models.IndexViewModel
 
-<!DOCTYPE html>
-<html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,173 +12,493 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Prn222clone.styles.css" asp-append-version="true" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-        }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+    }
 
-        .hero-section {
-            position: relative;
-            height: 400px;
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
-                url('https://i.postimg.cc/HxM4J8Gv/ITS-banner-doc.jpg');
-            background-size: cover;
-            background-position: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-align: center;
-        }
+    .hero-section {
+        position: relative;
+        height: 400px;
+        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://i.postimg.cc/HxM4J8Gv/ITS-banner-doc.jpg');
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-align: center;
+    }
 
+    .hero-content h1 {
+        font-size: 4rem;
+        font-weight: bold;
+        letter-spacing: 0.2em;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+
+    .hero-content .subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .hero-content .release-date {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #ffcc00;
+    }
+
+    .main-content {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    .movies-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+    }
+
+    .movie-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .movie-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .movie-poster {
+        width: 100%;
+        height: 280px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        color: white;
+        font-weight: bold;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    .movie-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0,0,0,0.8));
+        padding: 20px;
+        text-align: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .movie-card:hover .movie-overlay {
+        opacity: 1;
+    }
+
+    .movie-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: white;
+    }
+
+    .movie-info {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .duration, .genre {
+        font-size: 12px;
+        background: rgba(255,255,255,0.2);
+        padding: 3px 8px;
+        border-radius: 12px;
+        color: white;
+    }
+
+    .play-button {
+        width: 40px;
+        height: 40px;
+        background: rgba(196, 30, 58, 0.8);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        transition: background 0.3s;
+    }
+
+    .play-button:hover {
+        background: rgba(196, 30, 58, 1);
+    }
+
+    .play-button i {
+        color: white;
+        font-size: 14px;
+        margin-left: 2px;
+    }
+
+    .movie-poster[style*="url('')"],
+    .movie-poster[style*="url()"] {
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4) !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .movies-section h2 {
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+        border-left: 4px solid #c41e3a;
+        padding-left: 15px;
+    }
+
+    .showing-times {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 50px;
+    }
+
+    .date-selector {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .date-item {
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 15px 20px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+        min-width: 80px;
+    }
+
+    .date-item:hover, .date-item.active {
+        border-color: #c41e3a;
+        background: #c41e3a;
+        color: white;
+    }
+
+    .date-item .day-name {
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .date-item .date-number {
+        font-size: 12px;
+        margin-top: 5px;
+        opacity: 0.8;
+    }
+
+    .movie-showtimes {
+        margin-bottom: 30px;
+        padding: 20px;
+        border-radius: 10px;
+        position: relative;
+    }
+
+    /* Different styles for different movie statuses */
+    .movie-showtimes.now-showing {
+        background: #f8f9fa;
+        border-left: 4px solid #28a745;
+    }
+
+    .movie-showtimes.coming-soon {
+        background: #fff8e1;
+        border-left: 4px solid #ffc107;
+    }
+
+    .movie-showtimes h4 {
+        margin-bottom: 8px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .movie-showtimes.now-showing h4 {
+        color: #28a745;
+    }
+
+    .movie-showtimes.coming-soon h4 {
+        color: #f57c00;
+    }
+
+    .status-badge {
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-badge.now-showing {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .status-badge.coming-soon {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+
+    /* New theater grouping styles */
+    .theater-group {
+        margin-bottom: 15px;
+        border-left: 3px solid #dee2e6;
+        padding-left: 15px;
+    }
+
+    .theater-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #6c757d;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .theater-icon {
+        width: 16px;
+        height: 16px;
+        background: #6c757d;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .time-slots {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+
+    .time-slot {
+        border-radius: 8px;
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+        border: 2px solid;
+        font-size: 14px;
+        position: relative;
+    }
+
+    /* Different styles for time slots based on status */
+    .movie-showtimes.now-showing .time-slot {
+        background: white;
+        border-color: #28a745;
+        color: #28a745;
+    }
+
+    .movie-showtimes.now-showing .time-slot:hover {
+        background: #28a745;
+        color: white;
+    }
+
+    .movie-showtimes.coming-soon .time-slot {
+        background: white;
+        border-color: #ffc107;
+        color: #f57c00;
+    }
+
+    .movie-showtimes.coming-soon .time-slot:hover {
+        background: #ffc107;
+        color: white;
+    }
+
+    .no-showtimes {
+        text-align: center;
+        color: #666;
+        font-style: italic;
+        padding: 40px 0;
+    }
+
+    .reviews-section {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        margin-bottom: 50px;
+    }
+
+    .review-item {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+    }
+
+    .review-item:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .review-image {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+
+    .review-content h4 {
+        color: #c41e3a;
+        margin-bottom: 5px;
+    }
+
+    @@media (max-width: 768px) {
         .hero-content h1 {
-            font-size: 4rem;
-            font-weight: bold;
-            letter-spacing: 0.2em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
-        }
-
-        .hero-content .subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        .hero-content .release-date {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ffcc00;
-        }
-
-        .main-content {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
+            font-size: 2.5rem;
         }
 
         .movies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
         }
-
-        .movie-card {
-            background: white;
+       /* Improved sorting controls */
+        .sort-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            cursor: pointer;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-            .movie-card:hover {
-                transform: translateY(-10px);
-                box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-            }
+        .sort-label-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #495057;
+        }
 
-        .movie-poster {
-            width: 100%;
-            height: 280px;
-            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        .sort-label-section i {
+            color: #c41e3a;
+            font-size: 18px;
+        }
+
+        .sort-label {
+            font-weight: 600;
+            font-size: 16px;
+            color: #495057;
+            margin: 0;
+        }
+
+        .sort-dropdown-wrapper {
             position: relative;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-            text-align: center;
+            gap: 10px;
         }
 
-        .movies-section h2 {
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 1.8rem;
-            border-left: 4px solid #c41e3a;
-            padding-left: 15px;
-        }
-
-        .showing-times {
+        .sort-dropdown {
+            appearance: none;
             background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 50px;
-        }
-
-        .time-slots {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-
-        .time-slot {
-            background: #f8f9fa;
             border: 2px solid #e9ecef;
-            border-radius: 8px;
-            padding: 10px 20px;
+            border-radius: 10px;
+            padding: 12px 45px 12px 15px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #495057;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-            .time-slot:hover {
-                border-color: #c41e3a;
-                background: #c41e3a;
-                color: white;
-            }
-
-        .reviews-section {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 50px;
+        .sort-dropdown:hover {
+            border-color: #c41e3a;
+            box-shadow: 0 4px 15px rgba(196, 30, 58, 0.1);
         }
 
-        .review-item {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
+        .sort-dropdown:focus {
+            outline: none;
+            border-color: #c41e3a;
+            box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.15);
         }
 
-            .review-item:last-child {
-                border-bottom: none;
-                margin-bottom: 0;
-            }
+        .sort-dropdown-wrapper::after {
+            content: '\f107';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            color: #c41e3a;
+            pointer-events: none;
+            transition: transform 0.3s ease;
+        }
 
-        .review-image {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            border-radius: 8px;
+        .sort-dropdown:focus + .sort-dropdown-wrapper::after,
+        .sort-dropdown-wrapper:hover::after {
+            transform: rotate(180deg);
+        }
+
+        .date-selector {
+            justify-content: flex-start;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .date-item {
+            min-width: 70px;
             flex-shrink: 0;
         }
 
-        .review-content h4 {
-            color: #c41e3a;
-            margin-bottom: 5px;
+        .time-slots {
+            gap: 8px;
         }
 
-        @@media (max-width: 768px) {
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .movies-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 20px;
-            }
+        .time-slot {
+            padding: 6px 12px;
+            font-size: 13px;
         }
+
+        .theater-group {
+            margin-bottom: 12px;
+            padding-left: 10px;
+        }
+
+        .theater-name {
+            font-size: 13px;
+        }
+    }
     </style>
 </head>
 
@@ -196,131 +515,338 @@
         <section class="movies-section">
             <h2>🎬 PHIM</h2>
             <div class="movies-grid">
-                <div class="movie-poster" style="
-                    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://i.postimg.cc/8khmNvmj/MQCM-poster-doc.jpg');
-                    background-size: cover;
-                    background-position: center;
-                    border-radius: 15px;
-                    color: white;
-                ">
-                    Mẹ Quỷ Con Ma
-                </div>
-                <div class="movie-poster" style="
-                    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://i.postimg.cc/q7M5CLQb/SHIN-poster-doc.jpg');
-                    background-size: cover;
-                    background-position: center;
-                    border-radius: 15px;
-                    color: white;
-                ">
-                    Phim Shin Cậu Bé Bút Chì: Bí Ẩn! Học Viện Hoa Lệ Tenkasu
-                </div>
-                <div class="movie-poster" style="
-                    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://i.postimg.cc/ZqMVvhWn/ADL-poster-doc.jpg');
-                    background-size: cover;
-                    background-position: center;
-                    border-radius: 15px;
-                    color: white;
-                ">
-                    Âm dương lộ
-                </div>
-                <div class="movie-poster" style="
-                    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://i.postimg.cc/brXgLHHj/BKLR-poster-doc.jpg');
-                    background-size: cover;
-                    background-position: center;
-                    border-radius: 15px;
-                    color: white;
-                ">
-                    Bí Kíp Luyện Rồng
-                </div>
+                @foreach (var movie in Model.Movies)
+                {
+                    <a href="@Url.Action("Details", "Movie", new { id = movie.MovieId })" class="movie-link">
+                        <div class="movie-card">
+                            <div class="movie-poster" style="
+                                background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('@movie.PosterUrl');
+                                background-size: cover;
+                                background-position: center;
+                                border-radius: 15px;
+                                color: white;
+                               ">
+                                <div class="movie-overlay">
+                                    <h3 class="movie-title">@movie.Title</h3>
+                                    <div class="movie-info">
+                                        @if (movie.Duration != 0)
+                                        {
+                                            <span class="duration">@movie.Duration phút</span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(movie.Genre))
+                                        {
+                                            <span class="genre">@movie.Genre</span>
+                                        }
+                                    </div>
+                                    <div class="play-button">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
             </div>
         </section>
 
         <section class="showing-times">
             <h2>📅 Suất chiếu</h2>
-            <p><strong>20 Phút Để</strong></p>
-            <div class="time-slots">
-                <div class="time-slot">17:00</div>
-                <div class="time-slot">22:00</div>
+            
+            <!-- Date Selector -->
+            <div class="date-selector">
+                @foreach (var dateInfo in Model.GetWeekDates())
+                {
+                    <div class="date-item @(dateInfo.Date == Model.SelectedDate ? "active" : "")" 
+                         data-date="@dateInfo.Date.ToString("yyyy-MM-dd")">
+                        <div class="day-name">@dateInfo.DisplayName</div>
+                        <div class="date-number">@dateInfo.ShortDate</div>
+                    </div>
+                }
             </div>
 
-            <div style="margin-top: 30px;">
-                <div style="display: flex; gap: 30px; text-align: center;">
-                    <div>
-                        <div style="font-weight: bold;">Hôm nay</div>
-                        <div style="color: #666;">17/3</div>
+            <div class="sort-controls">
+                <div class="sort-label-section">
+                    <i class="fas fa-sort-alpha-down"></i>
+                    <label for="theater-sort" class="sort-label" >Sắp xếp theo:</label>
+                    
+                    <div class="sort-dropdown-wrapper">
+                        <select id="theater-sort" class="sort-dropdown">
+                            <option value="name-asc">Tên rạp (A-Z)</option>
+                            <option value="name-desc">Tên rạp (Z-A)</option>
+                        </select>
                     </div>
-                    <div>
-                        <div style="font-weight: bold;">Thứ 6</div>
-                        <div style="color: #666;">18/3</div>
-                    </div>
-                    <div>
-                        <div style="font-weight: bold;">Thứ 7</div>
-                        <div style="color: #666;">19/3</div>
-                    </div>
-                    <div>
-                        <div style="font-weight: bold;">Chủ nhật</div>
-                        <div style="color: #666;">20/3</div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <section class="reviews-section">
-            <h2>🎭 GÓC ĐIỆN ẢNH</h2>
-            <div class="review-item">
-                <div class="review-image"></div>
-                <div class="review-content">
-                    <h4>[Review] Flow: Kích bản lá thú quan trong mắt</h4>
                 </div>
             </div>
-            <div class="review-item">
-                <div class="review-image" style="background: linear-gradient(45deg, #ff9a9e, #fecfef);"></div>
-                <div class="review-content">
-                    <h4>[Review] Nhà già lần</h4>
-                </div>
-            </div>
-            <div class="review-item">
-                <div class="review-image" style="background: linear-gradient(45deg, #a18cd1, #fbc2eb);"></div>
-                <div class="review-content">
-                    <h4>[Review] Captain America: Nôi Tiếp Đi San của Steve Rogers</h4>
-                </div>
+
+            <!-- Showtimes Container -->
+            <div id="showtimes-container">
+                @if (Model.ShowtimesByDate.ContainsKey(Model.SelectedDate))
+                {
+                    @foreach (var movieGroup in Model.ShowtimesByDate[Model.SelectedDate])
+                    {
+                        var movie = Model.Movies.FirstOrDefault(m => m.MovieId == movieGroup.Key);
+                        if (movie != null)
+                        {
+                            var firstShowtime = movieGroup.Value.FirstOrDefault();
+                            var statusClass = firstShowtime?.Status == "Đang chiếu" ? "now-showing" : "coming-soon";
+                            var statusText = firstShowtime?.Status == "Đang chiếu" ? "Đang chiếu" : "Sắp chiếu";
+                            var statusBadgeClass = firstShowtime?.Status == "Đang chiếu" ? "now-showing" : "coming-soon";
+                            
+                            <div class="movie-showtimes @statusClass">
+                                <h4>
+                                    @movie.Title
+                                    <span class="status-badge @statusBadgeClass">@statusText</span>
+                                </h4>
+                                
+                                @{
+                                    // Group showtimes by theater for better organization
+                                    var showtimesByTheater = movieGroup.Value
+                                        .GroupBy(s => s.AuditoriumId)
+                                        .OrderBy(g => 
+                                        {
+                                            if (g.Key == 0) return "ZZZ";
+                                            return Model.TheaterLookup.TryGetValue(g.Key, out var theater) 
+                                                ? theater?.TheaterName ?? "Unknown Theater" 
+                                                : "Unknown Theater";
+                                        });
+                                }
+
+                                @foreach (var theaterGroup in showtimesByTheater)
+                                {
+                                    var theaterName = "Unknown Theater";
+                                    if (theaterGroup.Key != 0 && Model.TheaterLookup.TryGetValue(theaterGroup.Key, out var theater))
+                                    {
+                                        theaterName = theater?.TheaterName ?? "Unknown Theater";
+                                    }
+
+                                    <div class="theater-group">
+                                        <div class="theater-name">
+                                            <span class="theater-icon"></span>
+                                            @theaterName
+                                        </div>
+                                        <div class="time-slots">
+                                            @foreach (var showtime in theaterGroup.OrderBy(s => s.ShowTime))
+                                            {
+                                                <div class="time-slot" 
+                                                     data-showtime-id="@showtime.ShowtimeId" 
+                                                     data-status="@showtime.Status"
+                                                     data-theater-id="@showtime.AuditoriumId">
+                                                    @(showtime.ShowTime.ToString("HH:mm") ?? "00:00")
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                }
+                else
+                {
+                    <div class="no-showtimes">
+                        <p>Không có suất chiếu nào trong ngày này</p>
+                    </div>
+                }
             </div>
         </section>
     </main>
 
     <script>
-        // Add interactive functionality
-        document.addEventListener('DOMContentLoaded', function () {
-            // Movie card hover effects
-            const movieCards = document.querySelectorAll('.movie-card');
-            movieCards.forEach(card => {
-                card.addEventListener('click', function () {
-                    alert('Xem chi tiết phim');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Date selector functionality
+            const dateItems = document.querySelectorAll('.date-item');
+            const showtimesContainer = document.getElementById('showtimes-container');
+
+            dateItems.forEach(item => {
+                item.addEventListener('click', async function() {
+                    // Remove active class from all date items
+                    dateItems.forEach(d => d.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Get selected date
+                    const selectedDate = this.getAttribute('data-date');
+                    
+                    // Show loading state
+                    showtimesContainer.innerHTML = '<div class="no-showtimes"><p>Đang tải suất chiếu...</p></div>';
+                    
+                    try {
+                        // Fetch showtimes for selected date
+                        const response = await fetch(`/Home/GetShowtimesForDate?date=${selectedDate}`);
+                        const data = await response.json();
+                        
+                        // Update showtimes display
+                        updateShowtimesDisplay(data.showtimes, data.theaters);
+                    } catch (error) {
+                        console.error('Error fetching showtimes:', error);
+                        showtimesContainer.innerHTML = '<div class="no-showtimes"><p>Lỗi khi tải suất chiếu</p></div>';
+                    }
                 });
             });
 
             // Time slot selection
-            const timeSlots = document.querySelectorAll('.time-slot');
-            timeSlots.forEach(slot => {
-                slot.addEventListener('click', function () {
-                    // Remove active class from all slots
-                    timeSlots.forEach(s => s.classList.remove('active'));
-                    // Add active class to clicked slot
-                    this.classList.add('active');
-                    this.style.background = '#c41e3a';
-                    this.style.color = 'white';
-                });
-            });
-
-            // Review items click
-            const reviewItems = document.querySelectorAll('.review-item');
-            reviewItems.forEach(item => {
-                item.addEventListener('click', function () {
-                    alert('Đọc review đầy đủ');
-                });
-                item.style.cursor = 'pointer';
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('time-slot')) {
+                    // Remove active styling from all time slots
+                    document.querySelectorAll('.time-slot').forEach(slot => {
+                        const parentSection = slot.closest('.movie-showtimes');
+                        
+                        // Reset to default styles based on status
+                        if (parentSection.classList.contains('now-showing')) {
+                            slot.style.background = 'white';
+                            slot.style.color = '#28a745';
+                            slot.style.borderColor = '#28a745';
+                        } else {
+                            slot.style.background = 'white';
+                            slot.style.color = '#f57c00';
+                            slot.style.borderColor = '#ffc107';
+                        }
+                    });
+                    
+                    // Highlight selected time slot
+                    const parentSection = e.target.closest('.movie-showtimes');
+                    if (parentSection.classList.contains('now-showing')) {
+                        e.target.style.background = '#28a745';
+                        e.target.style.color = 'white';
+                        e.target.style.borderColor = '#28a745';
+                    } else {
+                        e.target.style.background = '#ffc107';
+                        e.target.style.color = 'white';
+                        e.target.style.borderColor = '#ffc107';
+                    }
+                    
+                    // Get booking information
+                    const showtimeId = e.target.getAttribute('data-showtime-id');
+                    const status = e.target.getAttribute('data-status');
+                    const theaterId = e.target.getAttribute('data-theater-id');
+                    console.log('Selected showtime:', { showtimeId, status, theaterId });
+                    
+                    // You can add booking functionality here
+                    // For example: redirect to booking page
+                    // window.location.href = `/Booking/Create?showtimeId=${showtimeId}`;
+                }
             });
         });
+
+        function updateShowtimesDisplay(showtimes, theaters) {
+            const container = document.getElementById('showtimes-container');
+            const movies = @Html.Raw(Json.Serialize(Model.Movies));
+            
+            if (Object.keys(showtimes).length === 0) {
+                container.innerHTML = '<div class="no-showtimes"><p>Không có suất chiếu nào trong ngày này</p></div>';
+                return;
+            }
+
+            let html = '';
+            for (const [movieId, movieShowtimes] of Object.entries(showtimes)) {
+                const movie = movies.find(m => m.movieId == movieId);
+                if (movie && movieShowtimes.length > 0) {
+                    const firstShowtime = movieShowtimes[0];
+                    const statusClass = firstShowtime.status === "Đang chiếu" ? "now-showing" : "coming-soon";
+                    const statusText = firstShowtime.status === "Đang chiếu" ? "Đang chiếu" : "Sắp chiếu";
+                    const statusBadgeClass = firstShowtime.status === "Đang chiếu" ? "now-showing" : "coming-soon";
+                    
+                    html += `
+                        <div class="movie-showtimes ${statusClass}">
+                            <h4>
+                                ${movie.title}
+                                <span class="status-badge ${statusBadgeClass}">${statusText}</span>
+                            </h4>`;
+                    
+                    // Group by theater
+                    const showtimesByTheater = {};
+                    movieShowtimes.forEach(showtime => {
+                        const theaterId = showtime.auditoriumId || 0;
+                        if (!showtimesByTheater[theaterId]) {
+                            showtimesByTheater[theaterId] = [];
+                        }
+                        showtimesByTheater[theaterId].push(showtime);
+                    });
+
+                    // Sort theaters by name
+                    const sortedTheaterIds = Object.keys(showtimesByTheater).sort((a, b) => {
+                        const theaterA = theaters[a] ? theaters[a].name || 'Unknown Theater' : 'Unknown Theater';
+                        const theaterB = theaters[b] ? theaters[b].name || 'Unknown Theater' : 'Unknown Theater';
+                        if (a == 0) return 1;
+                        if (b == 0) return -1;
+                        return theaterA.localeCompare(theaterB);
+                    });
+
+                    sortedTheaterIds.forEach(theaterId => {
+                        const theaterShowtimes = showtimesByTheater[theaterId];
+                        const theaterName = theaterId != 0 && theaters[theaterId] 
+                            ? theaters[theaterId].name || 'Unknown Theater'
+                            : 'Unknown Theater';
+                        
+                        html += `
+                            <div class="theater-group">
+                                <div class="theater-name">
+                                    <span class="theater-icon"></span>
+                                    ${theaterName}
+                                </div>
+                                <div class="time-slots">`;
+                        
+                        // Sort showtimes by time
+                        theaterShowtimes.sort((a, b) => a.showTime.localeCompare(b.showTime));
+                        
+                        theaterShowtimes.forEach(showtime => {
+                            const time = new Date('2000-01-01T' + showtime.showTime).toLocaleTimeString('vi-VN', {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                            html += `<div class="time-slot" 
+                                         data-showtime-id="${showtime.showtimeId}" 
+                                         data-status="${showtime.status}"
+                                         data-theater-id="${showtime.auditoriumId || ''}">${time}</div>`;
+                        });
+                        
+                        html += `
+                                </div>
+                            </div>`;
+                    });
+                    
+                    html += `</div>`;
+                }
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // Theater sorting functionality
+        document.getElementById('theater-sort').addEventListener('change', function() {
+            const sortType = this.value;
+            
+            // Get current showtimes data and re-sort
+            const currentMovieShowtimes = document.querySelectorAll('.movie-showtimes');
+            
+            currentMovieShowtimes.forEach(movieSection => {
+                const theaterGroups = Array.from(movieSection.querySelectorAll('.theater-group'));
+                const sortedGroups = sortTheaterGroups(theaterGroups, sortType);
+                
+                // Remove existing theater groups
+                theaterGroups.forEach(group => group.remove());
+                
+                // Add sorted theater groups back
+                sortedGroups.forEach(group => movieSection.appendChild(group));
+            });
+        });
+        
+        function sortTheaterGroups(theaterGroups, sortType) {
+            return theaterGroups.sort((a, b) => {
+                const nameA = a.querySelector('.theater-name').textContent.trim();
+                const nameB = b.querySelector('.theater-name').textContent.trim();
+                
+                switch(sortType) {
+                    case 'name-asc':
+                        return nameA.localeCompare(nameB, 'vi');
+                    case 'name-desc':
+                        return nameB.localeCompare(nameA, 'vi');
+                    default:
+                        return 0;
+                }
+            });
+        }
     </script>
 </body>
-</html>

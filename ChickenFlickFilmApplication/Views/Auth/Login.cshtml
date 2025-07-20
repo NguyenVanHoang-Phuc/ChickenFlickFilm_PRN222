@@ -235,6 +235,16 @@
             <div class="login-form-container">
                 <h2 class="login-title">Đăng Nhập</h2>
 
+                @if (!string.IsNullOrEmpty(ViewBag.Message))
+                {
+                    <div class="alert alert-success text-center">@ViewBag.Message</div> <!-- For general success/info messages -->
+                }
+
+                @if (!string.IsNullOrEmpty(ViewBag.Error))
+                {
+                    <div class="alert alert-danger text-center">@ViewBag.Error</div> <!-- For error messages -->
+                }
+
                 <form method="post" asp-action="Login">
                     <div class="form-group">
                         <label class="form-label">

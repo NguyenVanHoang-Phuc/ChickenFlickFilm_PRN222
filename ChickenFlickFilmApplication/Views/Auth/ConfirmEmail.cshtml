@@ -227,15 +227,15 @@
                 📧 Mã kích hoạt đã được gửi đến: <strong>@Model?.Email</strong>
             </div>
 
-            <form method="post" asp-action="ConfirmEmailAsync" asp-controller="Auth">
+            <form method="post" asp-action="ConfirmEmail" asp-controller="Auth">
                 <input type="hidden" asp-for="Email" value="@Model.Email" />
                 <input type="hidden" asp-for="Code" value="@Model.Code" />
 
                 <div class="form-group">
                     <label class="form-label" for="activationCode">Mã Kích Hoạt</label>
                     <input type="text"
-                           id="activationCode"
-                           name="activationCode"
+                           id="CodeEnter"
+                           name="CodeEnter"
                            class="form-input code-input"
                            required
                            asp-for="CodeEnter"

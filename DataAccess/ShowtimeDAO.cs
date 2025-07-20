@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,6 +27,19 @@ namespace DataAccess
                         .Include(s => s.Movie)
                         .Include(s => s.Auditorium)
                         .FirstOrDefaultAsync(s => s.ShowtimeId == id);
+        }
+        public async Task<Showtime?> GetAsync(Expression<Func<Showtime, bool>> predicate)
+        {
+            return await _context.Showtimes
+                .AsNoTracking() 
+                .FirstOrDefaultAsync(predicate);
+        }
+        public async Task<IEnumerable<Showtime>> GetAllAsync(Expression<Func<Showtime, bool>> predicate)
+        {
+            return await _context.Showtimes
+                .AsNoTracking()
+                .Where(predicate)
+                .ToListAsync();
         }
 
         public async Task AddShowtimeAsync(Showtime showtime)
@@ -61,6 +75,35 @@ namespace DataAccess
                         .Where(s => s.MovieId == movieId)
                         .Include(s => s.Auditorium)
                         .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Showtime>> GetShowtimeForNext3DaysAsync()
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+            var twoDaysLater = today.AddDays(2);
+
+            // Lấy tất cả showtimes từ cơ sở dữ liệu
+            var showtimes = await _context.Showtimes
+                .Where(s => s.ShowDate.HasValue) // Chỉ lấy các showtimes có ShowDate
+                .OrderBy(s => s.ShowDate) // Sắp xếp theo ShowDate
+                .ThenBy(s => s.ShowTime) // Sắp xếp theo ShowTime
+                .ToListAsync();
+
+            // Lọc ra các showtimes trong khoảng từ hôm nay đến hai ngày sau
+            var filteredShowtimes = showtimes
+                .Where(s => s.ShowDate.Value >= today && s.ShowDate.Value <= twoDaysLater)
+                .ToList();
+
+            // Nếu không có showtimes cho ngày hôm nay, lấy ba ngày tiếp theo
+            if (!filteredShowtimes.Any())
+            {
+                filteredShowtimes = showtimes
+                    .Where(s => s.ShowDate.Value > today)
+                    .Take(3) // Lấy 3 showtimes tiếp theo
+                    .ToList();
+            }
+
+            return filteredShowtimes;
         }
     }
 }

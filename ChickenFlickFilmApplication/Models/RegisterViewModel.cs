@@ -25,6 +25,10 @@ namespace ChickenFlickFilmApplication.Models
         [Display(Name = "Giới tính")]
         public bool Gender { get; set; }
 
+        [Required(ErrorMessage = "Số điện thoại là bắt buộc")]
+        [Display(Name = "Số điện thoại")]
+        public string PhoneNumber { get; set; }
+
         [Required(ErrorMessage = "Mật khẩu là bắt buộc")]
         [StringLength(100, ErrorMessage = "Mật khẩu phải có ít nhất {2} ký tự và tối đa {1} ký tự", MinimumLength = 6)]
         [DataType(DataType.Password)]

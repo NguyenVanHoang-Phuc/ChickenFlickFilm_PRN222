@@ -83,12 +83,15 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 2; /* Đảm bảo nút nằm trên các phần tử khác */
-    opacity: 0; /* Ban đầu ẩn nút */
+    z-index: 2;
+    /* Đảm bảo nút nằm trên các phần tử khác */
+    opacity: 0;
+    /* Ban đầu ẩn nút */
 }
 
 .sidebar-movie-image:hover .buy-ticket-btn {
-    opacity: 1; /* Khi hover vào ảnh, nút Mua vé sẽ hiện lên */
+    opacity: 1;
+    /* Khi hover vào ảnh, nút Mua vé sẽ hiện lên */
 }
 
 .card-body {
@@ -117,15 +120,15 @@
     transition: all 0.3s ease;
 }
 
-    .sidebar-movie-image img {
+.sidebar-movie-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        /
-    }
+}
 
     .sidebar-movie-image:hover img {
-        opacity: 0.4; /* Làm tối đi ảnh khi hover */
+        opacity: 0.4;
+        /* Làm tối đi ảnh khi hover */
     }
 
 .movie-card-overlay {
@@ -181,6 +184,7 @@
     border-radius: 10px;
     top: -50px;
 }
+
 .movie-details {
     display: flex;
     flex-wrap: wrap;
@@ -213,3 +217,32 @@
         color: #8E1616;
         border-color: #8E1616;
     }
+
+/* Mất viền của các nút lịch chiếu */
+button.btn {
+    border: none;
+}
+
+    /* Thay đổi màu khi nút lịch chiếu được chọn (active) */
+    button.btn.btn-primary {
+        background-color: #D84040;
+        /* Đổi màu nền */
+        border-color: #D84040;
+        /* Đổi màu viền */
+    }
+
+.actor-list {
+    display: flex;
+    gap: 0.5rem; /* Khoảng cách giữa các thẻ */
+    flex-wrap: wrap; /* Cho phép bọc các thẻ ra dòng mới nếu cần */
+}
+
+.actor-box {
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    color: #333;
+    border: 1px solid #ccc;
+    white-space: nowrap;
+}
+
