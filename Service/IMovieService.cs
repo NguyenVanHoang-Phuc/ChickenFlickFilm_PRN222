@@ -16,5 +16,6 @@ namespace Service
         Task DeleteMovieAsync(int id);
         Task<int> GetTotalMoviesAsync();
         Task<IEnumerable<Movie>> GetMoviesByEnableStatusAsync();
+        Task<List<Movie>> SearchMoviesAsync(string searchTerm);
     }
 }

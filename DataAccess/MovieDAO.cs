@@ -59,5 +59,19 @@ namespace DataAccess
                 .Where(m => m.Status == "Đang chiếu" || m.Status == "Sắp chiếu")
                 .ToListAsync();
         }
+
+        public async Task<List<Movie>> SearchMoviesAsync(string searchTerm)
+        {
+            var query = _context.Movies.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                // Sử dụng EF.Functions.Like để tìm kiếm chuỗi không phân biệt chữ hoa chữ thường
+                query = query.Where(m => EF.Functions.Like(m.Title, $"%{searchTerm}%") ||
+                                          EF.Functions.Like(m.Genre, $"%{searchTerm}%"));
+            }
+
+            return await query.ToListAsync();
+        }
     }
 }

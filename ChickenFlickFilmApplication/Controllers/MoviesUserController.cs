@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using ChickenFlickFilmApplication.Models;
+using DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using System.Diagnostics;
@@ -88,6 +89,45 @@ namespace ChickenFlickFilmApplication.Controllers
             };
 
             return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SearchFilm(IFormCollection form)
+        {
+            var searchTerm = form["keySearchFilm"];
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return RedirectToAction("ListFilm");
+            }
+
+            var filteredMovies = await _movieService.SearchMoviesAsync(searchTerm);
+            var nowShowing = new List<Movie>();
+            var upcoming = new List<Movie>();
+
+            
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            
+            foreach (var movie in filteredMovies)
+            {
+                
+                if (movie.ReleaseDate <= today && movie.EndDate >= today)
+                {
+                    nowShowing.Add(movie); 
+                }
+                
+                else if (movie.ReleaseDate > today)
+                {
+                    upcoming.Add(movie); 
+                }
+            }
+
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.NowShowing = nowShowing;
+            ViewBag.Upcoming = upcoming;
+
+
+            return View("ListFilm");
         }
     }
 }
