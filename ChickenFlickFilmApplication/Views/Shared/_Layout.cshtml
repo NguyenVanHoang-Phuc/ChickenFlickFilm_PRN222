@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using System.Security.Claims
+@{
+    var searchTerm = ViewBag.SearchTerm as string ?? string.Empty;
+    var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -17,7 +22,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light shadow-sm" id="header">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
                     <img src="~/image/chicken_circle.png" alt="Logo" width="80" />
                 </a>
 
@@ -62,22 +67,83 @@
                     @if (!User.Identity.IsAuthenticated)
                     {
                         <div class="search-login">
-                            <form class="d-flex" role="search">
-                                <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" />
+                            <form class="d-flex" role="search" asp-controller="MoviesUser" asp-action="SearchFilm">
+                                <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" name="keySearchFilm" value="@ViewBag.SearchTerm" />
                             </form>
                             <a href="@Url.Action("Login", "Auth")" class="text-decoration-none">Đăng Nhập</a>
                             <a href="@Url.Action("Signup", "Auth")" class="text-decoration-none">Đăng ký</a>
                         </div>
                     }
-                    else if (User.IsInRole("Customer"))
+                    else
                     {
                         <div class="search-login">
-                            <form class="d-flex" role="search">
-                                <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" />
-                            </form>
-                            <a href="@Url.Action("UserProfile", "Auth")" class="text-decoration-none">Profile</a>
+                            
+                                <div class="search-login">
+                                    <form class="d-flex" role="search" asp-controller="MoviesUser" asp-action="SearchFilm">
+                                        <input class="form-control form-control-sm me-2" type="search" placeholder="Tìm kiếm" name="keySearchFilm" value="@ViewBag.SearchTerm" />
+                                    </form>
+                                </div>
+
+                                <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #8E1616">
+                                        <img src="@(User.FindFirst("AvatarUrl")?.Value ?? "/image/default-avatar.png")"
+                                             alt="Avatar" class="rounded-circle" style="width: 40px; height: 40px;">
+                                        @User.Identity.Name
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <li>
+                                        <a class="dropdown-item" href="@Url.Action("UserProfile", "Auth")" style="color: black !important">Profile</a>
+                                        </li>
+                                        
+                                        @if (userRole == "Admin")
+                                        {
+                                            <li>
+                                            <a asp-controller="Admin" asp-action="Dashboard" asp-fragment="now" class="dropdown-item" style="color: black !important">
+                                                Dashboard
+                                                </a>
+                                            </li>
+                                            <li>
+                                            <a asp-controller="Admin" asp-action="Users" asp-fragment="now" class="dropdown-item" style="color: black !important">
+                                                    Quản lý người dùng
+                                                </a>
+                                            </li>
+                                            <li>
+                                            <a asp-controller="Admin" asp-action="Theaters" asp-fragment="now" class="dropdown-item" style="color: black !important">
+                                                    Quản lý rạp
+                                                </a>
+                                            </li>
+                                            <li>
+                                            <a asp-controller="Admin" asp-action="Auditoriums" asp-fragment="now" class="dropdown-item" style="color: black !important">
+                                                    Quản lý phòng Chiếu
+                                                </a>
+                                            </li>
+                                        }
+
+                                        @if (userRole == "FilmManager")
+                                        {
+                                            <li>
+                                            <a asp-controller="Admin" asp-action="Movies" asp-fragment="now" class="dropdown-item" style="color: black !important">
+                                                    Quản lý phim
+                                                </a>
+                                            </li>
+                                            <li>
+                                            <a asp-controller="Admin" asp-action="Showtimes" asp-fragment="now" class="dropdown-item" style="color: black !important">
+                                                    Quản lý suất chiếu
+                                                </a>
+                                            </li>
+                                            
+                                        }
+                                        
+                                        <li>
+                                        <a class="dropdown-item" href="@Url.Action("Logout", "Auth")" style="color: black !important">Đăng xuất</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            
                         </div>
+
                     }
+
                 </div>
             </div>
         </nav>

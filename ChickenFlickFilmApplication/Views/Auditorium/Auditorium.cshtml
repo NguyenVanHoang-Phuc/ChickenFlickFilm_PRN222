@@ -2,22 +2,17 @@
 @using System.Text.Json
 @using BusinessObjects.Models;
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "Movie Seat Booking";
     string rows = "ABCDEFGHIJKLMN";
     List<Seat> Seats = Model.Auditorium.Seats.ToList();
     Movie movie = Model.Movie;
     List<Showtime> showtimes = movie.Showtimes.ToList();
     int curIndex = 0;
 }
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Seat Booking</title>
-</head>
-<body>
+@section Styles {
+    <link rel="stylesheet" href="~/css/Auditorium.css" asp-append-version="true" />
+}
+<div class="Auditorium-page">
     <div class="movie-booking">
         <!-- Progress Bar - Updated structure -->
         <div class="progress-container">
@@ -168,14 +163,11 @@
                         <div class="text-detail-book-ticket-popup">Tổng</div>
                         <div id="price-detail-book-ticket" class="price-detail-book-ticket">220.000VND</div>
                     </div>
-                    <hr />
-                    <form asp-controller="Auditorium" method="post" asp-action="OnPay">
-                        <button id="payment-btn-confirm" class="payment-btn-confirm">Thanh toán</button>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
     <script>
          const divs = document.querySelectorAll(".SeatType");
          let selectedIds = [];
@@ -279,6 +271,7 @@
             const form = document.createElement("form");
             form.method = "POST";  
             form.action = '@Url.Action("OnPay", "Auditorium")';
+
             selectedIds.forEach(id => {
                const inputSeatId = document.createElement("input");
                inputSeatId.type = "hidden";
@@ -286,31 +279,57 @@
                inputSeatId.value = id;
 			   form.appendChild(inputSeatId);
             });
+            // Total amount
             const Total = document.createElement("input");
             Total.type = "hidden";
             Total.name = "total"; 
             Total.value = total;
-
             form.appendChild(Total);
+
+            // VnPay Info
+             const Name = document.createElement("input");
+            Name.type = "hidden";
+            Name.name = "Name";  // Tên người dùng
+            // Name.value = "@User.Identity.Name";
+            Name.value = "Linh";
+            form.appendChild(Name);
+
+            const OrderDescription = document.createElement("input");
+            OrderDescription.type = "hidden";
+            OrderDescription.name = "OrderDescription";  // Mô tả đơn hàng
+            OrderDescription.value = "Thanh toan qua Vnpay";
+            form.appendChild(OrderDescription);
+
+            const OrderType = document.createElement("input");
+            OrderType.type = "hidden";
+            OrderType.name = "OrderType";  // Loại đơn hàng
+            OrderType.value = "other";
+            form.appendChild(OrderType);
 
             document.body.appendChild(form);
             form.submit();  
           }
-          document.addEventListener("DOMContentLoaded", function () {
-            updateSeatGrid();
-            updateProgressBar()
-          });
-          document.querySelector('.payment-btn').addEventListener('click', async function() {
-              if ( selectedIds.length <= 0 ) {
-				   alert("Chưa chọn ghế nào");
-                   return; 
-              }
-             let total = calculateTotal();
-            submitFormPost(selectedIds, total)
-          });
+         
+     
+     document.addEventListener("DOMContentLoaded", function () {
+       updateSeatGrid();
+       updateProgressBar()
+     });
+     document.querySelector('.payment-btn').addEventListener('click', async function() {
+         if ( selectedIds.length <= 0 ) {
+              alert("Chưa chọn ghế nào");
+              return;
+         }
+
+        let total = calculateTotal();
+
+        const MovieName = "@movie.Title";
+        const TheaterName = "@Model.Auditorium.Theater.TheaterName";
+        const Showtime = "@Model.ShowTime";
+        const Auditorium = "@Model.Auditorium.AuditoriumName";
+        submitFormPost(selectedIds, total);
+        submitTicketDetails(MovieName, TheaterName, Showtime, Auditorium, selectedIds, total);
+     });
     </script>
-</body>
-</html>
-@section Styles {
-    <link rel="stylesheet" href="~/css/Auditorium.css">
-}
+
+
