@@ -337,20 +337,24 @@ namespace ChickenFlickFilmApplication.Controllers
                 return NotFound();
             }
 
-            // Update user properties
-            user.FullName = model.FullName;
-            user.Birthday = model.DateOfBirth;
-            user.Gender = model.Gender == "Male";
-
             var existPhone = await _userService.GetAsync(u => u.PhoneNumber.Equals(model.PhoneNumber));
-            if (existPhone != null)
+
+            if (existPhone != null && user.UserId != existPhone.UserId)
             {
-                TempData["Error"] = "Đã xảy ra lỗi khi cập nhật thông tin. Vui lòng thử lại.";
+                TempData["Error"] = "Số điện thoại đã được sử dụng bởi người dùng khác.";
+                return RedirectToAction("UserProfile");
             }
             else
             {
                 user.PhoneNumber = model.PhoneNumber;
             }
+
+
+            // Update user properties
+            user.FullName = model.FullName;
+            user.Birthday = model.DateOfBirth;
+            user.Gender = model.Gender == "Male";
+
             try
             {
                 await _userService.UpdateUserAsync(user);
