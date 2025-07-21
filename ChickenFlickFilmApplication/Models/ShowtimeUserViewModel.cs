@@ -6,8 +6,10 @@
 
         public string? DayOfWeek { get; set; }
 
-        public string? ShowTime { get; set; }
+        public List<string> ShowTimes { get; set; } = new List<string>();
 
         public string? Format { get; set; }
+
+        public string? TheaterName { get; set; }
     }
 }
