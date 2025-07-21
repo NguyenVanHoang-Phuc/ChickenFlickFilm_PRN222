@@ -43,5 +43,9 @@ namespace Repository
         {
             return await _movieDAO.GetMoviesByEnableStatusAsync();
         }
+        public async Task<List<Movie>> SearchMoviesAsync(string searchTerm)
+        {
+            return await _movieDAO.SearchMoviesAsync(searchTerm);
+        }
     }
 }

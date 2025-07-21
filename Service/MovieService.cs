@@ -43,5 +43,9 @@ namespace Service
         {
             return await _movieRepository.GetMoviesByEnableStatusAsync();
         }
+        public async Task<List<Movie>> SearchMoviesAsync(string searchTerm)
+        {
+            return await _movieRepository.SearchMoviesAsync(searchTerm);
+        }
     }
 }
