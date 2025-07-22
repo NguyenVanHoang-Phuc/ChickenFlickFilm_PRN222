@@ -1,6 +1,7 @@
 ﻿@model BusinessObjects.Models.Showtime
 @using System.Text.Json
 @using BusinessObjects.Models;
+@using System.Security.Claims
 @{
     ViewData["Title"] = "Movie Seat Booking";
     string rows = "ABCDEFGHIJKLMN";
@@ -267,7 +268,7 @@
           function formatNumber(num) {
              return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
           }
-          function submitFormPost(selectedIds, total) {
+        function submitFormPost(selectedIds, total, showtimeId, userId) {
             const form = document.createElement("form");
             form.method = "POST";  
             form.action = '@Url.Action("OnPay", "Auditorium")';
@@ -286,6 +287,18 @@
             Total.value = total;
             form.appendChild(Total);
 
+            //ShowtimeId
+            const ShowtimeId = document.createElement("input");
+           ShowtimeId.type = "hidden";
+           ShowtimeId.name = "ShowtimeId";
+           ShowtimeId.value = showtimeId;
+           form.appendChild(ShowtimeId);
+            // User
+           const UserId = document.createElement("input");
+           UserId.type = "hidden";
+           UserId.name = "UserId";
+           UserId.value = userId;
+          form.appendChild(UserId);
             // VnPay Info
              const Name = document.createElement("input");
             Name.type = "hidden";
@@ -322,13 +335,18 @@
          }
 
         let total = calculateTotal();
+        const timeFrameSelected = document.querySelector('.time-btn.active'); // Find the active button
 
-        const MovieName = "@movie.Title";
-        const TheaterName = "@Model.Auditorium.Theater.TheaterName";
-        const Showtime = "@Model.ShowTime";
-        const Auditorium = "@Model.Auditorium.AuditoriumName";
-        submitFormPost(selectedIds, total);
-        submitTicketDetails(MovieName, TheaterName, Showtime, Auditorium, selectedIds, total);
+       if (timeFrameSelected) {
+           const timeId = timeFrameSelected.dataset.timeid; // Get data-timeid from active button
+            console.log(`Selected time ID: ${timeId}`);
+           const userId = "@User.FindFirstValue(ClaimTypes.NameIdentifier)" > 0 ? "@User.FindFirstValue(ClaimTypes.NameIdentifier)":1 ; // temp solution without login for testing
+
+           submitFormPost(selectedIds, total, timeId, userId);
+        } else {
+            alert('No active button found!'); // Show alert if no active button
+        }
+       
      });
     </script>
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusinessObjects.Models;
 
@@ -12,6 +13,8 @@ public partial class Booking
     public int ShowtimeId { get; set; }
 
     public DateTime? CreatedAt { get; set; }
+    [Column("booking_status")]
+    public string? BookingStatus { get; set; }
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
