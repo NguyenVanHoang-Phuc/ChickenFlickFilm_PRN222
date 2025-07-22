@@ -43,6 +43,7 @@ public partial class Movie
     public string? TrailerUrl { get; set; }
 
     public string? Country { get; set; }
+
     [JsonIgnore]
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     [JsonIgnore]
