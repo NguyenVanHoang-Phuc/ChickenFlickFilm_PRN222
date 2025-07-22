@@ -2,6 +2,7 @@
 using ChickenFlickFilmApplication.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -210,6 +211,17 @@ namespace ChickenFlickFilmApplication.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        // Google Authentication Challenge
+        [HttpPost]
+        public IActionResult GoogleLogin(string? returnUrl = null)
+        {
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = returnUrl ?? Url.Action("Index", "Home")
+            };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
         [HttpGet]
         public async Task<IActionResult> LogoutAsync()
         {
@@ -348,7 +360,6 @@ namespace ChickenFlickFilmApplication.Controllers
             {
                 user.PhoneNumber = model.PhoneNumber;
             }
-
 
             // Update user properties
             user.FullName = model.FullName;
