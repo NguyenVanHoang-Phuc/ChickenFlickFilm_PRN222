@@ -54,19 +54,28 @@ namespace ChickenFlickFilmApplication.Controllers
         }
 
         [HttpPost]
-        public IActionResult OnPay(List<int> listSeat, decimal total, string Name, string OrderDescription, string OrderType)
+        public IActionResult OnPay(List<int> listSeat, decimal total, string Name, string OrderDescription, string OrderType, int ShowtimeId, int UserId)
         {
             if (listSeat == null || listSeat.Count == 0)
             {
                 return Content("No seats selected.");
             }
-            return RedirectToAction("CreatePaymentUrlVnpay","Payment", new
-            {
-                Amount = total,
-                Name = Name,
-                OrderDescription = OrderDescription,
-                OrderType = OrderType
-            });
+
+            Console.WriteLine($"total: {total}, Name :{Name}, OrderDescription: {OrderDescription}, " +
+                $"OrderType: {OrderType}, ShowtimeId: {ShowtimeId},UserId: {UserId}   ");
+
+            return RedirectToAction("CreateBooking", "Booking",
+                new
+                {
+                    total = total,
+                    Name = Name,
+                    OrderDescription = OrderDescription,
+                    OrderType = OrderType,
+                    ShowtimeId = ShowtimeId,
+                    UserId = UserId,
+                    ListSeat = listSeat
+                });
+            
         }
 
     }

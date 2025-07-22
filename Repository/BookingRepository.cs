@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BusinessObjects.Models;
+using DataAccess;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +10,26 @@ namespace Repository
 {
     public class BookingRepository : IBookingRepository
     {
+        private readonly BookingDAO _bookingDAO;
+
+        public BookingRepository(BookingDAO bookingDAO)
+        {
+            _bookingDAO = bookingDAO;
+        }
+
+        public async Task<int> AddBookingAsync(Booking booking)
+        {
+            return await _bookingDAO.AddBookingAsync(booking);
+        }
+
+        public async Task ChangeBookingStatus(int bookingId, string bookingStatus)
+        {
+             await _bookingDAO.ChangeBookingStatus(bookingId,bookingStatus);
+        }
+
+        public async Task<Booking?> GetBookingByIdAsync(int bookingId)
+        {
+           return await _bookingDAO.GetBookingByIdAsync(bookingId);
+        }
     }
 }
