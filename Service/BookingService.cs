@@ -30,5 +30,9 @@ namespace Service
         {
             return _bookingRepository.GetBookingByIdAsync(bookingId);
         }
+        public List<Booking> GetAllBookingByUserId(int userid)
+        {
+            return _bookingRepository.GetAllBookingByUserId(userid);
+        }
     }
 }

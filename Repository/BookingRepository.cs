@@ -31,5 +31,9 @@ namespace Repository
         {
            return await _bookingDAO.GetBookingByIdAsync(bookingId);
         }
+        public List<Booking> GetAllBookingByUserId(int userid)
+        {
+            return _bookingDAO.GetAllBookingByUserId(userid);
+        }
     }
 }
