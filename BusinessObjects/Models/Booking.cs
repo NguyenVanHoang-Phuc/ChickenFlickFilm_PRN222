@@ -13,7 +13,9 @@ public partial class Booking
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+    public string? BookingStatus { get; set; }
+
+    public virtual Payment? Payment { get; set; }
 
     public virtual ICollection<SeatBooking> SeatBookings { get; set; } = new List<SeatBooking>();
 
