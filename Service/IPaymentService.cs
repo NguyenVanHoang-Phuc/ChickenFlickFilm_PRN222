@@ -10,5 +10,6 @@ namespace Service
     public interface IPaymentService
     {
         Payment getPaymentByBookingid(int bookingid);
+        Task AddPaymentAsync(Payment payment);
     }
 }

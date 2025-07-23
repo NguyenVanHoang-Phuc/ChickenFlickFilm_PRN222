@@ -5,6 +5,7 @@ using ChickenFlickFilmApplication.Services.VnPay;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace ChickenFlickFilmApplication.Controllers
@@ -18,6 +19,7 @@ namespace ChickenFlickFilmApplication.Controllers
         private readonly IMovieService _movieService;
         private readonly IAuditoriumService _auditoriumService;
         private readonly ITheaterService _theaterService;
+        private readonly IPaymentService _paymentService;
         public IActionResult BookingDetails()
         {
             return View();
@@ -31,7 +33,8 @@ namespace ChickenFlickFilmApplication.Controllers
             return View();
         }
         public PaymentController(IVnPayService vnPayService, IBookingService bookingService, IShowtimeService showtimeService, 
-            IMovieService movieService, IAuditoriumService auditoriumService, ITheaterService theaterService, ISeatBookingService seatBookingService)
+            IMovieService movieService, IAuditoriumService auditoriumService, ITheaterService theaterService, 
+            ISeatBookingService seatBookingService, IPaymentService paymentService)
         {
 
             _vnPayService = vnPayService;
@@ -41,6 +44,7 @@ namespace ChickenFlickFilmApplication.Controllers
             _auditoriumService = auditoriumService;
             _theaterService = theaterService;
             _seatBookingService = seatBookingService;
+            _paymentService = paymentService;
         }
 
         public IActionResult CreatePaymentUrlVnpay(PaymentInformationModel model)
@@ -59,11 +63,24 @@ namespace ChickenFlickFilmApplication.Controllers
         {
             PaymentResponseModel response = _vnPayService.PaymentExecute(Request.Query);
             // get data from response.OrderID = BookingId
-            var bookingId = response.OrderId;
+            int bookingId = int.Parse(response.OrderId.Split('_')[0]);
             Console.WriteLine($"BookingId: {bookingId} ");
-            if (int.TryParse(bookingId, out int parsedBookingId))
+            if (bookingId>0)
             {
-                Booking booking = await _bookingService.GetBookingByIdAsync(parsedBookingId);
+                Booking booking = await _bookingService.GetBookingByIdAsync(bookingId);
+
+                Payment payment = new Payment()
+                {
+
+                    BookingId = booking.BookingId,
+                    Amount = response.Amount,
+                    PaymentMethod = response.PaymentMethod,
+                    PaymentStatus = response.VnPayResponseCode,
+                    TransactionId = response.TransactionId,
+                    TransactionDate = response.TransactionDate,
+                    VnpayResponseCode = response.VnPayResponseCode
+                };
+                
                 if ("00".Equals(response.VnPayResponseCode))
                 {
                     Console.WriteLine($"Thanh toan thanh cong");
@@ -77,7 +94,7 @@ namespace ChickenFlickFilmApplication.Controllers
                     int auditoriumId = showtime.AuditoriumId;
                     Auditorium auditorium = await _auditoriumService.GetAuditoriumByIdAsync(auditoriumId);
                     Theater theater = await _theaterService.GetTheaterByAuditoriumIdAsync(auditoriumId);
-                    List<SeatBooking> seatBookings = await _seatBookingService.GetSeatBookingsByBookingIdAsync(parsedBookingId);
+                    List<SeatBooking> seatBookings = await _seatBookingService.GetSeatBookingsByBookingIdAsync(bookingId);
                     string movieNameTicket = movie.Title;
                     string theaterNameTicket = theater.TheaterName;
                     string showtimeTicket = showtime.ShowTime + "," + showtime.ShowDate;
@@ -105,6 +122,8 @@ namespace ChickenFlickFilmApplication.Controllers
                         $"SeatNumbers: {model.SeatNumbers.Count()}\n" +
                         $"Amount : {model.Amount}");
 
+                    payment.PaymentStatus = "Thành công";
+                    await _paymentService.AddPaymentAsync(payment);
                     return View("MakePaymentSuccess", model);
 
                 }
@@ -112,8 +131,11 @@ namespace ChickenFlickFilmApplication.Controllers
                 else
                 {
                     _bookingService.ChangeBookingStatus(booking, "Failed");
+                    payment.PaymentStatus = "Thất bại";
+                    await _paymentService.AddPaymentAsync(payment);
                     return View("MakePaymentFailed");
                 }
+                
             }
             else
             {
