@@ -33,6 +33,9 @@ namespace ChickenFlickFilmApplication.Controllers
             }
             Auditorium audi = auditoriumService.GetAuditoriumById(showtime.AuditoriumId);
             Movie movie = movieService.GetMovieByIdAsync(showtime.MovieId).Result;
+            DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+            List<Showtime> listShowtime = showtimeService.GetShowtimesByMovieIdAsync(movie.MovieId).Result.ToList();
+            var filterShowtime = listShowtime.Where(s => s.ShowDate == showtime.ShowDate).ToList();
             if (audi == null || movie == null)
             {
                 return Content("Auditorium or movie was not found.");
@@ -41,7 +44,7 @@ namespace ChickenFlickFilmApplication.Controllers
             {
                 audi.Seats = seatService.GetAllSeatsByAuditorium(audi.AuditoriumId).ToList();
                 audi.Theater = theaterService.GetTheaterByIdAsync(audi.TheaterId).Result;
-                movie.Showtimes = showtimeService.GetShowtimesByMovieIdAsync(movie.MovieId).Result.ToList();
+                movie.Showtimes = filterShowtime;
                 showtime.Auditorium = audi;
                 showtime.Movie = movie;
                 return View("Auditorium",showtime);

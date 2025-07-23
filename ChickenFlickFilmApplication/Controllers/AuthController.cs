@@ -319,6 +319,7 @@ namespace ChickenFlickFilmApplication.Controllers
             if (user != null)
             {
                 List<Booking> bookings = bookingService.GetAllBookingByUserId(int.Parse(userId));
+                List<Booking> bookingsResult = new List<Booking>();
                 Payment payment = new Payment();
                 foreach (Booking booking in bookings)
                 {
@@ -328,9 +329,7 @@ namespace ChickenFlickFilmApplication.Controllers
                     {
                         booking.Showtime = showtime;
                         booking.Payment = payment;
-                    } else
-                    {
-                        return NotFound();
+                        bookingsResult.Add(booking);
                     }
                 }
                 var model = new UserProfileViewModel
@@ -341,7 +340,7 @@ namespace ChickenFlickFilmApplication.Controllers
                     Gender = user.Gender ? "Male" : "Female",
                     PhoneNumber = user.PhoneNumber,
                     TotalSpending = 0,
-                    bookings = bookings,
+                    bookings = bookingsResult,
                 };
                 return View(model);
             }
