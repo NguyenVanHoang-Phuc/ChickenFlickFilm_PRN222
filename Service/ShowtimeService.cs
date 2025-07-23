@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using DataAccess;
 using Repository;
 using System;
 using System.Collections.Generic;
@@ -54,9 +55,9 @@ namespace Service
         {
             return await _showtimeRepository.GetShowtimesByMovieIdAsync(movieId);
         }
-        public async Task<IEnumerable<Showtime>> GetShowtimeForNext3DaysAsync()
+        public List<string> GetSevenDaysStartingFromToday()
         {
-            return await _showtimeRepository.GetShowtimeForNext3DaysAsync();
+            return _showtimeRepository.GetSevenDaysStartingFromToday();
         }
     }
 }

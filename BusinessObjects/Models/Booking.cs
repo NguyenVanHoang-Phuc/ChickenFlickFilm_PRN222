@@ -13,10 +13,10 @@ public partial class Booking
     public int ShowtimeId { get; set; }
 
     public DateTime? CreatedAt { get; set; }
-    [Column("booking_status")]
+
     public string? BookingStatus { get; set; }
 
-    public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
+    public virtual Payment? Payment { get; set; }
 
     public virtual ICollection<SeatBooking> SeatBookings { get; set; } = new List<SeatBooking>();
 

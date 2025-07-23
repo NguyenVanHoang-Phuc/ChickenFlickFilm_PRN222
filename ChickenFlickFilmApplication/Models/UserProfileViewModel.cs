@@ -1,4 +1,6 @@
-﻿namespace ChickenFlickFilmApplication.Models
+﻿using BusinessObjects.Models;
+
+namespace ChickenFlickFilmApplication.Models
 {
     public class UserProfileViewModel
     {
@@ -8,5 +10,6 @@
         public DateTime DateOfBirth { get; set; }
         public string Gender { get; set; }
         public decimal TotalSpending { get; set; }
+        public List<Booking> bookings { get; set; }
     }
 }

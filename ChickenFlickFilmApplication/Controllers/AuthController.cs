@@ -2,6 +2,7 @@
 using ChickenFlickFilmApplication.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
@@ -15,12 +16,17 @@ namespace ChickenFlickFilmApplication.Controllers
         private readonly IUserService _userService;
         private readonly IEmailSender _emailSender;
         private readonly IMemoryCache _cache;
-
-        public AuthController(IUserService userService, IEmailSender emailSender, IMemoryCache cache)
+        private readonly IBookingService bookingService;
+        private readonly IShowtimeService showtimeService;
+        private readonly IPaymentService paymentService;
+        public AuthController(IUserService userService, IEmailSender emailSender, IMemoryCache cache, IBookingService bookingService, IShowtimeService showtimeService, IPaymentService paymentService)
         {
             _userService = userService;
             _emailSender = emailSender;
             _cache = cache;
+            this.bookingService = bookingService;
+            this.showtimeService = showtimeService;
+            this.paymentService = paymentService;
         }
 
         [HttpGet]
@@ -197,12 +203,28 @@ namespace ChickenFlickFilmApplication.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, authProperties);
 
-            if(user.Role == "FilmManager" || user.Role == "Admin")
+            if(user.Role == "Admin")
             {
                 return RedirectToAction("Dashboard", "Admin");
             }
 
+            if (user.Role == "FilmManager")
+            {
+                return RedirectToAction("Movies", "Admin");
+            }
+
             return RedirectToAction("Index", "Home");
+        }
+
+        // Google Authentication Challenge
+        [HttpPost]
+        public IActionResult GoogleLogin(string? returnUrl = null)
+        {
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = returnUrl ?? Url.Action("Index", "Home")
+            };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
         [HttpGet]
@@ -296,6 +318,20 @@ namespace ChickenFlickFilmApplication.Controllers
             var user = await _userService.GetAsync(u => u.UserId.ToString() == userId);
             if (user != null)
             {
+                List<Booking> bookings = bookingService.GetAllBookingByUserId(int.Parse(userId));
+                List<Booking> bookingsResult = new List<Booking>();
+                Payment payment = new Payment();
+                foreach (Booking booking in bookings)
+                {
+                    Showtime showtime = await showtimeService.GetShowtimeByIdAsync(booking.ShowtimeId);
+                    payment = paymentService.getPaymentByBookingid(booking.BookingId);
+                    if (showtime != null && payment != null)
+                    {
+                        booking.Showtime = showtime;
+                        booking.Payment = payment;
+                        bookingsResult.Add(booking);
+                    }
+                }
                 var model = new UserProfileViewModel
                 {
                     DateOfBirth = user.Birthday,
@@ -303,7 +339,8 @@ namespace ChickenFlickFilmApplication.Controllers
                     FullName = user.FullName,
                     Gender = user.Gender ? "Male" : "Female",
                     PhoneNumber = user.PhoneNumber,
-                    TotalSpending = 0
+                    TotalSpending = 0,
+                    bookings = bookingsResult,
                 };
                 return View(model);
             }
@@ -332,20 +369,23 @@ namespace ChickenFlickFilmApplication.Controllers
                 return NotFound();
             }
 
-            // Update user properties
-            user.FullName = model.FullName;
-            user.Birthday = model.DateOfBirth;
-            user.Gender = model.Gender == "Male";
-
             var existPhone = await _userService.GetAsync(u => u.PhoneNumber.Equals(model.PhoneNumber));
-            if (existPhone != null)
+
+            if (existPhone != null && user.UserId != existPhone.UserId)
             {
-                TempData["Error"] = "Đã xảy ra lỗi khi cập nhật thông tin. Vui lòng thử lại.";
+                TempData["Error"] = "Số điện thoại đã được sử dụng bởi người dùng khác.";
+                return RedirectToAction("UserProfile");
             }
             else
             {
                 user.PhoneNumber = model.PhoneNumber;
             }
+
+            // Update user properties
+            user.FullName = model.FullName;
+            user.Birthday = model.DateOfBirth;
+            user.Gender = model.Gender == "Male";
+
             try
             {
                 await _userService.UpdateUserAsync(user);

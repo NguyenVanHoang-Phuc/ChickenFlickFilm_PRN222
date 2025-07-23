@@ -74,36 +74,15 @@ namespace DataAccess
             return await _context.Showtimes
                         .Where(s => s.MovieId == movieId)
                         .Include(s => s.Auditorium)
+                        .ThenInclude(a => a.Theater)
                         .ToListAsync();
         }
-
-        public async Task<IEnumerable<Showtime>> GetShowtimeForNext3DaysAsync()
+        public List<string> GetSevenDaysStartingFromToday()
         {
-            var today = DateOnly.FromDateTime(DateTime.Now);
-            var twoDaysLater = today.AddDays(2);
-
-            // Lấy tất cả showtimes từ cơ sở dữ liệu
-            var showtimes = await _context.Showtimes
-                .Where(s => s.ShowDate.HasValue) // Chỉ lấy các showtimes có ShowDate
-                .OrderBy(s => s.ShowDate) // Sắp xếp theo ShowDate
-                .ThenBy(s => s.ShowTime) // Sắp xếp theo ShowTime
-                .ToListAsync();
-
-            // Lọc ra các showtimes trong khoảng từ hôm nay đến hai ngày sau
-            var filteredShowtimes = showtimes
-                .Where(s => s.ShowDate.Value >= today && s.ShowDate.Value <= twoDaysLater)
+            var startDate = DateTime.Today;
+            return Enumerable.Range(0, 7)
+                .Select(offset => startDate.AddDays(offset).ToString("yyyy-MM-dd"))
                 .ToList();
-
-            // Nếu không có showtimes cho ngày hôm nay, lấy ba ngày tiếp theo
-            if (!filteredShowtimes.Any())
-            {
-                filteredShowtimes = showtimes
-                    .Where(s => s.ShowDate.Value > today)
-                    .Take(3) // Lấy 3 showtimes tiếp theo
-                    .ToList();
-            }
-
-            return filteredShowtimes;
         }
     }
 }

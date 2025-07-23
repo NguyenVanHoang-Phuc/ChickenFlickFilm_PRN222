@@ -57,9 +57,10 @@ namespace Repository
             return await _showtimeDAO.GetShowtimesByMovieIdAsync(movieId);
         }
 
-        public async Task<IEnumerable<Showtime>> GetShowtimeForNext3DaysAsync()
+        public List<string> GetSevenDaysStartingFromToday()
         {
-            return await _showtimeDAO.GetShowtimeForNext3DaysAsync();
+            return  _showtimeDAO.GetSevenDaysStartingFromToday();
         }
     }
 }
+

@@ -1,20 +1,13 @@
 ﻿@model ChickenFlickFilmApplication.Models.MovieUserViewModel
-@using System.Globalization;
+@using System.Globalization
 @{
     Layout = "_Layout";
-    var m = Model;
-
-    var byDate = Model.Showtimes
-        .GroupBy(s => new { s.ShowDate, s.DayOfWeek })
-        .OrderBy(g => DateTime.ParseExact(g.Key.ShowDate, "dd/MM/yyyy", CultureInfo.InvariantCulture))
-        .Take(3)  // chỉ 3 ngày đầu
-        .ToList();
-
-    var firstKey = byDate.FirstOrDefault()?.Key;
+    var selectedDate = Model.SelectedDate;
+    var showtimes = ViewBag.ShowtimeSelectedDate as List<ShowtimeUserViewModel>;
 }
 <div class="detail-hero">
     <div class="hero-inner">
-        <img src="@m.BannerUrl" alt="@m.Title" class="hero-img" />
+        <img src="@Model.movies.BannerUrl" alt="@Model.movies.Title" class="hero-img" />
         <button class="btn-play" data-bs-toggle="modal" data-bs-target="#trailerModal">
             <i class="bi bi-play-fill"></i>
         </button>
@@ -28,32 +21,32 @@
             <div class="movie-info-wrapper">
                 <!-- Movie Poster -->
                 <div class="poster-container">
-                    <img src="@m.PosterUrl" alt="@m.Title" class="movie-poster">
+                    <img src="@Model.movies.PosterUrl" alt="@Model.movies.Title" class="movie-poster">
                 </div>
 
                 <!-- Movie Info -->
                 <div class="movie-info">
-                    <h5 class="movie-title">@m.Title</h5>
+                    <h5 class="movie-title">@Model.movies.Title</h5>
                     <div class="d-flex gap-4 mb-3 text-secondary small">
                         <div>
-                            <i class="bi bi-clock" style="color: #D84040;"></i> @m.Duration
+                            <i class="bi bi-clock" style="color: #D84040;"></i> @Model.movies.Duration
                         </div>
                         <div>
-                            <i class="bi bi-calendar" style="color: #D84040;"></i> @m.ReleaseDate.ToString("dd/MM/yyyy") - @m.EndDate.ToString("dd/MM/yyyy")
+                            <i class="bi bi-calendar" style="color: #D84040;"></i> @Model.movies.ReleaseDate.ToString("dd/MM/yyyy") - @Model.movies.EndDate.ToString("dd/MM/yyyy")
                         </div>
                     </div>
                     <div class="d-flex align-items-center gap-2 mb-4">
                         <div class="d-flex align-items-center">
                             <i class="bi bi-star-fill star-filled me-1"></i>
-                            <span class="fs-4 fw-bold text-warning">@m.Rating</span>
+                            <span class="fs-4 fw-bold text-warning">@Model.movies.Rating</span>
                         </div>
                     </div>
                     <div class="movie-details">
                         <div class="info">
                             <span class="label">Thể loại:</span>
-                            @if (!string.IsNullOrEmpty(Model.Genre))
+                            @if (!string.IsNullOrEmpty(Model.movies.Genre))
                             {
-                                foreach (var g in Model.Genre.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                                foreach (var g in Model.movies.Genre.Split(',', StringSplitOptions.RemoveEmptyEntries))
                                 {
                                     <span class="tag">@g.Trim()</span>
                                 }
@@ -61,9 +54,9 @@
                         </div>
                         <div class="info">
                             <span class="label">Đạo diễn:</span>
-                            @if (!string.IsNullOrEmpty(Model.Director))
+                            @if (!string.IsNullOrEmpty(Model.movies.Director))
                             {
-                                foreach (var g in Model.Director.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                                foreach (var g in Model.movies.Director.Split(',', StringSplitOptions.RemoveEmptyEntries))
                                 {
                                     <span class="tag">@g.Trim()</span>
                                 }
@@ -71,12 +64,12 @@
                         </div>
                         <div class="info">
                             <span class="label">Diễn viên:</span>
-                            @if (Model.Cast != null && Model.Cast.Any())
+                            @if (Model.movies.Cast != null && Model.movies.Cast.Any())
                             {
                                 <div class="actor-list">
-                                    @foreach (var actor in Model.Cast.Split(';', StringSplitOptions.RemoveEmptyEntries))
+                                    @foreach (var actor in Model.movies.Cast.Split(';', StringSplitOptions.RemoveEmptyEntries))
                                     {
-                                        <span class="actor-box">@actor.Trim()</span>
+                                        <span class="tag">@actor.Trim()</span>
                                     }
                                 </div>
                             }
@@ -91,8 +84,8 @@
                     <h6 class="section-title mb-4">Nội Dung Phim</h6>
 
                     <div class="text-secondary">
-                        <p class="mb-3">
-                            Phim mới <strong>@m.Title</strong> @m.Description
+                        <p class="mb-3" style="color: #000000;">
+                            Phim mới <strong>@Model.movies.Title</strong> @Model.movies.Description
                         </p>
                     </div>
                 </div>
@@ -101,63 +94,49 @@
             <div class="mb-4">
                 <div class="card-body">
                     <h6 class="section-title mb-4">Lịch Chiếu</h6>
-
                     <div class="d-flex gap-2 mb-4 justify-content align-items-center">
-                        @foreach (var showtime in Model.Showtimes)
+                        @foreach (var day in Model.SevenDays)
                         {
-                            <button class="btn btn-primary px-3 py-2" data-date="@showtime.ShowDate">
-                                <div class="text-center">
-                                    <div class="small">@showtime.ShowDate</div>
-                                    <div class="fw-bold">@showtime.DayOfWeek</div>
-                                </div>
-                            </button>
+                            <form method="post" action="@Url.Action("SelectDate", "MoviesUser")">
+                                <input type="hidden" name="selectedDate" value="@day" />
+                                <input type="hidden" name="id" value="@Model.movies.MovieId" />
+                                <button type="submit" class="btn px-3 py-2 @(selectedDate == day ? "btn-primary active" : "btn-outline-primary")">
+                                    <div class="text-center">
+                                        <div class="small">@DateTime.ParseExact(day, "yyyy-MM-dd", CultureInfo.InvariantCulture).ToString("dd/MM/yyyy")</div>
+                                        <div class="fw-bold">@DateTime.ParseExact(day, "yyyy-MM-dd", CultureInfo.InvariantCulture).ToString("dddd", new CultureInfo("vi-VN"))</div>
+                                    </div>
+                                </button>
+                            </form>
                         }
                     </div>
 
-
-                    @foreach (var showtime in Model.Showtimes)
-                    {
-                        <div class="border-bottom pb-3 mb-3">
-                            <h5 class="mb-3">Galaxy Đà Nẵng</h5>
-                            <div class="d-flex align-items-center gap-3">
-                                <span class="badge bg-light text-dark">@showtime.Format</span>
-                                <button class="btn btn-outline-primary btn-sm">@showtime.ShowTime</button>
-                            </div>
-                        </div>
-                    }
+                    <div id="showtimes-container">
+                        @if (showtimes != null && showtimes.Any())
+                        {
+                            @foreach (var showtimeGroup in showtimes)
+                            {
+                                <div class="showtimes-container">
+                                    <h5 class="mb-3">@showtimeGroup.TheaterName</h5>
+                                    <input type="hidden" name="id" value="@showtimeGroup" />
+                                    <span class="badge bg-light text-dark">@Model.movies.Format</span>
+                                    @foreach (var showtime in showtimeGroup.ShowTimes)
+                                    {
+                                        <form asp-action="Auditorium" asp-controller="Auditorium">
+                                            <input type="hidden" name="ShowtimeId" value="@showtime.ShowtimeId" />
+                                            <button type="submit" class="btn btn-outline-primary btn-sm">@showtime.ShowTime</button>
+                                        </form>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>Không có suất chiếu cho ngày này.</p>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- Sidebar -->
-        @* <div class="col-lg-4 d-none d-lg-block">
-            <div class="mt-4">
-                <div class="card-body">
-                    <h6 class="section-title mb-4">PHIM ĐANG CHIẾU</h6>
-
-                    <!-- Movie 1 -->
-                    <div class="mb-3 sidebar-movie-card">
-                        <div class="sidebar-movie-image">
-                            <img src="/image/bannerdieuuoccuoicung.jpg" class="img-fluid w-100"
-                                 alt="Thế Giới Khủng Long: Tái Sinh" />
-                            <div class="position-absolute bottom-0 end-0 m-2">
-                                <span class="badge age-badge">T13</span>
-                            </div>
-                            <button class="btn btn-sm buy-ticket-btn position-absolute top-50 start-50 translate-middle m-2">
-                                <i class="bi bi-ticket-perforated me-1"></i> Mua vé
-                            </button>
-                        </div>
-                        <div class="card-body p-2">
-                            <h5 class="card-title fs-6 mb-0">Thế Giới Khủng Long: Tái Sinh</h5>
-                        </div>
-                    </div>
-                    <div class="text-end">
-                        <button class="btn custom-btn">
-                            Xem thêm <i class="bi bi-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div> *@
     </div>
 </div>
 
@@ -167,16 +146,15 @@
         <div class="modal-content bg-transparent border-0">
             <div class="modal-body p-0">
                 <div class="ratio ratio-16x9">
-                    <iframe id="trailerFrame" src="https://www.youtube.com/embed/VhY3F96vv3M?autoplay=0"
-                            title="Trailer Điều Ước Cuối Cùng" allow="autoplay; encrypted-media" allowfullscreen>
+                    <iframe id="trailerFrame" src="@Model.movies.TrailerUrl"
+                            title="@Model.movies.Title" allow="autoplay; encrypted-media" allowfullscreen>
                     </iframe>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
-</script>
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
       const trailerModalEl = document.getElementById('trailerModal');
@@ -191,7 +169,14 @@
         iframe.src = baseSrc;
       });
     });
+
+            function selectDate(date) {
+        // Cập nhật lại selectedDate khi button ngày được nhấn
+        window.location.href = '@Url.Action("DetailFilm", "MoviesUser")?id=' + @Model.movies.MovieId + '&selectedDate=' + date;
+    }
+
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }

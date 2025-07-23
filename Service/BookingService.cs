@@ -39,6 +39,14 @@ namespace Service
                 booking.BookingStatus = bookingStatus;
                 await _bookingRepository.UpdateBookingAsync(booking);
             }
+        public List<Booking> GetAllBookingByUserId(int userid)
+        {
+            return _bookingRepository.GetAllBookingByUserId(userid);
+        }
+        public async Task<decimal> GetTotalAmountAsync()
+        {
+            return await _bookingRepository.GetTotalAmountAsync();
         }
     }
+}
 }

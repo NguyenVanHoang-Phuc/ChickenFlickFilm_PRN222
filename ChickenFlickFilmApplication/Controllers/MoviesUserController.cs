@@ -1,6 +1,8 @@
 ﻿using BusinessObjects.Models;
 using ChickenFlickFilmApplication.Models;
+using DataAccess;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Service;
 using System.Diagnostics;
 using System.Globalization;
@@ -43,51 +45,153 @@ namespace ChickenFlickFilmApplication.Controllers
             return View();
         }
 
-        public async Task<IActionResult> DetailFilm(int id)
+        [HttpGet]
+        public async Task<IActionResult> DetailFilm(int id, string selectedDate = null)
         {
             var movie = await _movieService.GetMovieByIdAsync(id);
             if (movie == null)
             {
                 return NotFound();
             }
-            var showtimes = await _showtimeService.GetShowtimeForNext3DaysAsync();
-            var movieShowtimes = showtimes
-       .Where(s => s.MovieId == id) // Lọc theo movieId của phim
-       .GroupBy(s => s.ShowDate) // Nhóm theo ngày
-       .ToList();
+            var showtimes = await _showtimeService.GetShowtimesByMovieIdAsync(id);
+
+            var sevenDays = _showtimeService.GetSevenDaysStartingFromToday();
+
+            var showtimesGroupedByDate = showtimes
+                .GroupBy(s => s.ShowDate)
+                .OrderBy(g => g.Key)
+                .ToList();
+
+            string selectedDateParsed = selectedDate ?? DateTime.Today.ToString("yyyy-MM-dd");
+
+            var selectedShowtimes = showtimesGroupedByDate
+                 .Where(g => g.Key?.ToString("yyyy-MM-dd") == selectedDateParsed)
+                 .Select(s => new ShowtimeUserViewModel
+                 {
+                    ShowDate = s.Key?.ToString("dd/MM/yyyy"),
+                    DayOfWeek = s.Key?.ToString("dddd"),
+                    ShowTimes = s.ToList(),
+                    Format = movie.Format,
+                    TheaterName = s.FirstOrDefault()?.Auditorium?.Theater?.TheaterName
+                 }).ToList();
+
+            // In ra thông tin của selectedShowtimes
+            Console.WriteLine($"Selected Date: {selectedDateParsed}");
+            foreach (var showtimeGroup in selectedShowtimes)
+            {
+                Console.WriteLine($"Showtime: {showtimeGroup.ShowDate}, DayOfWeek: {showtimeGroup.DayOfWeek}, Theater: {showtimeGroup.TheaterName}");
+                Console.WriteLine($"ShowTimes: {string.Join(", ", showtimeGroup.ShowTimes)}");
+            }
+
+            
 
             var vm = new MovieUserViewModel
             {
-                Title = movie.Title,
-                BannerUrl = movie.BannerUrl,
-                PosterUrl = movie.PosterUrl,
-                AgeRating = movie.AgeRating,
-                Genre = movie.Genre,
-                Duration = movie.Duration,
-                ReleaseDate = movie.ReleaseDate,
-                EndDate = movie.EndDate,
-                Rating = movie.Rating,
-                Status = movie.Status,
-                Format = movie.Format,
-                Language = movie.Language,
-                Director = movie.Director,
-                Cast = movie.Cast,
-                Description = movie.Description,
-                TrailerUrl = movie.TrailerUrl,
-                Country = movie.Country,
-                //Showtimes = movieShowtimes.Select(group => new ShowtimeUserViewModel
-                //{
-                //    ShowDate = group.Key.ToString("dd/MM/yyyy"),
-                //    DayOfWeek = group.Key.ToString("dddd", new System.Globalization.CultureInfo("vi-VN")),
-                //    Showtimes = group.Select(st => new ShowtimeDetailViewModel
-                //    {
-                //        ShowTime = st.ShowTime.ToString("HH:mm"),
-                //        Format = st.Movie.Format,
-                //    }).ToList()
-                //}).ToList()
+                movies = movie,
+                SevenDays = sevenDays,
+                Showtimes = selectedShowtimes,
+                SelectedDate = selectedDateParsed
+            };
+            // In ra thông tin chi tiết của MovieUserViewModel
+            Console.WriteLine("Movie Details:");
+            Console.WriteLine($"Movie ID: {vm.movies.MovieId}");
+            Console.WriteLine($"Movie Title: {vm.movies.Title}");
+            Console.WriteLine($"Movie Format: {vm.movies.Format}");
+            Console.WriteLine($"Selected Date: {vm.SelectedDate}");
+
+            // In ra thông tin về SevenDays
+            Console.WriteLine("Seven Days:");
+            foreach (var day in vm.SevenDays)
+            {
+                Console.WriteLine($"Day: {day}");
+            }
+            ViewBag.ShowtimeSelectedDate = selectedShowtimes;
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SelectDate(int id, string selectedDate)
+        {
+            var movie = await _movieService.GetMovieByIdAsync(id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            var showtimes = await _showtimeService.GetShowtimesByMovieIdAsync(id);
+            var sevenDays = _showtimeService.GetSevenDaysStartingFromToday();
+
+            var showtimesGroupedByDate = showtimes
+                .GroupBy(s => s.ShowDate)
+                .OrderBy(g => g.Key)
+                .ToList();
+
+            string selectedDateParsed = selectedDate ?? DateTime.Today.ToString("yyyy-MM-dd");
+
+            var selectedShowtimes = showtimesGroupedByDate
+                 .Where(g => g.Key?.ToString("yyyy-MM-dd") == selectedDateParsed)
+                 .Select(s => new ShowtimeUserViewModel
+                 {
+                     
+                     ShowDate = s.Key?.ToString("dd/MM/yyyy"),
+                     DayOfWeek = s.Key?.ToString("dddd"),
+                     ShowTimes = s.ToList(),
+                     Format = movie.Format,
+                     TheaterName = s.FirstOrDefault()?.Auditorium?.Theater?.TheaterName
+                 }).ToList();
+
+            // Truyền selectedShowtimes vào ViewBag
+            ViewBag.ShowtimeSelectedDate = selectedShowtimes;
+
+            var vm = new MovieUserViewModel
+            {
+                movies = movie,
+                SevenDays = sevenDays,
+                Showtimes = selectedShowtimes,
+                SelectedDate = selectedDateParsed
             };
 
-            return View(vm);
+            // Trả về View và ViewBag sẽ chứa dữ liệu cần thiết
+            return View("DetailFilm", vm);  // Gọi trực tiếp View "DetailFilm" để render lại trang với dữ liệu mới
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SearchFilm(IFormCollection form)
+        {
+            var searchTerm = form["keySearchFilm"];
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return RedirectToAction("ListFilm");
+            }
+
+            var filteredMovies = await _movieService.SearchMoviesAsync(searchTerm);
+            var nowShowing = new List<Movie>();
+            var upcoming = new List<Movie>();
+
+
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+
+            foreach (var movie in filteredMovies)
+            {
+
+                if (movie.ReleaseDate <= today && movie.EndDate >= today)
+                {
+                    nowShowing.Add(movie);
+                }
+
+                else if (movie.ReleaseDate > today)
+                {
+                    upcoming.Add(movie);
+                }
+            }
+
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.NowShowing = nowShowing;
+            ViewBag.Upcoming = upcoming;
+
+
+            return View("ListFilm");
         }
     }
 }
