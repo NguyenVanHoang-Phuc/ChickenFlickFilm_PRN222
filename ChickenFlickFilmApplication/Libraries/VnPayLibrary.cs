@@ -22,12 +22,22 @@ namespace ChickenFlickFilmApplication.Libraries
                     vnPay.AddResponseData(key, value);
                 }
             }
-            var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
+            var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef").Split('_')[0]);
             var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
             var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
             var vnpSecureHash =
                 collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
             var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
+            var vnpTransDate = vnPay.GetResponseData("vnp_TransactionDate");
+            DateTime? transactionDate = null;
+            if (!string.IsNullOrEmpty(vnpTransDate))
+            {
+                transactionDate = DateTime.ParseExact(
+                    vnpTransDate,
+                    "yyyyMMddHHmmss",
+                    CultureInfo.InvariantCulture
+                );
+            }
             var checkSignature =
                 vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
             if (!checkSignature)
@@ -44,7 +54,8 @@ namespace ChickenFlickFilmApplication.Libraries
                 PaymentId = vnPayTranId.ToString(),
                 TransactionId = vnPayTranId.ToString(),
                 Token = vnpSecureHash,
-                VnPayResponseCode = vnpResponseCode
+                VnPayResponseCode = vnpResponseCode,
+                TransactionDate = transactionDate
             };
         }
         public string GetIpAddress(HttpContext context)

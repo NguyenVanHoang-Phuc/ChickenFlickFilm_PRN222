@@ -266,7 +266,7 @@
           function formatNumber(num) {
              return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
           }
-        function submitFormPost(selectedIds, total, showtimeId, userId) {
+       function submitFormPost(selectedIds, total, showtimeId, userId, username) {
             const form = document.createElement("form");
             form.method = "POST";  
             form.action = '@Url.Action("OnPay", "Auditorium")';
@@ -300,9 +300,9 @@
             // VnPay Info
              const Name = document.createElement("input");
             Name.type = "hidden";
-            Name.name = "Name";  // Tên người dùng
-            // Name.value = "@User.Identity.Name";
-            Name.value = "Linh";
+            Name.name = "Name";  
+            Name.value = username;
+            // Name.value = "Linh";
             form.appendChild(Name);
 
             const OrderDescription = document.createElement("input");
@@ -339,8 +339,8 @@
            const timeId = timeFrameSelected.dataset.timeid; // Get data-timeid from active button
             console.log(`Selected time ID: ${timeId}`);
            const userId = "@User.FindFirstValue(ClaimTypes.NameIdentifier)" > 0 ? "@User.FindFirstValue(ClaimTypes.NameIdentifier)":1 ; // temp solution without login for testing
-
-           submitFormPost(selectedIds, total, timeId, userId);
+         const username = @Html.Raw(Json.Serialize(User.FindFirstValue(ClaimTypes.Name)));
+           submitFormPost(selectedIds, total, timeId, userId,username);
         } else {
             alert('No active button found!'); // Show alert if no active button
         }

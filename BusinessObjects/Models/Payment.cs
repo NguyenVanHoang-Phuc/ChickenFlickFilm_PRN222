@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusinessObjects.Models;
 
@@ -15,6 +16,7 @@ public partial class Payment
 
     public string? PaymentStatus { get; set; }
 
+    [Column("vnpay_response_code")]
     public string? VnpayResponseCode { get; set; }
 
     public string? TransactionId { get; set; }
