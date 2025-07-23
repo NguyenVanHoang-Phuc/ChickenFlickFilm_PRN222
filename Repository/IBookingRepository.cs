@@ -11,6 +11,6 @@ namespace Repository
     {
         Task<Booking?> GetBookingByIdAsync(int bookingId);
         Task<int> AddBookingAsync(Booking booking);
-        Task ChangeBookingStatus(int bookingId, string bookingStatus);
+        Task UpdateBookingAsync(Booking booking);
     }
 }
