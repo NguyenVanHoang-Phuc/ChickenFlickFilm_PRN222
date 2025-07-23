@@ -1,5 +1,4 @@
 ﻿.detail-hero {
-    /* ép full width */
     position: relative;
     width: 100vw;
     left: 50%;
@@ -33,9 +32,7 @@
 .hero-img {
     height: 100%;
     width: 100%;
-    /* Đảm bảo ảnh co giãn đúng */
     object-fit: cover;
-    /* Thay đổi object-fit nếu cần */
 }
 
 .btn-play {
@@ -54,7 +51,6 @@
     font-size: 2rem;
     color: #fff;
     z-index: 3;
-    /* Đảm bảo nút play trên ảnh */
     cursor: pointer;
 }
 
@@ -91,14 +87,11 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 2;
-    /* Đảm bảo nút nằm trên các phần tử khác */
     opacity: 0;
-    /* Ban đầu ẩn nút */
 }
 
 .sidebar-movie-image:hover .buy-ticket-btn {
     opacity: 1;
-    /* Khi hover vào ảnh, nút Mua vé sẽ hiện lên */
 }
 
 .card-body {
@@ -135,7 +128,6 @@
 
     .sidebar-movie-image:hover img {
         opacity: 0.4;
-        /* Làm tối đi ảnh khi hover */
     }
 
 .movie-card-overlay {
@@ -170,20 +162,12 @@
     justify-content: center;
 }
 
-
-.poster-container {
+.movie-poster {
     position: relative;
     z-index: 1;
     display: flex;
-    justify-content: center;
-    align-items: center;
     margin-bottom: 30px;
-    top: -30px;
-}
-
-
-.movie-poster {
-    width: 100%;
+    width: 80%;
     max-width: 1500px;
     height: auto;
     margin: 0 auto;
@@ -212,7 +196,7 @@
 
     .movie-details {
         font-size: 14px;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
         color: #6a6e73;
     }
 
@@ -226,23 +210,19 @@
         border-color: #8E1616;
     }
 
-/* Mất viền của các nút lịch chiếu */
 button.btn {
     border: none;
 }
 
-    /* Thay đổi màu khi nút lịch chiếu được chọn (active) */
     button.btn.btn-primary {
         background-color: #D84040;
-        /* Đổi màu nền */
         border-color: #D84040;
-        /* Đổi màu viền */
     }
 
 .actor-list {
     display: flex;
-    gap: 0.5rem; /* Khoảng cách giữa các thẻ */
-    flex-wrap: wrap; /* Cho phép bọc các thẻ ra dòng mới nếu cần */
+    gap: 0.5rem; 
+    flex-wrap: wrap; 
 }
 
 .actor-box {
@@ -254,27 +234,23 @@ button.btn {
     white-space: nowrap;
 }
 
-/* Đảm bảo các nút suất chiếu hiển thị trong cùng một hàng */
 .showtime-container {
     display: flex;
-    flex-wrap: wrap; /* Cho phép xuống dòng khi không đủ chỗ */
-    gap: 10px; /* Khoảng cách giữa các nút */
+    flex-wrap: wrap; 
+    gap: 10px; 
 }
 
 
-/* Các nút ngày mặc định là màu xám */
 .btn-outline-primary {
-    color: #6c757d; /* Màu chữ xám */
-    border-color: #6c757d; /* Màu viền xám */
+    color: #6c757d; 
+    border-color: #6c757d; 
 }
 
-/* Khi nút ngày được chọn, nó sẽ có màu đỏ (màu nền của nút được chọn) */
 .btn-primary.active {
-    background-color: #D84040; /* Màu nền đỏ */
-    border-color: #D84040; /* Màu viền đỏ */
+    background-color: #D84040;
+    border-color: #D84040; 
 }
 
-/* Khi hover, các nút ngày có màu sáng hơn */
 .btn-outline-primary:hover {
     color: #fff;
     background-color: #6c757d;
