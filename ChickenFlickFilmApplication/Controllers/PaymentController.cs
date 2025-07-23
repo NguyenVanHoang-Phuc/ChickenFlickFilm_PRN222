@@ -49,13 +49,10 @@ namespace ChickenFlickFilmApplication.Controllers
             {
                 return Content("Invalid payment data.");
             }
-
-            if (string.IsNullOrEmpty(model.Name))
-            {
-                return Content("Missing or invalid payment details.");
-            }
+            //get time at starting making payment
+            DateTime currTime = DateTime.Now;
+            TempData["CurrentTime"] = currTime;
             var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
-
             return Redirect(url);
         }
         public async Task<IActionResult> PaymentCallbackVnpay()
