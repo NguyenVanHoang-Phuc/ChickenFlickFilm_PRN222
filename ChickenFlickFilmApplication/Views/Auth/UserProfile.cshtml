@@ -224,7 +224,7 @@
                 </div>
                 <div class="profile-name">@Model.FullName</div>
                 <div class="profile-spending">
-                    Tổng chi tiêu năm 2025: <span style="color: #dc3545;">@Model.TotalSpending.ToString("N0") VNĐ</span>
+                    Tổng chi tiêu: <span style="color: #dc3545;">@Model.TotalSpending.ToString("N0") VNĐ</span>
                 </div>
             </div>
         </div>
@@ -326,7 +326,7 @@
                                     {
                                         <tr>
                                             <td>@booking.Showtime.Movie.Title</td>
-                                            <td>@booking.Showtime.ShowDate.ToString()</td>
+                                            <td>@booking.CreatedAt.ToString()</td>
                                             <td>@booking.Payment.Amount</td>
                                         </tr>
                                     }

@@ -49,5 +49,9 @@ namespace Service
         {
             return await _userRepository.GetTotalUsersAsync();
         }
+        public async Task<decimal> TotalSpendingUser(int userId)
+        {
+            return await _userRepository.TotalSpendingUser(userId);
+        }
     }
 }

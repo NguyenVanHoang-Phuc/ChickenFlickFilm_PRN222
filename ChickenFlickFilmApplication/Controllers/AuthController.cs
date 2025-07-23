@@ -316,6 +316,7 @@ namespace ChickenFlickFilmApplication.Controllers
             }
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userService.GetAsync(u => u.UserId.ToString() == userId);
+            var totalAmount = await _userService.TotalSpendingUser(user.UserId);
             if (user != null)
             {
                 List<Booking> bookings = bookingService.GetAllBookingByUserId(int.Parse(userId));
@@ -339,7 +340,7 @@ namespace ChickenFlickFilmApplication.Controllers
                     FullName = user.FullName,
                     Gender = user.Gender ? "Male" : "Female",
                     PhoneNumber = user.PhoneNumber,
-                    TotalSpending = 0,
+                    TotalSpending = totalAmount,
                     bookings = bookingsResult,
                 };
                 return View(model);
