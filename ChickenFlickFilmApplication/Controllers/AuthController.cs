@@ -359,6 +359,28 @@ namespace ChickenFlickFilmApplication.Controllers
 
             if (!ModelState.IsValid)
             {
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var currentUser = await _userService.GetAsync(u => u.UserId.ToString() == currentUserId);
+
+                model.TotalSpending = await _userService.TotalSpendingUser(currentUser.UserId);
+
+                var bookings = bookingService.GetAllBookingByUserId(currentUser.UserId);
+                var bookingsResult = new List<Booking>();
+
+                foreach (var booking in bookings)
+                {
+                    var showtime = await showtimeService.GetShowtimeByIdAsync(booking.ShowtimeId);
+                    var payment = paymentService.getPaymentByBookingid(booking.BookingId);
+                    if (showtime != null && payment != null)
+                    {
+                        booking.Showtime = showtime;
+                        booking.Payment = payment;
+                        bookingsResult.Add(booking);
+                    }
+                }
+
+                model.bookings = bookingsResult;
+
                 return View("UserProfile", model);
             }
 

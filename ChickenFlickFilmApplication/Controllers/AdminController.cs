@@ -109,28 +109,25 @@ namespace ChickenFlickFilmApplication.Controllers
             TempData["SuccessMessage"] = "Xóa phòng chiếu thành công!";
             return RedirectToAction("Auditoriums");
         }
-        [HttpPost]
-        public async Task<IActionResult> SearchAuditorium(IFormCollection form, int? page)
+        [HttpGet]
+        public async Task<IActionResult> SearchAuditorium(string searchKeyAuditorium, string formatAuditorium, int? page)
         {
-            string searchKey = form["searchKeyAuditorium"];
-            string format = form["formatAuditorium"];
-
-            var auditoriums = await _auditoriumService.GetAllAuditoriumsAsync(); 
+            var auditoriums = await _auditoriumService.GetAllAuditoriumsAsync();
 
             // Lọc theo từ khóa tìm kiếm (tên phòng hoặc tên rạp)
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!string.IsNullOrEmpty(searchKeyAuditorium))
             {
                 auditoriums = auditoriums.Where(a =>
-                    a.AuditoriumName.Contains(searchKey, StringComparison.OrdinalIgnoreCase) ||
-                    a.Theater.TheaterName.Contains(searchKey, StringComparison.OrdinalIgnoreCase));
+                    a.AuditoriumName.Contains(searchKeyAuditorium, StringComparison.OrdinalIgnoreCase) ||
+                    a.Theater.TheaterName.Contains(searchKeyAuditorium, StringComparison.OrdinalIgnoreCase));
             }
 
             // Lọc theo loại phòng (2D, 3D, IMAX)
-            if (!string.IsNullOrEmpty(format))
+            if (!string.IsNullOrEmpty(formatAuditorium))
             {
                 auditoriums = auditoriums.Where(a =>
                     a.AuditoriumType != null &&
-                    a.AuditoriumType.Contains(format, StringComparison.OrdinalIgnoreCase));
+                    a.AuditoriumType.Contains(formatAuditorium, StringComparison.OrdinalIgnoreCase));
             }
 
             int pageSize = 5;
@@ -138,6 +135,7 @@ namespace ChickenFlickFilmApplication.Controllers
 
             return View("Auditoriums", auditoriums.ToPagedList(pageNumber, pageSize));
         }
+
 
 
 
@@ -294,33 +292,26 @@ namespace ChickenFlickFilmApplication.Controllers
             return RedirectToAction("Movies");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SearchMovie(IFormCollection form, int? page)
+        [HttpGet]
+        public async Task<IActionResult> SearchMovie(string searchKeyMovie, string statusMovie, string formatMovie, int? page)
         {
-            string searchKey = form["searchKeyMovie"];
-            string status = form["statusMovie"];
-            string format = form["formatMovie"];
-
             var movies = await _movieService.GetAllMoviesAsync();
 
-            // Lọc theo tên hoặc thể loại
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!string.IsNullOrEmpty(searchKeyMovie))
             {
                 movies = movies.Where(m =>
-                    m.Title.Contains(searchKey, StringComparison.OrdinalIgnoreCase) ||
-                    m.Genre.Contains(searchKey, StringComparison.OrdinalIgnoreCase));
+                    m.Title.Contains(searchKeyMovie, StringComparison.OrdinalIgnoreCase) ||
+                    m.Genre.Contains(searchKeyMovie, StringComparison.OrdinalIgnoreCase));
             }
 
-            // Lọc theo trạng thái
-            if (!string.IsNullOrEmpty(status))
+            if (!string.IsNullOrEmpty(statusMovie))
             {
-                movies = movies.Where(m => m.Status == status);
+                movies = movies.Where(m => m.Status == statusMovie);
             }
 
-            // Lọc theo định dạng
-            if (!string.IsNullOrEmpty(format))
+            if (!string.IsNullOrEmpty(formatMovie))
             {
-                movies = movies.Where(m => m.Format == format);
+                movies = movies.Where(m => m.Format == formatMovie);
             }
 
             int pageSize = 5;
@@ -328,6 +319,7 @@ namespace ChickenFlickFilmApplication.Controllers
 
             return View("Movies", movies.ToPagedList(pageNumber, pageSize));
         }
+
 
         // Manage Showtimes
         public async Task<IActionResult> Showtimes(int? page)
@@ -450,41 +442,54 @@ namespace ChickenFlickFilmApplication.Controllers
             TempData["SuccessMessage"] = "Suất chiếu đã được xóa!";
             return RedirectToAction("Showtimes");
         }
-        [HttpPost]
-        public async Task<IActionResult> SearchShowtime(IFormCollection form, int? page)
+        [HttpGet]
+        public async Task<IActionResult> SearchShowtime(string searchKeyShowtime, string dateShowtime, string statusShowtime, int? page)
         {
-            string searchKey = form["searchKeyShowtime"];
-            string status = form["statusShowtime"];
-            string dateStr = form["dateShowtime"];
-
-            var showtimes = await _showtimeService.GetShowtimesAsync();
-
-            if (!string.IsNullOrEmpty(searchKey))
-            {
-                showtimes = showtimes.Where(s =>
-                    s.Movie.Title.Contains(searchKey, StringComparison.OrdinalIgnoreCase) ||
-                    s.Auditorium.Theater.TheaterName.Contains(searchKey, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (!string.IsNullOrEmpty(status))
-            {
-                showtimes = showtimes.Where(s => s.Status == status);
-            }
-
-            if (!string.IsNullOrEmpty(dateStr) && DateOnly.TryParse(dateStr, out var parsedDate))
-            {
-                showtimes = showtimes.Where(s => s.ShowDate == parsedDate);
-            }
+            var showtimes = (await _showtimeService.GetShowtimesAsync())
+                .OrderByDescending(s => s.ShowDate)
+                .ThenByDescending(s => s.ShowTime)
+                .ToList();
 
             var showtimeVMs = new List<ShowtimeViewModel>();
+            var now = DateTime.Now;
+
             foreach (var st in showtimes)
             {
-                var theater = await _theaterService.GetTheaterByAuditoriumIdAsync(st.AuditoriumId);
-                showtimeVMs.Add(new ShowtimeViewModel
+                var movie = await _movieService.GetMovieByIdAsync(st.MovieId);
+                var showDateTime = (st.ShowDate ?? default).ToDateTime(st.ShowTime);
+                var endDateTime = showDateTime.AddMinutes(movie?.Duration ?? 0);
+
+                // Xác định status mới
+                string newStatus = (showDateTime > now) ? "Sắp chiếu" :
+                                   (now >= showDateTime && now < endDateTime) ? "Đang chiếu" : "Đã chiếu";
+
+                if (st.Status != newStatus)
                 {
-                    Showtime = st,
-                    TheaterName = theater?.TheaterName ?? "Không tìm thấy rạp"
-                });
+                    st.Status = newStatus;
+                    await _showtimeService.UpdateShowtimeAsync(st);
+                }
+
+                var theater = await _theaterService.GetTheaterByAuditoriumIdAsync(st.AuditoriumId);
+
+                // Lọc dữ liệu
+                bool matchKeyword = string.IsNullOrEmpty(searchKeyShowtime) ||
+                                    movie.Title.Contains(searchKeyShowtime, StringComparison.OrdinalIgnoreCase) ||
+                                    (theater?.TheaterName?.Contains(searchKeyShowtime, StringComparison.OrdinalIgnoreCase) ?? false);
+
+                bool matchDate = string.IsNullOrEmpty(dateShowtime) ||
+                                 st.ShowDate?.ToString("yyyy-MM-dd") == dateShowtime;
+
+                bool matchStatus = string.IsNullOrEmpty(statusShowtime) ||
+                                   st.Status == statusShowtime;
+
+                if (matchKeyword && matchDate && matchStatus)
+                {
+                    showtimeVMs.Add(new ShowtimeViewModel
+                    {
+                        Showtime = st,
+                        TheaterName = theater?.TheaterName ?? "Không tìm thấy rạp"
+                    });
+                }
             }
 
             int pageSize = 5;
@@ -544,18 +549,15 @@ namespace ChickenFlickFilmApplication.Controllers
             return RedirectToAction("Users");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SearchUser(IFormCollection form, int? page)
+        [HttpGet]
+        public async Task<IActionResult> SearchUser(string searchKeyUser, string role, int? page)
         {
-            string searchKey = form["searchKeyUser"];
-            string role = form["role"];
-
             var allUsers = await _userService.GetAllUsersAsync();
 
             var filtered = allUsers.Where(u =>
-                (string.IsNullOrEmpty(searchKey) ||
-                 u.FullName.Contains(searchKey, StringComparison.OrdinalIgnoreCase) ||
-                 u.Email.Contains(searchKey, StringComparison.OrdinalIgnoreCase)) &&
+                (string.IsNullOrEmpty(searchKeyUser) ||
+                 u.FullName.Contains(searchKeyUser, StringComparison.OrdinalIgnoreCase) ||
+                 u.Email.Contains(searchKeyUser, StringComparison.OrdinalIgnoreCase)) &&
                 (string.IsNullOrEmpty(role) || u.Role == role));
 
             int pageSize = 5;
@@ -564,6 +566,7 @@ namespace ChickenFlickFilmApplication.Controllers
 
             return View("Users", pagedUsers);
         }
+
 
         // Manage Theaters
         public async Task<IActionResult> Theaters(int? page)
@@ -632,20 +635,18 @@ namespace ChickenFlickFilmApplication.Controllers
             TempData["SuccessMessage"] = "Xóa rạp thành công!";
             return RedirectToAction("Theaters");
         }
-        [HttpPost]
-        public async Task<IActionResult> SearchTheater(IFormCollection form, int? page)
+        [HttpGet]
+        public async Task<IActionResult> SearchTheater(string searchKeyTheater, int? page)
         {
-            string searchKey = form["searchKeyTheater"];
-
             var theaters = await _theaterService.GetAllTheatersAsync();
 
             // Lọc theo tên rạp hoặc địa chỉ (không phân biệt hoa thường)
-            if (!string.IsNullOrEmpty(searchKey))
+            if (!string.IsNullOrEmpty(searchKeyTheater))
             {
-                searchKey = searchKey.ToLower();
+                var keyword = searchKeyTheater.ToLower();
                 theaters = theaters.Where(t =>
-                    t.TheaterName.ToLower().Contains(searchKey) ||
-                    t.Location.ToLower().Contains(searchKey)).ToList();
+                    t.TheaterName.ToLower().Contains(keyword) ||
+                    t.Location.ToLower().Contains(keyword)).ToList();
             }
 
             int pageSize = 5;
