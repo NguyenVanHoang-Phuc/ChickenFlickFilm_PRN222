@@ -39,8 +39,8 @@
                                 <button class="time-btn active" data-timeid="@showtimes[i].ShowtimeId">@showtimes[i].ShowTime</button>
                             } else
                             {
-                                <form asp-asp-controller="Auditorium" asp-action="ChangeShowtime">
-                                    <input type="hidden" name="showtimeid" value="@showtimes[i].ShowtimeId" />
+                                <form asp-asp-controller="Auditorium" asp-action="Auditorium" method="get">
+                                    <input type="hidden" name="ShowtimeId" value="@showtimes[i].ShowtimeId" />
                                     <button type="submit" class="time-btn">@showtimes[i].ShowTime</button>
                                 </form>
                             }
@@ -122,7 +122,10 @@
                         <div class="total-price" id="total-price">0vnđ</div>
                     </div>
                     <div class="action-buttons">
-                        <button class="back-btn">Quay lại</button>
+                        <form asp-controller="MoviesUser" asp-action="DetailFilm" method="get">
+                            <input type="hidden" name="id" value="@movie.MovieId" />
+                            <button class="back-btn">Quay lại</button>
+                        </form>
                         <button class="payment-btn">Thanh toán</button>
                     </div>
                 </div>

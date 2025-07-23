@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using Microsoft.EntityFrameworkCore;
 using Repository;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,6 @@ namespace Service
             return await _bookingRepository.AddBookingAsync(booking);
         }
 
-
         public Task<Booking?> GetBookingByIdAsync(int bookingId)
         {
             return _bookingRepository.GetBookingByIdAsync(bookingId);
@@ -39,6 +39,7 @@ namespace Service
                 await _bookingRepository.UpdateBookingAsync(booking);
             }
         }
+
         public List<Booking> GetAllBookingByUserId(int userid)
         {
             return _bookingRepository.GetAllBookingByUserId(userid);
@@ -48,4 +49,5 @@ namespace Service
             return await _bookingRepository.GetTotalAmountAsync();
         }
     }
+}
 }
