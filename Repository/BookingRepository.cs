@@ -29,7 +29,7 @@ namespace Repository
 
         public async Task<Booking?> GetBookingByIdAsync(int bookingId)
         {
-           return await _bookingDAO.GetBookingByIdAsync(bookingId);
+            return await _bookingDAO.GetBookingByIdAsync(bookingId);
         }
         public List<Booking> GetAllBookingByUserId(int userid)
         {

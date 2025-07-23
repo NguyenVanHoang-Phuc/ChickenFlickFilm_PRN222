@@ -96,7 +96,7 @@ namespace ChickenFlickFilmApplication.Controllers
                         MovieNameTicket = movieNameTicket,
                         TheaterNameTicket = theaterNameTicket,
                         ShowtimeTicket = showtimeTicket,
-                        AuditoriumTicket = auditoriumTicket,    
+                        AuditoriumTicket = auditoriumTicket,
                         SeatNumbers = seatNumbers,
                         Amount = amount
 
@@ -108,7 +108,7 @@ namespace ChickenFlickFilmApplication.Controllers
                         $"SeatNumbers: {model.SeatNumbers.Count()}\n" +
                         $"Amount : {model.Amount}");
 
-                    return View("MakePaymentSuccess",model);
+                    return View("MakePaymentSuccess", model);
 
                 }
 
@@ -120,7 +120,7 @@ namespace ChickenFlickFilmApplication.Controllers
             }
             else
             {
-               return Content("Invalid booking ID format");
+                return Content("Invalid booking ID format");
             }
         }
 
