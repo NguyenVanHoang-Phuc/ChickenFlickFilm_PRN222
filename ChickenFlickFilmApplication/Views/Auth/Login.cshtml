@@ -282,6 +282,15 @@
                 <div class="divider">
                     <span>HOẶC</span>
                 </div>
+               <!-- Google Login Button -->
+                  <div class="text-center mb-4">
+                      <form asp-action="GoogleLogin" asp-controller="Auth" method="post">
+                          <button type="submit" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center" style="gap: 10px;">
+                              <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google icon" style="width: 20px;" />
+                              <span>Đăng nhập với Google</span>
+                          </button>
+                      </form>
+                  </div>
 
                 <div class="register-link">
                     Bạn chưa có tài khoản? <a href="@Url.Action("Signup", "Auth")">Đăng kí</a>

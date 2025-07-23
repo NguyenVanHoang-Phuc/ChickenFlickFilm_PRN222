@@ -15,7 +15,8 @@ namespace ChickenFlickFilmApplication.Services.VnPay
         {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
-            var tick = DateTime.Now.Ticks.ToString();
+            var bookingId = model.BookingId + "";
+            Console.WriteLine(bookingId);
             var pay = new VnPayLibrary();
             var urlCallBack = _configuration["Vnpay:PaymentBackReturnUrl"];
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
@@ -29,7 +30,7 @@ namespace ChickenFlickFilmApplication.Services.VnPay
             pay.AddRequestData("vnp_OrderInfo", $"{model.Name} {model.OrderDescription} {model.Amount}");
             pay.AddRequestData("vnp_OrderType", model.OrderType);
             pay.AddRequestData("vnp_ReturnUrl", urlCallBack);
-            pay.AddRequestData("vnp_TxnRef", tick);
+            pay.AddRequestData("vnp_TxnRef", bookingId);
 
             var paymentUrl =
                 pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
@@ -38,12 +39,15 @@ namespace ChickenFlickFilmApplication.Services.VnPay
         }
         public PaymentResponseModel PaymentExecute(IQueryCollection collections)
         {
+            // Check if we are receiving the 'Amount' from the callback
+            string amount = collections["vnp_Amount"];
+            Console.WriteLine($"Amount from VNPay response (in cents): {amount}");
             var pay = new VnPayLibrary();
             var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
-
+            response.Amount = decimal.Parse(amount) / 100;
+            Console.WriteLine($"response.orderId = {response.OrderId}");
             return response;
         }
-
-
     }
+
 }

@@ -154,5 +154,44 @@ namespace ChickenFlickFilmApplication.Controllers
             // Trả về View và ViewBag sẽ chứa dữ liệu cần thiết
             return View("DetailFilm", vm);  // Gọi trực tiếp View "DetailFilm" để render lại trang với dữ liệu mới
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SearchFilm(IFormCollection form)
+        {
+            var searchTerm = form["keySearchFilm"];
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return RedirectToAction("ListFilm");
+            }
+
+            var filteredMovies = await _movieService.SearchMoviesAsync(searchTerm);
+            var nowShowing = new List<Movie>();
+            var upcoming = new List<Movie>();
+
+
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+
+            foreach (var movie in filteredMovies)
+            {
+
+                if (movie.ReleaseDate <= today && movie.EndDate >= today)
+                {
+                    nowShowing.Add(movie);
+                }
+
+                else if (movie.ReleaseDate > today)
+                {
+                    upcoming.Add(movie);
+                }
+            }
+
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.NowShowing = nowShowing;
+            ViewBag.Upcoming = upcoming;
+
+
+            return View("ListFilm");
+        }
     }
 }
