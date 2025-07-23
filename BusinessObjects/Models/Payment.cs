@@ -15,6 +15,8 @@ public partial class Payment
 
     public string? PaymentStatus { get; set; }
 
+    public string? VnpayResponseCode { get; set; }
+
     public string? TransactionId { get; set; }
 
     public DateTime? TransactionDate { get; set; }
