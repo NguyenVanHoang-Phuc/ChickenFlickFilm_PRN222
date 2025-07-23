@@ -10,15 +10,19 @@ namespace Repository
 {
     public class PaymentRepository : IPaymentRepository
     {
-        private readonly PaymentDAO paymentDAO;
+        private readonly PaymentDAO _paymentDAO;
         public PaymentRepository(PaymentDAO paymentDAO)
         {
-            this.paymentDAO = paymentDAO;
+            this._paymentDAO = paymentDAO;
         }
 
         public Payment getPaymentByBookingid(int bookingid)
         {
-            return paymentDAO.getPaymentByBookingid(bookingid);
+            return _paymentDAO.getPaymentByBookingid(bookingid);
+        }
+        public async Task AddPaymentAsync(Payment payment)
+        {
+            await _paymentDAO.AddPaymentAsync(payment);
         }
     }
 }

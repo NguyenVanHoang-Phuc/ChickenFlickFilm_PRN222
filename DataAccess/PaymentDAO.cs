@@ -18,5 +18,10 @@ namespace DataAccess
         {
             return _context.Payments.FirstOrDefault(p => p.BookingId == bookingid);
         }
+        public async Task AddPaymentAsync(Payment payment)
+        {
+            await _context.Payments.AddAsync(payment);
+            await _context.SaveChangesAsync();
+        }
     }
 }
