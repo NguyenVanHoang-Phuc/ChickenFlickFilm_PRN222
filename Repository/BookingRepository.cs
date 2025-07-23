@@ -22,9 +22,9 @@ namespace Repository
             return await _bookingDAO.AddBookingAsync(booking);
         }
 
-        public async Task ChangeBookingStatus(int bookingId, string bookingStatus)
+        public async Task UpdateBookingAsync(Booking booking)
         {
-             await _bookingDAO.ChangeBookingStatus(bookingId,bookingStatus);
+            await _bookingDAO.UpdateBookingAsync(booking);
         }
 
         public async Task<Booking?> GetBookingByIdAsync(int bookingId)

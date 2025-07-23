@@ -27,18 +27,13 @@ namespace DataAccess
             return await _context.Bookings
                          .FirstOrDefaultAsync(b => b.BookingId == bookingId);
         }
-        
-        public async Task ChangeBookingStatus(int bookingId, string bookingStatus)
+        public async Task UpdateBookingAsync(Booking booking)
         {
-            Booking booking = await _context.Bookings
-                         .FirstOrDefaultAsync(b => b.BookingId == bookingId);
-            if (booking == null)
-            {
-                throw new KeyNotFoundException($"Không tìm thấy Booking theo bookingId: {bookingId}");
-            }
-            booking.BookingStatus = bookingStatus;
+            _context.Bookings.Update(booking);
             await _context.SaveChangesAsync();
         }
+       
+        
 
         public List<Booking> GetAllBookingByUserId(int userid)
         {

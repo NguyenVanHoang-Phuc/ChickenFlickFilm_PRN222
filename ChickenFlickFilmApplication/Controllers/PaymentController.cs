@@ -66,19 +66,20 @@ namespace ChickenFlickFilmApplication.Controllers
             Console.WriteLine($"BookingId: {bookingId} ");
             if (int.TryParse(bookingId, out int parsedBookingId))
             {
+                Booking booking = await _bookingService.GetBookingByIdAsync(parsedBookingId);
                 if ("00".Equals(response.VnPayResponseCode))
                 {
+                    Console.WriteLine($"Thanh toan thanh cong");
                     //Change Booking status
-                    Booking booking = _bookingService.GetBookingByIdAsync(parsedBookingId).Result;
-                    _bookingService.ChangeBookingStatus(parsedBookingId, "Success");
+                    await _bookingService.ChangeBookingStatus(booking, "Success");
 
                     int showtimeId = booking.ShowtimeId;
-                    Showtime showtime = _showtimeService.GetShowtimeByIdAsync(showtimeId).Result;
+                    Showtime showtime = await _showtimeService.GetShowtimeByIdAsync(showtimeId);
                     int movieId = showtime.MovieId;
-                    Movie movie = _movieService.GetMovieByIdAsync(movieId).Result;
+                    Movie movie = await _movieService.GetMovieByIdAsync(movieId);
                     int auditoriumId = showtime.AuditoriumId;
-                    Auditorium auditorium = _auditoriumService.GetAuditoriumByIdAsync(auditoriumId).Result;
-                    Theater theater = _theaterService.GetTheaterByAuditoriumIdAsync(auditoriumId).Result;
+                    Auditorium auditorium = await _auditoriumService.GetAuditoriumByIdAsync(auditoriumId);
+                    Theater theater = await _theaterService.GetTheaterByAuditoriumIdAsync(auditoriumId);
                     List<SeatBooking> seatBookings = await _seatBookingService.GetSeatBookingsByBookingIdAsync(parsedBookingId);
                     string movieNameTicket = movie.Title;
                     string theaterNameTicket = theater.TheaterName;
@@ -111,30 +112,9 @@ namespace ChickenFlickFilmApplication.Controllers
 
                 }
 
-
-                // Get dữ liệu
-                //var MovieName = TempData["MovieName"];
-                //var TheaterName = TempData["TheaterName"];
-                //var Showtime= TempData["Showtime"];
-                //var Auditorium = TempData["Auditorium"];
-                //var listSeat = TempData["listSeat"];
-                //var totalString = TempData["total"] as string;
-                //if (MovieName == null || TheaterName == null || Showtime == null || Auditorium == null || listSeat == null || totalString == null)
-                //{
-                //    return Content("Passing Ticket's details doesn't work");
-                //}
-                //decimal total = 0;
-                //if (!decimal.TryParse(totalString, out total))
-                //{
-                //    return Content("Invalid total value");
-                //}
-
-                // change status của ghế và của payment
-
-
                 else
                 {
-                    _bookingService.ChangeBookingStatus(parsedBookingId, "Failed");
+                    _bookingService.ChangeBookingStatus(booking, "Failed");
                     return View("MakePaymentFailed");
                 }
             }
@@ -143,28 +123,6 @@ namespace ChickenFlickFilmApplication.Controllers
                return Content("Invalid booking ID format");
             }
         }
-        //[HttpPost]
-        //public IActionResult ShowTicketDetails(string MovieName,string TheaterName, string Showtime, string Auditorium, List<int> listSeat ,decimal total)
-        //{
-        //    if(MovieName == null || TheaterName == null || Showtime == null || Auditorium == null || listSeat == null || total==0)
-        //    {
-        //        return Content("Ticket details are null");
-        //    }
-        //    //return Content("MovieName: " + MovieName
-        //    //        + "\nTheaterName: " + TheaterName
-        //    //        + "\n Showtime: " + Showtime
-        //    //        + "\n Auditorium: " + Auditorium
-        //    //        + "\nlistSeat:  " + listSeat.Count()
-        //    //        + "\ntotal: " + total);
-        //    TempData["MovieName"] = MovieName;
-        //    TempData["TheaterName"] = TheaterName;
-        //    TempData["Showtime"] = Showtime;
-        //    TempData["Auditorium"] = Auditorium;
-        //    TempData["listSeat"] = listSeat;
-        //    TempData["total"] = total.ToString();
-        //    return RedirectToAction("PaymentCallbackVnpay");
-
-        //}
 
 
     }
