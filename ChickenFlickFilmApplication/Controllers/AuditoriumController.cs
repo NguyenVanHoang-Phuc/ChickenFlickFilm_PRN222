@@ -21,12 +21,7 @@ namespace ChickenFlickFilmApplication.Controllers
         }
         public IActionResult Auditorium(int ShowtimeId)
         {
-            return RedirectToAction("ShowAuditorium", new { showtimeId = ShowtimeId });
-        }
-
-        public IActionResult ShowAuditorium(int showtimeId)
-        {
-            Showtime showtime = showtimeService.GetShowtimeByIdAsync(showtimeId).Result;
+            Showtime showtime = showtimeService.GetShowtimeByIdAsync(ShowtimeId).Result;
             if (showtime == null)
             {
                 return Content("Showtime not found.");
@@ -47,13 +42,8 @@ namespace ChickenFlickFilmApplication.Controllers
                 movie.Showtimes = filterShowtime;
                 showtime.Auditorium = audi;
                 showtime.Movie = movie;
-                return View("Auditorium",showtime);
+                return View(showtime);
             }
-        }
-
-        public IActionResult ChangeShowtime(int showtimeid)
-        {
-            return RedirectToAction("ShowAuditorium", new { showtimeId = showtimeid });
         }
 
         [HttpPost]
