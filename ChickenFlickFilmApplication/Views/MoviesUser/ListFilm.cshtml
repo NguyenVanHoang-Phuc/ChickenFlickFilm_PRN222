@@ -25,7 +25,6 @@
     </div>
 
     <div class="tab-content mt-4">
-        <!-- Tab Đang chiếu -->
         <div class="tab-pane fade show active" id="now" role="tabpanel" aria-labelledby="now-tab">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
                 @foreach (var movie in nowShowing ?? Enumerable.Empty<BusinessObjects.Models.Movie>())
@@ -36,8 +35,14 @@
                                 <div class="poster-container position-relative overflow-hidden rounded-2">
                                     <img src="@movie.PosterUrl" class="img-fluid w-100" style="height:350px; object-fit:cover;" alt="@movie.Title" />
                                     <div class="overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center">
-                                        <button class="btn btn-tickett mb-2">Mua vé</button>
-                                        <button class="btn btn-outline-light">▶ Trailer</button>
+                                        <button type="button" class="btn btn-outline-light trailer-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#trailerModal"
+                                                data-trailer-url="@movie.TrailerUrl"
+                                                data-movie-title="@movie.Title">
+                                            ▶ Trailer
+                                        </button>
+
                                     </div>
                                     <span class="badge-rating">@movie.Rating</span>
                                     <span class="badge-age">@movie.AgeRating</span>
@@ -52,6 +57,7 @@
             </div>
         </div>
 
+
         <!-- Tab Sắp chiếu -->
         <div class="tab-pane fade" id="soon" role="tabpanel" aria-labelledby="soon-tab">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-5 g-4">
@@ -63,8 +69,14 @@
                                 <div class="poster-container position-relative overflow-hidden rounded-2">
                                     <img src="@movie.PosterUrl" class="img-fluid w-100" style="height:350px; object-fit:cover;" alt="@movie.Title" />
                                     <div class="overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center">
-                                        <button class="btn btn-tickett mb-2">Mua vé</button>
-                                        <button class="btn btn-outline-light">▶ Trailer</button>
+                                        <button type="button" class="btn btn-outline-light trailer-btn"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#trailerModal"
+                                                data-trailer-url="@movie.TrailerUrl"
+                                                data-movie-title="@movie.Title">
+                                            ▶ Trailer
+                                        </button>
+
                                     </div>
                                     <span class="badge-rating">@movie.Rating</span>
                                     <span class="badge-age">@movie.AgeRating</span>
@@ -80,25 +92,62 @@
         </div>
     </div>
 </section>
+<!-- Trailer Modal -->
+<div class="modal fade" id="trailerModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="true"
+     data-bs-keyboard="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+            <div class="modal-body p-0">
+                <div class="ratio ratio-16x9">
+                    <iframe id="trailerFrame" src="" title="Movie Trailer" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-      // 1. Lấy fragment (VD: "#now", "#soon", "#imax")
-      const hash = location.hash;
-      if (!hash) return;
 
-      // 2. Tìm nút tab tương ứng
-      const btn = document.querySelector(`#movieTab button[data-bs-target="${hash}"]`);
-      if (!btn) return;
-
-      // 3. Dùng API của Bootstrap Tab để show tab đó
-      new bootstrap.Tab(btn).show();
-    });
-</script>
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
 }
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const trailerModalEl = document.getElementById('trailerModal');
+        const iframe = document.getElementById('trailerFrame');
+        const trailerButtons = document.querySelectorAll('.trailer-btn');
+
+        trailerButtons.forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault(); 
+                e.stopPropagation(); 
+
+                const trailerUrl = this.getAttribute('data-trailer-url');
+                const movieTitle = this.getAttribute('data-movie-title');
+
+                if (trailerUrl) {
+                    iframe.src = trailerUrl + '?autoplay=1'; 
+                    iframe.title = `Trailer ${movieTitle}`;
+                }
+            });
+        });
+
+        trailerModalEl.addEventListener('hidden.bs.modal', () => {
+            iframe.src = '';  
+        });
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = location.hash;
+      if (!hash) return;
+
+      const btn = document.querySelector(`#movieTab button[data-bs-target="${hash}"]`);
+      if (!btn) return;
+
+      new bootstrap.Tab(btn).show();
+    });
+</script>
 @section Styles {
     <link rel="stylesheet" href="~/css/ListFilm.css">
 }

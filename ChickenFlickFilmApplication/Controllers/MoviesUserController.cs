@@ -70,7 +70,7 @@ namespace ChickenFlickFilmApplication.Controllers
                  {
                     ShowDate = s.Key?.ToString("dd/MM/yyyy"),
                     DayOfWeek = s.Key?.ToString("dddd"),
-                    ShowTimes = s.Select(show => show.ShowTime.ToString("HH:mm")).ToList(),
+                    ShowTimes = s.ToList(),
                     Format = movie.Format,
                     TheaterName = s.FirstOrDefault()?.Auditorium?.Theater?.TheaterName
                  }).ToList();
@@ -132,9 +132,10 @@ namespace ChickenFlickFilmApplication.Controllers
                  .Where(g => g.Key?.ToString("yyyy-MM-dd") == selectedDateParsed)
                  .Select(s => new ShowtimeUserViewModel
                  {
+                     
                      ShowDate = s.Key?.ToString("dd/MM/yyyy"),
                      DayOfWeek = s.Key?.ToString("dddd"),
-                     ShowTimes = s.Select(show => show.ShowTime.ToString("HH:mm")).ToList(),
+                     ShowTimes = s.ToList(),
                      Format = movie.Format,
                      TheaterName = s.FirstOrDefault()?.Auditorium?.Theater?.TheaterName
                  }).ToList();

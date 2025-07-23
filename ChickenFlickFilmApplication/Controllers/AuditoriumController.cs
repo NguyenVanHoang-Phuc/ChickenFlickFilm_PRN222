@@ -19,9 +19,9 @@ namespace ChickenFlickFilmApplication.Controllers
             this.movieService = movieService;
             this.theaterService = theaterService;
         }
-        public IActionResult Auditorium()
+        public IActionResult Auditorium(int ShowtimeId)
         {
-            return RedirectToAction("ShowAuditorium", new { showtimeId = 2 });
+            return RedirectToAction("ShowAuditorium", new { showtimeId = ShowtimeId });
         }
 
         public IActionResult ShowAuditorium(int showtimeId)
