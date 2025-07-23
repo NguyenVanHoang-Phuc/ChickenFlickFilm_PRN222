@@ -21,18 +21,31 @@ namespace Service
             return await _bookingRepository.AddBookingAsync(booking);
         }
 
-        public async Task ChangeBookingStatus(int bookingId, string bookingStatus)
-        {
-            await _bookingRepository.ChangeBookingStatus(bookingId,bookingStatus);
-        }
 
         public Task<Booking?> GetBookingByIdAsync(int bookingId)
         {
             return _bookingRepository.GetBookingByIdAsync(bookingId);
         }
+        public async Task ChangeBookingStatus(Booking booking, string bookingStatus)
+        {
+            if (booking == null)
+            {
+                throw new KeyNotFoundException($"Không tìm thấy Booking theo bookingId: {booking.BookingId}");
+            }
+            else
+            {
+                Console.WriteLine("Em den duoc day roi chi oi!!!!");
+                booking.BookingStatus = bookingStatus;
+                await _bookingRepository.UpdateBookingAsync(booking);
+            }
+        }
         public List<Booking> GetAllBookingByUserId(int userid)
         {
             return _bookingRepository.GetAllBookingByUserId(userid);
+        }
+        public async Task<decimal> GetTotalAmountAsync()
+        {
+            return await _bookingRepository.GetTotalAmountAsync();
         }
     }
 }
