@@ -54,5 +54,10 @@ namespace DataAccess
         {
             return _context.Auditoriums.Include(audi => audi.AuditoriumTypeNavigation).FirstOrDefault(audi => audi.AuditoriumId == audi_id);
         }
+
+        public List<Auditorium> getAllAuditoriumByTheaterId( int theaterId )
+        {
+            return _context.Auditoriums.Where(a => a.TheaterId == theaterId).ToList();
+        }
     }
 }

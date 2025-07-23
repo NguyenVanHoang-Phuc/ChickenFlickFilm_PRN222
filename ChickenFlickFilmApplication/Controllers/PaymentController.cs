@@ -70,7 +70,7 @@ namespace ChickenFlickFilmApplication.Controllers
                 {
                     //Change Booking status
                     Booking booking = _bookingService.GetBookingByIdAsync(parsedBookingId).Result;
-                    _bookingService.ChangeBookingStatus(parsedBookingId, "Success");
+                     await _bookingService.ChangeBookingStatus(parsedBookingId, "Success");
 
                     int showtimeId = booking.ShowtimeId;
                     Showtime showtime = _showtimeService.GetShowtimeByIdAsync(showtimeId).Result;

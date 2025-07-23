@@ -1,0 +1,191 @@
+﻿@model ChickenFlickFilmApplication.Models.BuyTicketViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/BuyTicket.css" asp-append-version="true" />
+}
+
+<body class="bg-light">
+    <div class="container">
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-line"></div>
+                <div class="step completed">Chọn phim/Rạp/Suất</div>
+                <div class="step active">Chọn ghế</div>
+                <div class="step">Thanh toán</div>
+                <div class="step">Xác nhận</div>
+            </div>
+        </div>
+
+        <div class="main-content d-flex">
+            <!-- Left column -->
+            <div class="col-md-8">
+                <h5>Chọn vị trí</h5>
+                <div id="locations" class="d-flex flex-wrap gap-2 mb-3">
+                    @foreach (var loc in Model.listTheater)
+                    {
+                        <button class="btn btn-outline-secondary location-btn" data-location="@loc.TheaterId">
+                            @loc.TheaterName
+                        </button>
+                    }
+                </div>
+
+                <h5>Chọn phim</h5>
+                <div id="movies" class="d-flex flex-wrap gap-2 mb-3"></div>
+
+                <h5>Chọn suất</h5>
+                <div id="showtimes" class="d-flex flex-wrap gap-2 mb-3"></div>
+            </div>
+
+            <!-- Right column: Banner -->
+            @if (Model.selectedMovie != null)
+            {
+                <div class="right-section">
+                    <div class="movie-details">
+                        <div class="movie-poster">
+                            <img src=@Model.selectedMovie.PosterUrl alt="Movie Poster" />
+                        </div>
+                        <div class="movie-info">
+                            <h2>@Model.selectedMovie.Title</h2>
+                            <div class="movie-tag">@Model.selectedMovie.Format - @Model.selectedMovie.Language</div>
+                        </div>
+                    </div>
+                    <div class="booking-details">
+                        <div class="total-section">
+                            <div class="total-label">Tổng cộng:</div>
+                            <div class="total-price" id="total-price">0vnđ</div>
+                        </div>
+                        <div class="action-buttons">
+                            <form asp-controller="MoviesUser" asp-action="DetailFilm" method="get">
+                                <input type="hidden" name="id" value="@Model.selectedMovie.MovieId" />
+                                <button class="back-btn">Quay lại</button>
+                            </form>
+                            <form id="submitForm" method="post" asp-controller="Auditorium" asp-action="Auditorium">
+                                <input type="hidden" name="ShowtimeId" id="showtimeIdInput" />
+                                <button type="submit" class="payment-btn" id="paymentBtn">Thanh toán</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="right-section">
+                    <div class="movie-details">
+                        <div class="movie-poster">
+                            <img src="https://www.galaxycine.vn/_next/static/media/img-blank.bb695736.svg" alt="Movie Poster" />
+                        </div>
+                        <div class="movie-info">
+                            <h2></h2>
+                            <div class="movie-tag"></div>
+                        </div>
+                    </div>
+                    <div class="booking-details">
+                        <div class="total-section">
+                            <div class="total-label">Tổng cộng:</div>
+                            <div class="total-price" id="total-price">0vnđ</div>
+                        </div>
+                        <div class="action-buttons">
+                            <form asp-controller="MoviesUser" asp-action="DetailFilm" method="get">
+                                <input type="hidden" name="id" value="" />
+                                <button class="back-btn">Quay lại</button>
+                            </form>
+                            <form id="submitForm" method="post" asp-controller="Auditorium" asp-action="Auditorium">
+                                <input type="hidden" name="ShowtimeId" id="showtimeIdInput" />
+                                <button type="submit" class="payment-btn" id="paymentBtn">Thanh toán</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <script>
+
+        let selectedTime = '';
+        let selectedDate = '';
+        let selectedImg = '';
+        let currentStep = 1;
+
+        document.addEventListener("DOMContentLoaded", function () {
+               const locationButtons = document.querySelectorAll('.location-btn');
+        const movieContainer = document.getElementById('movies');
+        const showtimeContainer = document.getElementById('showtimes');
+        let selectedShowtimeId = null;
+        let selectedLocation = '';
+        let selectedMovie = '';
+        document.getElementById('paymentBtn').addEventListener('click', function (e) {
+                        if (!selectedShowtimeId) {
+                                alert("Vui lòng chọn suất chiếu!");
+                                e.preventDefault();
+                                return;
+                        }
+                        document.getElementById('showtimeIdInput').value = selectedShowtimeId;
+        });
+        locationButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                locationButtons.forEach(b => b.classList.remove('btn-primary'));
+                btn.classList.add('btn-primary');
+                selectedLocation = parseInt(btn.dataset.location);
+                console.log("id:", selectedLocation);
+
+                fetch(`/Ticket/GetMoviesByLocation?theaterId=${selectedLocation}`)
+                    .then(res => res.json())
+                    .then(movies => {
+                        movieContainer.innerHTML = '';
+                        showtimeContainer.innerHTML = '';
+                        movies.forEach(movie => {
+                                    console.log("Danh sách phim trả về:", movies);
+                            const movieBtn = document.createElement('button');
+                            movieBtn.className = 'btn btn-outline-success';
+                            movieBtn.textContent = movie.title;
+                            movieBtn.dataset.title = movie.title;
+                            movieBtn.addEventListener('click', () => {
+                                selectedMovie = parseInt(movie.movieId);
+                                window.location.href = `/Ticket/SelectMovie?movieId=${selectedMovie}&theaterId=${selectedLocation}`;
+                                fetch(`/Ticket/GetShowtimesByMovie?movieId=${selectedMovie}&theaterId=${selectedLocation}`)
+                                    .then(res => res.json())
+                                    .then(showtimes => {
+                                        console.log("Danh sách phim trả về:", showtimes);
+                                        showtimeContainer.innerHTML = '';
+                                        showtimes.forEach(s => {
+                                            const st = document.createElement('button');
+                                            st.className = 'btn btn-outline-dark';
+                                            st.textContent = s.showTime;
+                                            st.addEventListener('click', () => {
+                                                    selectedShowtimeId = s.showtimeId;
+                                                    console.log("Selected showtimeId:", selectedShowtimeId);
+                                                    document.querySelectorAll('#showtimes button').forEach(b => b.classList.remove('btn-primary'));
+                                                    st.classList.add('btn-primary');
+                                        });
+                                        showtimeContainer.appendChild(st);
+                                        });
+                                    });
+                            });
+                            movieContainer.appendChild(movieBtn);
+                        });
+                    });
+            });
+        });
+          updateProgressBar();
+        });
+
+         function updateProgressBar() {
+             const progressLine = document.querySelector('.progress-line');
+             const percentage = ((currentStep - 1) / 3) * 100 + 4;
+             progressLine.style.width = `${percentage}%`;
+             // Update step states
+             const steps = document.querySelectorAll('.step');
+             steps.forEach((step, index) => {
+               if (index + 1 < currentStep) {
+                 step.classList.add('completed');
+                 step.classList.remove('active');
+               } else if (index + 1 === currentStep) {
+                 step.classList.add('active');
+                 step.classList.remove('completed');
+               } else {
+                 step.classList.remove('active', 'completed');
+               }
+             });
+         }
+    </script>
+</body>

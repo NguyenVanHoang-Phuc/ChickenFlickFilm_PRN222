@@ -47,5 +47,6 @@ namespace Repository
             return await _auditoriumDAO.GetTotalAuditoriumsAsync();
         }
         public Auditorium GetAuditoriumById(int audi_id) => _auditoriumDAO.GetAuditoriumById(audi_id);
+        public List<Auditorium> getAllAuditoriumByTheaterId(int theaterId) => _auditoriumDAO.getAllAuditoriumByTheaterId(theaterId);
     }
 }

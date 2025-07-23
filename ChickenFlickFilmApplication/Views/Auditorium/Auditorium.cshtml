@@ -302,7 +302,7 @@
             Name.type = "hidden";
             Name.name = "Name";  // Tên người dùng
             // Name.value = "@User.Identity.Name";
-            Name.value = "Linh";
+           Name.value = "@User.FindFirstValue(ClaimTypes.Name)";
             form.appendChild(Name);
 
             const OrderDescription = document.createElement("input");
