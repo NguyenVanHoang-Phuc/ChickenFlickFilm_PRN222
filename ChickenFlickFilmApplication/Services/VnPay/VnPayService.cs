@@ -15,7 +15,8 @@ namespace ChickenFlickFilmApplication.Services.VnPay
         {
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
-            var bookingId = model.BookingId + "";
+            long timeStamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var bookingId = model.BookingId + "_"+ timeStamp;
             Console.WriteLine(bookingId);
             var pay = new VnPayLibrary();
             var urlCallBack = _configuration["Vnpay:PaymentBackReturnUrl"];

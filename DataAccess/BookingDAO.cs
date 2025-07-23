@@ -46,7 +46,7 @@ namespace DataAccess
         {
             var total = await (from p in _context.Payments
                                join b in _context.Bookings on p.BookingId equals b.BookingId
-                               where p.PaymentStatus == "Thành công" && b.BookingStatus == "Confirmed"
+                               where p.PaymentStatus == "Thành công" && b.BookingStatus == "Success"
                                select p.Amount).SumAsync();
 
             return total;

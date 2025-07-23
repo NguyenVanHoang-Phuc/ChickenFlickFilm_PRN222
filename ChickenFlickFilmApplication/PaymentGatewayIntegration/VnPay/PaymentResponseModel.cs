@@ -11,5 +11,6 @@
         public string Token { get; set; }
         public string VnPayResponseCode { get; set; }
         public decimal Amount { get; set; }
+        public DateTime? TransactionDate { get; set; }
     }
 }

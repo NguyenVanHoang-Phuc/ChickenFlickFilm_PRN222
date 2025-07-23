@@ -5,6 +5,8 @@
 @{
     ViewData["Title"] = "Quản lý Rạp";
     Layout = "_LayoutAdmin";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var searchKeyTheater = Context.Request.Query["searchKeyTheater"];
 }
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -20,12 +22,12 @@
 </div>
 
 <!-- Search -->
-<form method="post" action="SearchTheater">
+<form method="get" action="SearchTheater">
 <div class="admin-card">
         <div class="d-flex align-items-center" style="gap: 1rem;">
             <div class="search-container" style="flex: 1;">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="form-control search-input" placeholder="Tìm kiếm theo tên rạp hoặc địa chỉ..." name="searchKeyTheater">
+                <input type="text" class="form-control search-input" placeholder="Tìm kiếm theo tên rạp hoặc địa chỉ..." name="searchKeyTheater" value="@Context.Request.Query["searchKeyTheater"]">
             </div>
             <input type="submit" class="btn btn-primary mt-2" value="Tìm kiếm" style="width: 20%; margin-bottom: 28px;">
         </div>
@@ -82,12 +84,15 @@
     </div>
     <!-- Pagination -->
     <div class="d-flex justify-content-center">
-        @Html.PagedListPager(Model, page => Url.Action("Theaters", new { page }),
-        new PagedListRenderOptions
-        {
-            LiElementClasses = new[] { "page-item" },
-            PageClasses = new[] { "page-link" }
-        })
+        @Html.PagedListPager(Model, page => Url.Action(currentAction, new {
+        page,
+        searchKeyTheater
+                }),
+                new PagedListRenderOptions
+                {
+                    LiElementClasses = new[] { "page-item" },
+                    PageClasses = new[] { "page-link" }
+                })
     </div>
 </div>
 

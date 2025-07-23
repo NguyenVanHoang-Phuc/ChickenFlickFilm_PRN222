@@ -5,6 +5,10 @@
 @{
     ViewData["Title"] = "Quản lý Suất chiếu";
     Layout = "_LayoutAdmin";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var searchKeyShowtime = Context.Request.Query["searchKeyShowtime"];
+    var dateShowtime = Context.Request.Query["dateShowtime"];
+    var statusShowtime = Context.Request.Query["statusShowtime"];
 }
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -20,22 +24,22 @@
 </div>
 
 <!-- Search and Filters -->
-<form method="post" action="SearchShowtime">
+<form method="get" action="SearchShowtime">
     <div class="admin-card">
         <div class="d-flex align-items-center" style="gap: 1rem;">
             <div class="search-container" style="flex: 1;">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="form-control search-input" placeholder="Tìm kiếm theo tên phim hoặc rạp..." name="searchKeyShowtime">
+                <input type="text" class="form-control search-input" placeholder="Tìm kiếm theo tên phim hoặc rạp..." name="searchKeyShowtime" value="@Context.Request.Query["searchKeyShowtime"]">
             </div>
             <div style="position: relative;">
                 <i class="fas fa-calendar-alt" style="position: absolute; left: 0.75rem; top: 35%; transform: translateY(-50%); color: var(--text-light);"></i>
-                <input type="date" class="form-control" style="padding-left: 2.5rem; margin-bottom: 24px;" name="dateShowtime">
+                <input type="date" class="form-control" style="padding-left: 2.5rem; margin-bottom: 24px;" name="dateShowtime" value="@Context.Request.Query["dateShowtime"]">
             </div>
             <select class="form-control form-select" style="width: auto; margin-bottom: 28px;" name="statusShowtime">
                 <option value="">Tất cả trạng thái</option>
-                <option value="Sắp chiếu">Sắp chiếu</option>
-                <option value="Đang chiếu">Đang chiếu</option>
-                <option value="Đã chiếu">Đã chiếu</option>
+                <option value="Sắp chiếu" selected="@(Context.Request.Query["statusShowtime"] == "Sắp chiếu" ? "selected" : null)">Sắp chiếu</option>
+                <option value="Đang chiếu" selected="@(Context.Request.Query["statusShowtime"] == "Đang chiếu" ? "selected" : null)">Đang chiếu</option>
+                <option value="Đã chiếu" selected="@(Context.Request.Query["statusShowtime"] == "Đã chiếu" ? "selected" : null)">Đã chiếu</option>
             </select>
             <input type="submit" class="btn btn-primary mt-2" value="Tìm kiếm" style="width: 20%; margin-bottom: 32px;">
         </div>
@@ -118,12 +122,17 @@
 
 <!-- Pagination -->
 <div class="d-flex justify-content-center">
-    @Html.PagedListPager(Model, page => Url.Action("Showtimes", new { page }),
-    new PagedListRenderOptions
-    {
-        LiElementClasses = new[] { "page-item" },
-        PageClasses = new[] { "page-link" }
-    })
+    @Html.PagedListPager(Model, page => Url.Action(currentAction, new {
+    page,
+    searchKeyShowtime,
+    dateShowtime,
+    statusShowtime
+        }),
+        new PagedListRenderOptions
+        {
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" }
+        })
 </div>
 
 <!-- Modal -->

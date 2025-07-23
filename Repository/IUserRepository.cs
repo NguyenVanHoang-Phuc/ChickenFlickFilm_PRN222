@@ -17,5 +17,6 @@ namespace Repository
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(int userId);
         Task<int> GetTotalUsersAsync();
+        Task<decimal> TotalSpendingUser(int userId);
     }
 }

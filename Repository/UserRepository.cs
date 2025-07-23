@@ -50,5 +50,10 @@ namespace Repository
         {
             return await _userDAO.GetTotalUsersAsync();
         }
+
+        public async Task<decimal> TotalSpendingUser(int userId)
+        {
+            return await _userDAO.TotalSpendingUser(userId);
+        }
     }
 }
