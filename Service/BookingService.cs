@@ -23,7 +23,7 @@ namespace Service
 
         public async Task ChangeBookingStatus(int bookingId, string bookingStatus)
         {
-            await _bookingRepository.ChangeBookingStatus(bookingId,bookingStatus);
+            await _bookingRepository.ChangeBookingStatus(bookingId, bookingStatus);
         }
 
         public Task<Booking?> GetBookingByIdAsync(int bookingId)
@@ -33,6 +33,10 @@ namespace Service
         public List<Booking> GetAllBookingByUserId(int userid)
         {
             return _bookingRepository.GetAllBookingByUserId(userid);
+        }
+        public async Task<decimal> GetTotalAmountAsync()
+        {
+            return await _bookingRepository.GetTotalAmountAsync();
         }
     }
 }
