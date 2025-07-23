@@ -13,5 +13,6 @@ namespace Service
         Task<int> AddBookingAsync(Booking booking);
         Task ChangeBookingStatus(int bookingId, string bookingStatus);
         List<Booking> GetAllBookingByUserId(int userid);
+        Task<decimal> GetTotalAmountAsync();
     }
 }

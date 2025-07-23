@@ -35,5 +35,10 @@ namespace Repository
         {
             return _bookingDAO.GetAllBookingByUserId(userid);
         }
+
+        public async Task<decimal> GetTotalAmountAsync()
+        {
+            return await _bookingDAO.GetTotalAmountAsync();
+        }
     }
 }

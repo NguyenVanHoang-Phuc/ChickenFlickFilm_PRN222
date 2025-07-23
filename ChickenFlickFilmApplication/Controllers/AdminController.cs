@@ -15,9 +15,10 @@ namespace ChickenFlickFilmApplication.Controllers
         private readonly IMovieService _movieService;
         private readonly IShowtimeService _showtimeService;
         private readonly IAuditoriumService _auditoriumService;
+        private readonly IBookingService _bookingService;
         private readonly IWebHostEnvironment _env;
 
-        public AdminController(IUserService userService, ITheaterService theaterService, IMovieService movieService, IShowtimeService showtimeService, IAuditoriumService auditoriumService ,IWebHostEnvironment env)
+        public AdminController(IUserService userService, ITheaterService theaterService, IMovieService movieService, IShowtimeService showtimeService, IAuditoriumService auditoriumService , IWebHostEnvironment env, IBookingService bookingService)
         {
             _userService = userService;
             _theaterService = theaterService;
@@ -25,6 +26,7 @@ namespace ChickenFlickFilmApplication.Controllers
             _showtimeService = showtimeService;
             _auditoriumService = auditoriumService;
             _env = env;
+            _bookingService = bookingService;
         }
         // Dashboard
         public async Task<IActionResult> Dashboard()
@@ -36,7 +38,7 @@ namespace ChickenFlickFilmApplication.Controllers
                 TotalShowtimes = await _showtimeService.GetTotalShowtimesAsync(),
                 TotalTheaters = await _theaterService.GetTotalTheatersAsync(),
                 TotalAuditoriums = await _auditoriumService.GetTotalAuditoriumsAsync(),
-                MonthlyRevenue = 20000000,
+                TotalAmount = await _bookingService.GetTotalAmountAsync(),
             };
 
             return View(model);
