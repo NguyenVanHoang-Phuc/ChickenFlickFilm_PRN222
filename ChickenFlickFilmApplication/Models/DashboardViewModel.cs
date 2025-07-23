@@ -7,6 +7,6 @@
         public int TotalShowtimes { get; set; }
         public int TotalTheaters { get; set; }
         public int TotalAuditoriums { get; set; }
-        public decimal MonthlyRevenue { get; set; }
+        public decimal TotalAmount { get; set; }
     }
 }

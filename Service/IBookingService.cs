@@ -11,7 +11,8 @@ namespace Service
     {
         Task<Booking?> GetBookingByIdAsync(int bookingId);
         Task<int> AddBookingAsync(Booking booking);
-        Task ChangeBookingStatus(int bookingId, string bookingStatus);
+        Task ChangeBookingStatus(Booking booking, string bookingStatus);
         List<Booking> GetAllBookingByUserId(int userid);
+        Task<decimal> GetTotalAmountAsync();
     }
 }

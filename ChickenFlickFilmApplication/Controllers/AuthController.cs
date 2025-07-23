@@ -316,6 +316,7 @@ namespace ChickenFlickFilmApplication.Controllers
             }
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userService.GetAsync(u => u.UserId.ToString() == userId);
+            var totalAmount = await _userService.TotalSpendingUser(user.UserId);
             if (user != null)
             {
                 List<Booking> bookings = bookingService.GetAllBookingByUserId(int.Parse(userId));
@@ -339,7 +340,7 @@ namespace ChickenFlickFilmApplication.Controllers
                     FullName = user.FullName,
                     Gender = user.Gender ? "Male" : "Female",
                     PhoneNumber = user.PhoneNumber,
-                    TotalSpending = 0,
+                    TotalSpending = totalAmount,
                     bookings = bookingsResult,
                 };
                 return View(model);
@@ -358,6 +359,28 @@ namespace ChickenFlickFilmApplication.Controllers
 
             if (!ModelState.IsValid)
             {
+                var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                var currentUser = await _userService.GetAsync(u => u.UserId.ToString() == currentUserId);
+
+                model.TotalSpending = await _userService.TotalSpendingUser(currentUser.UserId);
+
+                var bookings = bookingService.GetAllBookingByUserId(currentUser.UserId);
+                var bookingsResult = new List<Booking>();
+
+                foreach (var booking in bookings)
+                {
+                    var showtime = await showtimeService.GetShowtimeByIdAsync(booking.ShowtimeId);
+                    var payment = paymentService.getPaymentByBookingid(booking.BookingId);
+                    if (showtime != null && payment != null)
+                    {
+                        booking.Showtime = showtime;
+                        booking.Payment = payment;
+                        bookingsResult.Add(booking);
+                    }
+                }
+
+                model.bookings = bookingsResult;
+
                 return View("UserProfile", model);
             }
 

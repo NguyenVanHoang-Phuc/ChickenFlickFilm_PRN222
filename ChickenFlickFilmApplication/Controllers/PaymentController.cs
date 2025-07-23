@@ -5,6 +5,7 @@ using ChickenFlickFilmApplication.Services.VnPay;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace ChickenFlickFilmApplication.Controllers
@@ -18,6 +19,7 @@ namespace ChickenFlickFilmApplication.Controllers
         private readonly IMovieService _movieService;
         private readonly IAuditoriumService _auditoriumService;
         private readonly ITheaterService _theaterService;
+        private readonly IPaymentService _paymentService;
         public IActionResult BookingDetails()
         {
             return View();
@@ -31,7 +33,8 @@ namespace ChickenFlickFilmApplication.Controllers
             return View();
         }
         public PaymentController(IVnPayService vnPayService, IBookingService bookingService, IShowtimeService showtimeService, 
-            IMovieService movieService, IAuditoriumService auditoriumService, ITheaterService theaterService, ISeatBookingService seatBookingService)
+            IMovieService movieService, IAuditoriumService auditoriumService, ITheaterService theaterService, 
+            ISeatBookingService seatBookingService, IPaymentService paymentService)
         {
 
             _vnPayService = vnPayService;
@@ -41,6 +44,7 @@ namespace ChickenFlickFilmApplication.Controllers
             _auditoriumService = auditoriumService;
             _theaterService = theaterService;
             _seatBookingService = seatBookingService;
+            _paymentService = paymentService;
         }
 
         public IActionResult CreatePaymentUrlVnpay(PaymentInformationModel model)
@@ -49,37 +53,48 @@ namespace ChickenFlickFilmApplication.Controllers
             {
                 return Content("Invalid payment data.");
             }
-
-            if (string.IsNullOrEmpty(model.Name))
-            {
-                return Content("Missing or invalid payment details.");
-            }
+            //get time at starting making payment
+            DateTime currTime = DateTime.Now;
+            TempData["CurrentTime"] = currTime;
             var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
-
             return Redirect(url);
         }
         public async Task<IActionResult> PaymentCallbackVnpay()
         {
             PaymentResponseModel response = _vnPayService.PaymentExecute(Request.Query);
             // get data from response.OrderID = BookingId
-            var bookingId = response.OrderId;
+            int bookingId = int.Parse(response.OrderId.Split('_')[0]);
             Console.WriteLine($"BookingId: {bookingId} ");
-            if (int.TryParse(bookingId, out int parsedBookingId))
+            if (bookingId>0)
             {
+                Booking booking = await _bookingService.GetBookingByIdAsync(bookingId);
+
+                Payment payment = new Payment()
+                {
+
+                    BookingId = booking.BookingId,
+                    Amount = response.Amount,
+                    PaymentMethod = response.PaymentMethod,
+                    PaymentStatus = response.VnPayResponseCode,
+                    TransactionId = response.TransactionId,
+                    TransactionDate = response.TransactionDate,
+                    VnpayResponseCode = response.VnPayResponseCode
+                };
+                
                 if ("00".Equals(response.VnPayResponseCode))
                 {
+                    Console.WriteLine($"Thanh toan thanh cong");
                     //Change Booking status
-                    Booking booking = _bookingService.GetBookingByIdAsync(parsedBookingId).Result;
-                     await _bookingService.ChangeBookingStatus(parsedBookingId, "Success");
+                    await _bookingService.ChangeBookingStatus(booking, "Success");
 
                     int showtimeId = booking.ShowtimeId;
-                    Showtime showtime = _showtimeService.GetShowtimeByIdAsync(showtimeId).Result;
+                    Showtime showtime = await _showtimeService.GetShowtimeByIdAsync(showtimeId);
                     int movieId = showtime.MovieId;
-                    Movie movie = _movieService.GetMovieByIdAsync(movieId).Result;
+                    Movie movie = await _movieService.GetMovieByIdAsync(movieId);
                     int auditoriumId = showtime.AuditoriumId;
-                    Auditorium auditorium = _auditoriumService.GetAuditoriumByIdAsync(auditoriumId).Result;
-                    Theater theater = _theaterService.GetTheaterByAuditoriumIdAsync(auditoriumId).Result;
-                    List<SeatBooking> seatBookings = await _seatBookingService.GetSeatBookingsByBookingIdAsync(parsedBookingId);
+                    Auditorium auditorium = await _auditoriumService.GetAuditoriumByIdAsync(auditoriumId);
+                    Theater theater = await _theaterService.GetTheaterByAuditoriumIdAsync(auditoriumId);
+                    List<SeatBooking> seatBookings = await _seatBookingService.GetSeatBookingsByBookingIdAsync(bookingId);
                     string movieNameTicket = movie.Title;
                     string theaterNameTicket = theater.TheaterName;
                     string showtimeTicket = showtime.ShowTime + "," + showtime.ShowDate;
@@ -95,7 +110,7 @@ namespace ChickenFlickFilmApplication.Controllers
                         MovieNameTicket = movieNameTicket,
                         TheaterNameTicket = theaterNameTicket,
                         ShowtimeTicket = showtimeTicket,
-                        AuditoriumTicket = auditoriumTicket,    
+                        AuditoriumTicket = auditoriumTicket,
                         SeatNumbers = seatNumbers,
                         Amount = amount
 
@@ -107,64 +122,26 @@ namespace ChickenFlickFilmApplication.Controllers
                         $"SeatNumbers: {model.SeatNumbers.Count()}\n" +
                         $"Amount : {model.Amount}");
 
-                    return View("MakePaymentSuccess",model);
+                    payment.PaymentStatus = "Thành công";
+                    await _paymentService.AddPaymentAsync(payment);
+                    return View("MakePaymentSuccess", model);
 
                 }
-
-
-                // Get dữ liệu
-                //var MovieName = TempData["MovieName"];
-                //var TheaterName = TempData["TheaterName"];
-                //var Showtime= TempData["Showtime"];
-                //var Auditorium = TempData["Auditorium"];
-                //var listSeat = TempData["listSeat"];
-                //var totalString = TempData["total"] as string;
-                //if (MovieName == null || TheaterName == null || Showtime == null || Auditorium == null || listSeat == null || totalString == null)
-                //{
-                //    return Content("Passing Ticket's details doesn't work");
-                //}
-                //decimal total = 0;
-                //if (!decimal.TryParse(totalString, out total))
-                //{
-                //    return Content("Invalid total value");
-                //}
-
-                // change status của ghế và của payment
-
 
                 else
                 {
-                    _bookingService.ChangeBookingStatus(parsedBookingId, "Failed");
+                    _bookingService.ChangeBookingStatus(booking, "Failed");
+                    payment.PaymentStatus = "Thất bại";
+                    await _paymentService.AddPaymentAsync(payment);
                     return View("MakePaymentFailed");
                 }
+                
             }
             else
             {
-               return Content("Invalid booking ID format");
+                return Content("Invalid booking ID format");
             }
         }
-        //[HttpPost]
-        //public IActionResult ShowTicketDetails(string MovieName,string TheaterName, string Showtime, string Auditorium, List<int> listSeat ,decimal total)
-        //{
-        //    if(MovieName == null || TheaterName == null || Showtime == null || Auditorium == null || listSeat == null || total==0)
-        //    {
-        //        return Content("Ticket details are null");
-        //    }
-        //    //return Content("MovieName: " + MovieName
-        //    //        + "\nTheaterName: " + TheaterName
-        //    //        + "\n Showtime: " + Showtime
-        //    //        + "\n Auditorium: " + Auditorium
-        //    //        + "\nlistSeat:  " + listSeat.Count()
-        //    //        + "\ntotal: " + total);
-        //    TempData["MovieName"] = MovieName;
-        //    TempData["TheaterName"] = TheaterName;
-        //    TempData["Showtime"] = Showtime;
-        //    TempData["Auditorium"] = Auditorium;
-        //    TempData["listSeat"] = listSeat;
-        //    TempData["total"] = total.ToString();
-        //    return RedirectToAction("PaymentCallbackVnpay");
-
-        //}
 
 
     }

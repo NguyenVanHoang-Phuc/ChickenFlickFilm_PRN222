@@ -20,5 +20,9 @@ namespace Service
         {
             return PaymentRepository.getPaymentByBookingid(bookingid);
         }
+        public async Task AddPaymentAsync(Payment payment)
+        {
+            await PaymentRepository.AddPaymentAsync(payment);
+        }
     }
 }

@@ -6,6 +6,10 @@
 @{
     ViewData["Title"] = "Quản lý Phim";
     Layout = "_LayoutAdmin";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var searchKeyMovie = Context.Request.Query["searchKeyMovie"];
+    var statusMovie = Context.Request.Query["statusMovie"];
+    var formatMovie = Context.Request.Query["formatMovie"];
 }
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -21,24 +25,24 @@
 </div>
 
 <!-- Search and Filters -->
-<form method="post" asp-action="SearchMovie">
+<form method="get" asp-action="SearchMovie">
     <div class="admin-card">
         <div class="d-flex align-items-center" style="gap: 1rem;">
             <div class="search-container" style="flex: 1;">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" name="searchKeyMovie" class="form-control search-input" placeholder="Tìm kiếm theo tên phim hoặc thể loại...">
+                <input type="text" name="searchKeyMovie" class="form-control search-input" placeholder="Tìm kiếm theo tên phim hoặc thể loại..." value="@Context.Request.Query["searchKeyMovie"]">
             </div>
             <select class="form-control form-select" style="width: auto; margin-bottom: 28px;" name="statusMovie">
                 <option value="">Tất cả trạng thái</option>
-                <option value="Đang chiếu">Đang chiếu</option>
-                <option value="Sắp chiếu">Sắp chiếu</option>
-                <option value="Đã kết thúc">Đã kết thúc</option>
+                <option value="Sắp chiếu" selected="@(Context.Request.Query["statusMovie"] == "Sắp chiếu" ? "selected" : null)">Sắp chiếu</option>
+                <option value="Đang chiếu" selected="@(Context.Request.Query["statusMovie"] == "Đang chiếu" ? "selected" : null)">Đang chiếu</option>
+                <option value="Đã kết thúc" selected="@(Context.Request.Query["statusMovie"] == "Đã kết thúc" ? "selected" : null)">Đã kết thúc</option>
             </select>
             <select class="form-control form-select" style="width: auto; margin-bottom: 28px;" name="formatMovie">
                 <option value="">Tất cả định dạng</option>
-                <option value="2D">2D</option>
-                <option value="3D">3D</option>
-                <option value="IMAX">IMAX</option>
+                <option value="2D" selected="@(Context.Request.Query["formatMovie"] == "2D" ? "selected" : null)">2D</option>
+                <option value="3D" selected="@(Context.Request.Query["formatMovie"] == "3D" ? "selected" : null)">3D</option>
+                <option value="IMAX" selected="@(Context.Request.Query["formatMovie"] == "IMAX" ? "selected" : null)">IMAX</option>
             </select>
             <input type="submit" class="btn btn-primary mt-2" value="Tìm kiếm" style="width: 20%; margin-bottom: 32px;">
         </div>
@@ -116,12 +120,17 @@
 
 <!-- Pagination -->
 <div class="d-flex justify-content-center">
-    @Html.PagedListPager(Model, page => Url.Action("Movies", new { page }),
-    new PagedListRenderOptions
-    {
-        LiElementClasses = new[] { "page-item" },
-        PageClasses = new[] { "page-link" }
-    })
+    @Html.PagedListPager(Model, page => Url.Action(currentAction, new {
+    page,
+    searchKeyMovie,
+    statusMovie,
+    formatMovie
+        }),
+        new PagedListRenderOptions
+        {
+            LiElementClasses = new[] { "page-item" },
+            PageClasses = new[] { "page-link" }
+        })
 </div>
 
 <!-- Modal -->
