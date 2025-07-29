@@ -40,5 +40,6 @@ namespace Service
         }
         public Auditorium GetAuditoriumById(int audi_id)
       => _auditoriumRepository.GetAuditoriumById(audi_id);
+        public List<Auditorium> getAllAuditoriumByTheaterId(int theaterId) => _auditoriumRepository.getAllAuditoriumByTheaterId(theaterId);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using ChickenFlickFilmApplication.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Service;
@@ -8,6 +9,8 @@ using X.PagedList.Extensions;
 
 namespace ChickenFlickFilmApplication.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class AdminController : Controller
     {
         private readonly IUserService _userService;

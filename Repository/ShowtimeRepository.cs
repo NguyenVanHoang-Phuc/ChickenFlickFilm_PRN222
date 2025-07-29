@@ -61,6 +61,7 @@ namespace Repository
         {
             return  _showtimeDAO.GetSevenDaysStartingFromToday();
         }
+        public List<Showtime> getAllShowtimeByAuditoriumId(int auditoriumId) => _showtimeDAO.getAllShowtimeByAuditoriumId(auditoriumId);
     }
 }
 

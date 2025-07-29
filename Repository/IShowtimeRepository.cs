@@ -20,5 +20,6 @@ namespace Repository
         Task<int> GetTotalShowtimeAsync();
         Task<IEnumerable<Showtime>> GetShowtimesByMovieIdAsync(int movieId);
         List<string> GetSevenDaysStartingFromToday();
+        List<Showtime> getAllShowtimeByAuditoriumId(int auditoriumId);
     }
 }

@@ -167,10 +167,42 @@
         </div>
     </div>
 </div>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
     <script>
          const divs = document.querySelectorAll(".SeatType");
          let selectedIds = [];
          let currentStep = 2;
+         window.connection = new signalR.HubConnectionBuilder()
+                            .withUrl("/seathub")
+                            .build();
+       connection.on("ReceiveUpdatedSeats", function (selectedIds) {
+		  console.log("Received updated seats:", selectedIds);
+           divs.forEach(div => {
+             const seatTypeValue = div.dataset.type;
+             const seatId = Number(div.dataset.id);
+             const isAvailable = div.dataset.seatsold;
+             function getSeatClass(seatType, isAvailable) {
+                 if (isAvailable === "False") return "seat sold";
+                 if (seatType === "Seat_VIP") return "seat vip";
+                 if (seatType === "Seat_Deluxe") return "seat vip";
+                 if (seatType === "Seat_Couple") return "seat couple";
+                 return "seat normal";
+             }
+             if ( selectedIds.includes(seatId) ) {
+                 div.className = "seat selected";
+             } else {
+                 div.className = getSeatClass(seatTypeValue, isAvailable);
+             }
+           });
+          updateSeatGrid();
+           updateSelectedSeatsDisplay();
+           updateTotalPrice();
+        });
+
+
+         connection.start().then(() => {
+             console.log("connect signalr success");
+         });
          function updateProgressBar() {
              const progressLine = document.querySelector('.progress-line');
              const percentage = ((currentStep - 1) / 3) * 100 + 4;
@@ -195,7 +227,8 @@
                    selectedIds.push(seatId);
              } else {
                     selectedIds = selectedIds.filter(seat => seat !== seatId);
-              }
+             }
+              connection.invoke("UpdateSeat", selectedIds);
               updateSeatGrid();
               updateSelectedSeatsDisplay();
               updateTotalPrice();

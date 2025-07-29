@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BusinessObjects.Models;
 
@@ -16,7 +17,7 @@ public partial class Showtime
     public TimeOnly ShowTime { get; set; }
 
     public string? Status { get; set; }
-
+    [JsonIgnore]
     public virtual Auditorium Auditorium { get; set; } = null!;
 
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
