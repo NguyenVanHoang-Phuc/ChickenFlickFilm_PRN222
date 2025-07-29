@@ -143,9 +143,11 @@ namespace ChickenFlickFilmApplication.Controllers
                 else
                 {
                     _bookingService.ChangeBookingStatus(booking, "Failed");
-                    payment.PaymentStatus = "Thất bại";
-                    await _paymentService.AddPaymentAsync(payment);
-                    return View("MakePaymentFailed");
+                    List<SeatBooking> seatBookings = await _seatBookingService.GetSeatBookingsByBookingIdAsync(bookingId);
+                    //payment.PaymentStatus = "Thất bại";
+                    //payment.TransactionId = null;
+                    //await _paymentService.AddPaymentAsync(payment);
+                    return View("MakePaymentFailed", seatBookings);
                 }
                 
             }

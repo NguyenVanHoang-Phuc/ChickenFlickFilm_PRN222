@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<BusinessObjects.Models.SeatBooking>
+@{
     ViewData["Title"] = "MakePaymentFailed";
     Layout = "_Layout";
 }
@@ -16,11 +17,32 @@
         </div>
     </div>
 </div>
-
+@foreach (var seat in Model)
+{
+	<input type="hidden" class="selected-seat" value="@seat.SeatId" />
+})
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
     <script>
+        window.connection = new signalR.HubConnectionBuilder()
+                              .withUrl("/seathub")
+                              .build();
+        connection.start().then(() => {
+            console.log("connect signalr success");
+        });
+        let selectedIds = [];
+		document.querySelectorAll('.selected-seat').forEach(seat => {
+            selectedIds.push(Number(seat.value));
+		});
+        // console.log("Selected seat IDs:", selectedIds);
         function goHome() {
+          try {
+            connection.invoke("UnlockSeats", selectedIds);
             window.location.href = '/';
+        } catch (err) {
+            console.error("Error unlocking seats:", err);
+        }
         }
     </script>
 }

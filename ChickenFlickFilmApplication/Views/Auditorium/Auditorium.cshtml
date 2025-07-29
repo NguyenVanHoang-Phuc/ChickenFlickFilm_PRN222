@@ -171,12 +171,25 @@
     <script>
          const divs = document.querySelectorAll(".SeatType");
          let selectedIds = [];
-         let currentStep = 2;
+        let lockedSeatIds = [];
+        let currentStep = 2;
          window.connection = new signalR.HubConnectionBuilder()
                             .withUrl("/seathub")
                             .build();
-       connection.on("ReceiveUpdatedSeats", function (selectedIds) {
-		  console.log("Received updated seats:", selectedIds);
+        connection.on("ReceiveLockedSeats", function (ids) {
+		     console.log("Received locked seats:", ids);
+             lockedSeatIds = [...new Set([...lockedSeatIds, ...ids])];
+             updateSeatUI();
+        });
+
+        connection.on("ReceiveUnlockedSeats", function (ids) {
+           console.log("Received unlocked seats:", ids);
+             lockedSeatIds = lockedSeatIds.filter(id => !ids.includes(id));
+             updateSeatUI();
+        });
+      connection.on("ReceiveUpdatedSeats", function (selectedIds) {
+        console.log("Received updated seats:", selectedIds);
+          // selectedIds = updateselectedIds;
            divs.forEach(div => {
              const seatTypeValue = div.dataset.type;
              const seatId = Number(div.dataset.id);
@@ -263,6 +276,26 @@
               }
             });
           }
+       function updateSeatUI() {
+           divs.forEach(div => {
+             const seatId = Number(div.dataset.id);
+            const seatTypeValue = div.dataset.type;
+             const isAvailable = div.dataset.seatsold;
+             function getSeatClass(seatType, isAvailable) {
+                 if (isAvailable === "False") return "seat sold";
+                 if (seatType === "Seat_VIP") return "seat vip";
+                 if (seatType === "Seat_Deluxe") return "seat vip";
+                 if (seatType === "Seat_Couple") return "seat couple";
+                 return "seat normal";
+             }
+           console.log("lock seat ui", lockedSeatIds);
+             if (lockedSeatIds.includes(seatId)) {
+              div.className = "seat sold";
+             } else {
+               div.className =  getSeatClass(seatTypeValue, isAvailable);
+             }
+           });
+         }
           function updateSelectedSeatsDisplay() {
              const container = document.getElementById('selected-seats-container');
              container.innerHTML = '';
@@ -372,7 +405,8 @@
            const timeId = timeFrameSelected.dataset.timeid; // Get data-timeid from active button
             console.log(`Selected time ID: ${timeId}`);
            const userId = "@User.FindFirstValue(ClaimTypes.NameIdentifier)" > 0 ? "@User.FindFirstValue(ClaimTypes.NameIdentifier)":1 ; // temp solution without login for testing
-         const username = @Html.Raw(Json.Serialize(User.FindFirstValue(ClaimTypes.Name)));
+           const username = @Html.Raw(Json.Serialize(User.FindFirstValue(ClaimTypes.Name)));
+           connection.invoke("LockSeats", selectedIds);
            submitFormPost(selectedIds, total, timeId, userId,username);
         } else {
             alert('No active button found!'); // Show alert if no active button
