@@ -19,7 +19,7 @@ builder.Services.AddDbContext<MovieDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection"),
         sqlOptions => sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
     )
-    ); ;
+    ); 
 
 
 builder.Services.AddScoped<UserDAO>();

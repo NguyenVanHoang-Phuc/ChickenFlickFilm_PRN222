@@ -21,6 +21,10 @@ namespace ChickenFlickFilmApplication.Controllers
         }
         public IActionResult Auditorium(int ShowtimeId)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
             Showtime showtime = showtimeService.GetShowtimeByIdAsync(ShowtimeId).Result;
             if (showtime == null)
             {
