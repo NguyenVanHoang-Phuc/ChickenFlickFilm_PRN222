@@ -48,7 +48,7 @@ namespace ChickenFlickFilmApplication.Controllers
         [HttpGet]
         public async Task<IActionResult> DetailFilm(int id, string selectedDate = null)
         {
-            if ( !User.Identity.IsAuthenticated)
+            if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Auth");
             }

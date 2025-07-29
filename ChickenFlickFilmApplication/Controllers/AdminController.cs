@@ -34,6 +34,10 @@ namespace ChickenFlickFilmApplication.Controllers
         // Dashboard
         public async Task<IActionResult> Dashboard()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
             var model = new DashboardViewModel
             {
                 TotalUsers = await _userService.GetTotalUsersAsync(),
@@ -50,6 +54,10 @@ namespace ChickenFlickFilmApplication.Controllers
         // Auditoriums
         public async Task<IActionResult> Auditoriums(int? page)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
             int pageSize = 5;
             int pageNumber = page ?? 1;
 
@@ -145,6 +153,10 @@ namespace ChickenFlickFilmApplication.Controllers
         // Manage Movies
         public async Task<IActionResult> Movies(int? page)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
             int pageSize = 5;
             int pageNumber = page ?? 1;
 
@@ -327,6 +339,10 @@ namespace ChickenFlickFilmApplication.Controllers
         // Manage Showtimes
         public async Task<IActionResult> Showtimes(int? page)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
             ViewBag.MovieListRaw = await _movieService.GetMoviesByEnableStatusAsync();
             var now = DateTime.Now;
 
@@ -509,6 +525,10 @@ namespace ChickenFlickFilmApplication.Controllers
         // Manage Users
         public async Task<IActionResult> Users(int? page)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
             int pageSize = 5;
             int pageNumber = page ?? 1;
 
@@ -574,6 +594,10 @@ namespace ChickenFlickFilmApplication.Controllers
         // Manage Theaters
         public async Task<IActionResult> Theaters(int? page)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Auth");
+            }
             int pageSize = 5;
             int pageNumber = page ?? 1;
 
