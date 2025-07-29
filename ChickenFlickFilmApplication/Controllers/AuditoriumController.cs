@@ -1,9 +1,11 @@
 ﻿using BusinessObjects.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 
 namespace ChickenFlickFilmApplication.Controllers
 {
+    [Authorize(Roles = "Customer")]
     public class AuditoriumController : Controller
     {
         private readonly ISeatService seatService;
@@ -19,6 +21,7 @@ namespace ChickenFlickFilmApplication.Controllers
             this.movieService = movieService;
             this.theaterService = theaterService;
         }
+
         public IActionResult Auditorium(int ShowtimeId)
         {
             if (!User.Identity.IsAuthenticated)

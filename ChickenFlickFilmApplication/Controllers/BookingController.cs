@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChickenFlickFilmApplication.Controllers
 {
+    [Authorize(Roles = "Customer")]
+
     public class BookingController : Controller
     {
         private readonly IBookingService bookingService;

@@ -316,7 +316,12 @@ namespace ChickenFlickFilmApplication.Controllers
             }
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _userService.GetAsync(u => u.UserId.ToString() == userId);
-            var totalAmount = await _userService.TotalSpendingUser(user.UserId);
+            decimal totalAmount = 0;
+            var bookingByUser = bookingService.GetAllBookingByUserId(user.UserId);
+            if (bookingByUser != null)
+            {
+                totalAmount = await _userService.TotalSpendingUser(user.UserId);
+            }
             if (user != null)
             {
                 List<Booking> bookings = bookingService.GetAllBookingByUserId(int.Parse(userId));
@@ -432,6 +437,12 @@ namespace ChickenFlickFilmApplication.Controllers
                 code,
                 "Please log in to your account to complete your profile setup."
             );
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

@@ -59,5 +59,6 @@ namespace Service
         {
             return _showtimeRepository.GetSevenDaysStartingFromToday();
         }
+        public List<Showtime> getAllShowtimeByAuditoriumId(int auditoriumId) => _showtimeRepository.getAllShowtimeByAuditoriumId(auditoriumId);
     }
 }

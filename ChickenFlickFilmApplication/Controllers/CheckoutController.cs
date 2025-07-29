@@ -1,9 +1,11 @@
 ﻿using ChickenFlickFilmApplication.Services.VnPay;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChickenFlickFilmApplication.Controllers
 {
+
     public class CheckoutController : Controller
     {
         private readonly IVnPayService _vnPayService;

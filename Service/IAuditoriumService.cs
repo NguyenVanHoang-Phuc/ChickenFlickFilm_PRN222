@@ -17,5 +17,6 @@ namespace Service
         Task<Auditorium?> GetAuditoriumByIdAsync(int id);
         Task<int> GetTotalAuditoriumsAsync();
         Auditorium GetAuditoriumById(int audi_id);
+        List<Auditorium> getAllAuditoriumByTheaterId(int theaterId);
     }
 }

@@ -84,5 +84,10 @@ namespace DataAccess
                 .Select(offset => startDate.AddDays(offset).ToString("yyyy-MM-dd"))
                 .ToList();
         }
+
+        public List<Showtime> getAllShowtimeByAuditoriumId( int auditoriumId )
+        {
+            return _context.Showtimes.Where(s => s.AuditoriumId == auditoriumId).ToList();
+        }
     }
 }

@@ -20,5 +20,6 @@ namespace Service
         Task<Showtime?> GetAsync(Expression<Func<Showtime, bool>> predicate);
         Task<IEnumerable<Showtime>> GetShowtimesByMovieIdAsync(int movieId);
         List<string> GetSevenDaysStartingFromToday();
+        List<Showtime> getAllShowtimeByAuditoriumId(int auditoriumId);
     }
 }

@@ -1,5 +1,6 @@
 using BusinessObjects.Models;
 using ChickenFlickFilmApplication.Controllers;
+using ChickenFlickFilmApplication.Hubs;
 using ChickenFlickFilmApplication.Services.VnPay;
 using DataAccess;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -74,7 +75,7 @@ builder.Services.AddHttpsRedirection(options =>
 {
     options.HttpsPort = 7108;
 });
-
+builder.Services.AddSignalR();
 // Configure Authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -172,9 +173,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
 }
 app.UseStaticFiles();
-
 app.UseCookiePolicy();
-
+app.MapHub<SeatHub>("/seathub"); 
 app.UseRouting();
 
 app.UseAuthentication();
