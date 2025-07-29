@@ -5,6 +5,7 @@ using Service;
 
 namespace ChickenFlickFilmApplication.Controllers
 {
+    [Authorize(Roles = "Customer")]
     public class AuditoriumController : Controller
     {
         private readonly ISeatService seatService;

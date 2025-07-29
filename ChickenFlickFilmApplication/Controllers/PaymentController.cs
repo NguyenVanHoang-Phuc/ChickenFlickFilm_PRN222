@@ -3,6 +3,7 @@ using ChickenFlickFilmApplication.Models;
 using ChickenFlickFilmApplication.PaymentGatewayIntegration.VnPay;
 using ChickenFlickFilmApplication.Services.VnPay;
 using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using System.Security.Policy;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace ChickenFlickFilmApplication.Controllers
 {
+
     public class PaymentController : Controller
     {
         private readonly IVnPayService _vnPayService;
@@ -20,6 +22,7 @@ namespace ChickenFlickFilmApplication.Controllers
         private readonly IAuditoriumService _auditoriumService;
         private readonly ITheaterService _theaterService;
         private readonly IPaymentService _paymentService;
+        private readonly ISeatService seatService;
         public IActionResult BookingDetails()
         {
             return View();
@@ -34,7 +37,7 @@ namespace ChickenFlickFilmApplication.Controllers
         }
         public PaymentController(IVnPayService vnPayService, IBookingService bookingService, IShowtimeService showtimeService, 
             IMovieService movieService, IAuditoriumService auditoriumService, ITheaterService theaterService, 
-            ISeatBookingService seatBookingService, IPaymentService paymentService)
+            ISeatBookingService seatBookingService, IPaymentService paymentService, ISeatService seatService)
         {
 
             _vnPayService = vnPayService;
@@ -45,6 +48,7 @@ namespace ChickenFlickFilmApplication.Controllers
             _theaterService = theaterService;
             _seatBookingService = seatBookingService;
             _paymentService = paymentService;
+            this.seatService = seatService;
         }
 
         public IActionResult CreatePaymentUrlVnpay(PaymentInformationModel model)
@@ -102,6 +106,14 @@ namespace ChickenFlickFilmApplication.Controllers
                     List<string> seatNumbers = seatBookings
                                                 .Select(sb => sb.Seat.SeatNumber)  // Access SeatNumber from the related Seat
                                                 .ToList();
+                    foreach ( SeatBooking seatBooking in seatBookings )
+                    {
+                        Seat seat = seatService.GetSeatById(seatBooking.SeatId);
+                        if (seat != null)
+                        {
+                            seatService.UpdateSeatStatus(seat.SeatId);
+                        }
+                    }
                     decimal amount = response.Amount;
 
                     // Create a view model

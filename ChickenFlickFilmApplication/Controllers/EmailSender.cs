@@ -4,6 +4,7 @@ using System.Text;
 
 namespace ChickenFlickFilmApplication.Controllers
 {
+
     public class EmailSender : IEmailSender
     {
         private readonly IConfiguration _config;
