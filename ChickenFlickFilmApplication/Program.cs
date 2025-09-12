@@ -1,4 +1,4 @@
-using BusinessObjects.Models;
+﻿using BusinessObjects.Models;
 using ChickenFlickFilmApplication.Controllers;
 using ChickenFlickFilmApplication.Hubs;
 using ChickenFlickFilmApplication.Services.VnPay;
@@ -11,7 +11,10 @@ using Service;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.ListenAnyIP(5000); 
+});
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
